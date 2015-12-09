@@ -1,0 +1,5 @@
+F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\PolynomialSolver\bin\Debug\PolynomialSolver.dll
+F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\PolynomialSolver\bin\Debug\PolynomialSolver.pdb
+F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\PolynomialSolver\obj\Debug\PolynomialSolver.csprojResolveAssemblyReference.cache
+F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\PolynomialSolver\obj\Debug\PolynomialSolver.dll
+F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\PolynomialSolver\obj\Debug\PolynomialSolver.pdb
