@@ -16,3 +16,20 @@ F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\Ca
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\bin\Debug\Polynomial.pdb
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\bin\Debug\PolynomialSolver.pdb
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\bin\Debug\PolynomialTree.pdb
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\bin\Debug\CalculatorUI.exe.config
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\bin\Debug\CalculatorUI.exe
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\bin\Debug\CalculatorUI.pdb
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\bin\Debug\Polynomial.dll
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\bin\Debug\PolynomialSolver.dll
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\bin\Debug\PolynomialTree.dll
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\bin\Debug\GlassButton.xml
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\bin\Debug\Polynomial.pdb
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\bin\Debug\PolynomialSolver.pdb
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\bin\Debug\PolynomialTree.pdb
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.csprojResolveAssemblyReference.cache
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.Form1.resources
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.PolynomialTerm.resources
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.Properties.Resources.resources
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.csproj.GenerateResource.Cache
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.exe
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.pdb

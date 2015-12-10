@@ -10,3 +10,15 @@ F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\Te
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\TestApp\bin\Debug\PolynomialTree.dll
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\TestApp\bin\Debug\PolynomialSolver.pdb
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\TestApp\bin\Debug\PolynomialTree.pdb
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\TestApp\bin\Debug\TestApp.exe.config
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\TestApp\obj\Debug\TestApp.exe
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\TestApp\obj\Debug\TestApp.pdb
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\TestApp\bin\Debug\TestApp.exe
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\TestApp\bin\Debug\TestApp.pdb
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\TestApp\bin\Debug\Polynomial.dll
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\TestApp\bin\Debug\PolynomialSolver.dll
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\TestApp\bin\Debug\PolynomialTree.dll
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\TestApp\bin\Debug\Polynomial.pdb
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\TestApp\bin\Debug\PolynomialSolver.pdb
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\TestApp\bin\Debug\PolynomialTree.pdb
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\TestApp\obj\Debug\TestApp.csprojResolveAssemblyReference.cache
