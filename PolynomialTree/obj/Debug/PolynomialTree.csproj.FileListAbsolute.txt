@@ -5,3 +5,10 @@ F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\Po
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\PolynomialTree\bin\Debug\Polynomial.pdb
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\PolynomialTree\obj\Debug\PolynomialTree.dll
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\PolynomialTree\obj\Debug\PolynomialTree.pdb
+D:\MyOwnProjects\Polynomial Calculator\PolynomialTree\bin\Debug\PolynomialTree.dll
+D:\MyOwnProjects\Polynomial Calculator\PolynomialTree\bin\Debug\PolynomialTree.pdb
+D:\MyOwnProjects\Polynomial Calculator\PolynomialTree\bin\Debug\Polynomial.dll
+D:\MyOwnProjects\Polynomial Calculator\PolynomialTree\bin\Debug\Polynomial.pdb
+D:\MyOwnProjects\Polynomial Calculator\PolynomialTree\obj\Debug\PolynomialTree.csprojResolveAssemblyReference.cache
+D:\MyOwnProjects\Polynomial Calculator\PolynomialTree\obj\Debug\PolynomialTree.dll
+D:\MyOwnProjects\Polynomial Calculator\PolynomialTree\obj\Debug\PolynomialTree.pdb
