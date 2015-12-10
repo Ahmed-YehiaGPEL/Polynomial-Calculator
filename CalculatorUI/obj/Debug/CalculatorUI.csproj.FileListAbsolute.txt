@@ -16,3 +16,6 @@ F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\Ca
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\bin\Debug\Polynomial.pdb
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\bin\Debug\PolynomialSolver.pdb
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\bin\Debug\PolynomialTree.pdb
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\bin\Debug\CalculatorUI.exe.config
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.exe
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.pdb
