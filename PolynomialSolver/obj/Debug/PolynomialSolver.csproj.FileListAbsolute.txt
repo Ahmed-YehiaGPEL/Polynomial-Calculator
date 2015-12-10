@@ -3,3 +3,8 @@ F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\Po
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\PolynomialSolver\obj\Debug\PolynomialSolver.csprojResolveAssemblyReference.cache
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\PolynomialSolver\obj\Debug\PolynomialSolver.dll
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\PolynomialSolver\obj\Debug\PolynomialSolver.pdb
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\PolynomialSolver\bin\Debug\PolynomialSolver.dll
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\PolynomialSolver\bin\Debug\PolynomialSolver.pdb
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\PolynomialSolver\obj\Debug\PolynomialSolver.csprojResolveAssemblyReference.cache
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\PolynomialSolver\obj\Debug\PolynomialSolver.dll
+D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\PolynomialSolver\obj\Debug\PolynomialSolver.pdb

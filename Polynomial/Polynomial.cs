@@ -20,7 +20,7 @@ namespace CMath.PolynomialEquation
               System.Runtime.Serialization.StreamingContext context)
                 : base(info, context) { }
         }
-        public Polynomial(SortedList<int,decimal> _list)
+        public Polynomial(SortedList<int,Complex> _list)
         {
             if (_list.Count == 0)
             {
@@ -35,7 +35,7 @@ namespace CMath.PolynomialEquation
             }
             _data = _list;
         }
-        public SortedList<int, decimal> _data { get; private set; }
+        public SortedList<int, Complex> _data { get; private set; }
         public static Polynomial operator *(Polynomial first, Polynomial second)
         {
             int minimum_rank1 = first._data.First().Key;
@@ -45,7 +45,7 @@ namespace CMath.PolynomialEquation
                 for (int i = 0; i < first._data.Keys.Count; i++)
                 {
                     int oldKey = first._data.Keys[i];
-                    decimal Val = first._data[oldKey];
+                    Complex Val = first._data[oldKey];
                     first._data.Remove(oldKey);
                     first._data.Add(oldKey - minimum_rank1, Val);
                 }
@@ -55,7 +55,7 @@ namespace CMath.PolynomialEquation
                 for (int i = 0; i < second._data.Keys.Count; i++)
                 {
                     int oldKey = second._data.Keys[i];
-                    decimal Val = second._data[oldKey];
+                    Complex Val = second._data[oldKey];
                     second._data.Remove(oldKey);
                     second._data.Add(oldKey - minimum_rank2, Val);
                 }
@@ -71,7 +71,7 @@ namespace CMath.PolynomialEquation
                 for (int i = result._data.Keys.Count - 1; i >= 0; i--)
                 {
                     int oldKey = result._data.Keys[i];
-                    decimal Val = result._data[oldKey];
+                    Complex Val = result._data[oldKey];
                     result._data.Remove(oldKey);
                     result._data.Add(oldKey + minimum_rank1 + minimum_rank2, Val);
                 }
@@ -92,11 +92,11 @@ namespace CMath.PolynomialEquation
                 fourierResult = new List<Complex>(Enumerable.Repeat(new Complex(0.0, 0.0), size));
             foreach (var term in first._data)
             {
-                fourierFirst[term.Key] = new Complex((double)term.Value, 0.0);
+                fourierFirst[term.Key] = term.Value;
             }
             foreach (var term in second._data)
             {
-                fourierSecond[term.Key] = new Complex((double)term.Value, 0.0);
+                fourierSecond[term.Key] = term.Value;
             }
 
             fft(ref fourierFirst, lg_size, false);
@@ -110,10 +110,10 @@ namespace CMath.PolynomialEquation
 
             fft(ref fourierResult, lg_size, true);
 
-            SortedList<int, decimal> Result = new SortedList<int, decimal>();
+            SortedList<int, Complex> Result = new SortedList<int, Complex>();
             for (int i = 0; i < size; i++)
                 if (fourierResult[i].Real >= 1e-7 || fourierResult[i].Real <= -1e-7)
-                    Result[i] = (decimal)fourierResult[i].Real;
+                    Result[i] = fourierResult[i];
 
             return new Polynomial(Result);
         }
@@ -161,7 +161,7 @@ namespace CMath.PolynomialEquation
         }
         private static Polynomial NormalMultiply(Polynomial first, Polynomial second)
         {
-            SortedList<int, decimal> result = new SortedList<int, decimal>();
+            SortedList<int, Complex> result = new SortedList<int, Complex>();
             foreach (var termFirst in first._data)
             {
                 foreach (var termSecond in second._data)

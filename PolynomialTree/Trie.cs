@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CMath.PolynomialEquation;
+using System.Numerics;
 
 
 namespace CMath.Trie
@@ -189,10 +190,10 @@ namespace CMath.Trie
     }
     public class PolynomialTrie
     {
-        Trie<KeyValuePair<int, decimal>, Trie<KeyValuePair<int, decimal>,Polynomial> > main;
+        Trie<KeyValuePair<int, Complex>, Trie<KeyValuePair<int, Complex>, Polynomial>> main;
         public PolynomialTrie()
         {
-            main = new Trie<KeyValuePair<int, decimal>, Trie<KeyValuePair<int, decimal>, Polynomial>>();
+            main = new Trie<KeyValuePair<int, Complex>, Trie<KeyValuePair<int, Complex>, Polynomial>>();
         }
         public void insert(Polynomial first, Char operation, Polynomial second, Polynomial result)
         {
@@ -201,7 +202,7 @@ namespace CMath.Trie
                 var lastFirst = main.insert(first._data.ToList());
                 if (!lastFirst._special.ContainsKey(operation))
                 {
-                    lastFirst._special.Add(operation, new Trie<KeyValuePair<int, decimal>, Polynomial>());
+                    lastFirst._special.Add(operation, new Trie<KeyValuePair<int, Complex>, Polynomial>());
                 }
                 var lastSecond = lastFirst._special[operation].insert(second._data.ToList());
                 if (lastSecond._special.ContainsKey('='))
@@ -217,7 +218,7 @@ namespace CMath.Trie
         }
         Polynomial search(Polynomial first, char operation, Polynomial second)
         {
-            TreeNode<KeyValuePair<int, decimal>, Trie<KeyValuePair<int, decimal>, Polynomial>> lastFirst;
+            TreeNode<KeyValuePair<int, Complex>, Trie<KeyValuePair<int, Complex>, Polynomial>> lastFirst;
             if (!main.try_get_node(first._data.ToList(),out lastFirst))
             {
                 throw new KeyNotFoundException("There is no such polynomial in the trie;");
@@ -226,7 +227,7 @@ namespace CMath.Trie
             {
                 throw new KeyNotFoundException("There is no such polynomial in the trie;");
             }
-            TreeNode<KeyValuePair<int, decimal>, Polynomial> lastSecond;
+            TreeNode<KeyValuePair<int, Complex>, Polynomial> lastSecond;
             if (!lastFirst._special[operation].try_get_node(second._data.ToList(), out lastSecond))
             {
                 throw new KeyNotFoundException("There is no such polynomial in the trie;");
@@ -252,7 +253,7 @@ namespace CMath.Trie
         }
         void remove(Polynomial first, Char operation, Polynomial second)
         {
-            TreeNode<KeyValuePair<int, decimal>, Trie<KeyValuePair<int, decimal>, Polynomial>> lastFirst;
+            TreeNode<KeyValuePair<int, Complex>, Trie<KeyValuePair<int, Complex>, Polynomial>> lastFirst;
             if (main.try_get_node(first._data.ToList(), out lastFirst))
             {
                 throw new KeyNotFoundException("There is no such operation in the trie;");
