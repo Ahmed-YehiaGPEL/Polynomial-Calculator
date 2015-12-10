@@ -35,6 +35,15 @@
     <Reference Include="GlassButton">
       <HintPath>E:\Projects And Backups\DB Manager\DB Manager\bin\Debug\GlassButton.dll</HintPath>
     </Reference>
+    <Reference Include="Polynomial">
+      <HintPath>..\Polynomial\bin\Debug\Polynomial.dll</HintPath>
+    </Reference>
+    <Reference Include="PolynomialSolver">
+      <HintPath>..\PolynomialSolver\bin\Debug\PolynomialSolver.dll</HintPath>
+    </Reference>
+    <Reference Include="PolynomialTree">
+      <HintPath>..\PolynomialTree\bin\Debug\PolynomialTree.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />

@@ -38,7 +38,8 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(68, 48);
+            this.label1.ForeColor = System.Drawing.Color.Coral;
+            this.label1.Location = new System.Drawing.Point(78, 19);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(17, 17);
             this.label1.TabIndex = 0;
@@ -47,7 +48,7 @@
             // numericUpDown1
             // 
             this.numericUpDown1.AutoSize = true;
-            this.numericUpDown1.Location = new System.Drawing.Point(3, 68);
+            this.numericUpDown1.Location = new System.Drawing.Point(3, 19);
             this.numericUpDown1.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -60,7 +61,7 @@
             // numericUpDown2
             // 
             this.numericUpDown2.AutoSize = true;
-            this.numericUpDown2.Location = new System.Drawing.Point(71, 23);
+            this.numericUpDown2.Location = new System.Drawing.Point(101, 2);
             this.numericUpDown2.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -75,11 +76,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
+            this.BackColor = System.Drawing.Color.Transparent;
             this.Controls.Add(this.numericUpDown2);
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.label1);
             this.Name = "PolynomialTerm";
-            this.Size = new System.Drawing.Size(138, 99);
+            this.Size = new System.Drawing.Size(169, 44);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             this.ResumeLayout(false);

@@ -10,3 +10,9 @@ F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\Ca
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\obj\Debug\CalculatorUI.PolynomialTerm.resources
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\bin\Debug\GlassButton.dll
 F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\bin\Debug\GlassButton.xml
+F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\bin\Debug\Polynomial.dll
+F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\bin\Debug\PolynomialSolver.dll
+F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\bin\Debug\PolynomialTree.dll
+F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\bin\Debug\Polynomial.pdb
+F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\bin\Debug\PolynomialSolver.pdb
+F:\FCIS #2\Projects\DataStructers\Polynomial Calculator\Polynomial Calculator\CalculatorUI\bin\Debug\PolynomialTree.pdb
