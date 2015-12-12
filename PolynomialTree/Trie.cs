@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using System.Numerics;
 using CMath.PolynomialEquation;
+using System.Numerics;
+
 
 namespace CMath.Trie
 {
@@ -372,15 +373,15 @@ namespace CMath.Trie
         XElement dfs(FirstLevelNode node)
         {
             XElement result = new XElement("Node");
-            result.Add("isEnd", node.isEnd.ToString());
+            result.Add(new XElement("isEnd", node.isEnd.ToString()));
             foreach (var edge in node._children)
             {
                 var newChild = dfs(edge.Value);
-                newChild.Add("Edge",
+                newChild.Add(new XElement("Edge",
                     new XElement("Degree",edge.Key.Key.ToString()),
                     new XElement("Coefficient",
                         new XElement("Real",edge.Key.Value.Real),
-                        new XElement("Imaginary", edge.Key.Value.Imaginary)));
+                        new XElement("Imaginary", edge.Key.Value.Imaginary))));
                 result.Add(newChild);
             }
             if(node.isEnd){
@@ -388,7 +389,7 @@ namespace CMath.Trie
                 {
                     XElement newChild = dfsSecond(special.Value.root);
                     newChild.Name = "Tree";
-                    newChild.Add("Edge",special.Key.ToString());
+                    newChild.Add(new XElement("Edge",special.Key.ToString()));
                     result.Add(newChild);
                 }
             }
@@ -397,18 +398,18 @@ namespace CMath.Trie
         XElement dfsSecond(SecondLevelNode node)
         {
             XElement result = new XElement("Node");
-            result.Add("isEnd", node.isEnd.ToString());
+            result.Add(new XElement("isEnd", node.isEnd.ToString()));
             foreach (var edge in node._children)
             {
                 var newChild = dfsSecond(edge.Value);
-                newChild.Add("Edge",
+                newChild.Add(new XElement("Edge",
                     new XElement("Degree", edge.Key.Key.ToString()),
                     new XElement("Coefficient",
                         new XElement("Real", edge.Key.Value.Real),
-                        new XElement("Imaginary", edge.Key.Value.Imaginary)));
+                        new XElement("Imaginary", edge.Key.Value.Imaginary))));
                 result.Add(newChild);
             }
-            if (node.isEnd) result.Add("Result", node._special['='].ToString());
+            if (node.isEnd) result.Add(new XElement("Result", node._special['='].ToString()));
             return result;
         }
         #endregion

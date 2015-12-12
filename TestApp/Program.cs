@@ -41,6 +41,8 @@ namespace TestApp
                     Console.WriteLine(term.Degree.ToString() + " " + term.Coefficient.Real.ToString());
                 }
             }
+            t.save("KK.xml");
+            Console.Read();
         }
     }
 }
