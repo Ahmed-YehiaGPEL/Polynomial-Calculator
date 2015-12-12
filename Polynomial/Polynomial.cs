@@ -201,7 +201,7 @@ namespace CMath.PolynomialEquation
         private static Polynomial MultiplyFFT(Polynomial first, Polynomial second)
         {
             int size = 1, lg_size = 0;
-            while (size < first._data.Last().Key + second._data.Last().Key)
+            while (size <= first._data.Last().Key + second._data.Last().Key)
             {
                 size *= 2;
                 lg_size += 1;
