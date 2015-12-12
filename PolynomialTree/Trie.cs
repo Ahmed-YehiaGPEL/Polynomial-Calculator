@@ -337,9 +337,9 @@ namespace CMath.Trie
             result.isEnd = current.Element("isEnd").Value == "True";
             foreach (var edge in current.Elements("Node"))
             {
-                int degree = int.Parse(edge.Element("Degree").Value);
-                double real = double.Parse(edge.Element("Coefficient").Element("Real").Value);
-                double imaginary = double.Parse(edge.Element("Coefficient").Element("Imaginary").Value);
+                int degree = int.Parse(edge.Element("Edge").Element("Degree").Value);
+                double real = double.Parse(edge.Element("Edge").Element("Coefficient").Element("Real").Value);
+                double imaginary = double.Parse(edge.Element("Edge").Element("Coefficient").Element("Imaginary").Value);
                 result._children.Add(new KeyValuePair<int,Complex>(degree,new Complex(real,imaginary)),dfs(edge));
             }
             if (result.isEnd)
@@ -359,9 +359,9 @@ namespace CMath.Trie
             result.isEnd = current.Element("isEnd").Value == "True";
             foreach (var edge in current.Elements("Node"))
             {
-                int degree = int.Parse(edge.Element("Degree").Value);
-                double real = double.Parse(edge.Element("Coefficient").Element("Real").Value);
-                double imaginary = double.Parse(edge.Element("Coefficient").Element("Imaginary").Value);
+                int degree = int.Parse(edge.Element("Edge").Element("Degree").Value);
+                double real = double.Parse(edge.Element("Edge").Element("Coefficient").Element("Real").Value);
+                double imaginary = double.Parse(edge.Element("Edge").Element("Coefficient").Element("Imaginary").Value);
                 result._children.Add(new KeyValuePair<int, Complex>(degree, new Complex(real, imaginary)), dfsSecond(edge));
             }
             if (result.isEnd)
