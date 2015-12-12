@@ -41,7 +41,7 @@ namespace CMath.PolynomialSolver
             //Complex[] res = new Complex[cof.Length];
             List<Complex> res = new List<Complex>();
 
-            if (cof.Length == 3)
+            if (cof.Length <= 3)
             {
                 res = res.Concat<Complex>(QuadSolver(cof)).ToList();
             }
@@ -114,6 +114,15 @@ namespace CMath.PolynomialSolver
             Complex a = 0;
             Complex c = 0;
             Complex identifier = 0;
+
+            if (n.Length == 1)
+                throw new Exception("This Polynomial Has No Roots!");
+
+            if (n.Length == 2)
+            {
+                res.Add(-(n[0] / n[1]));
+                return res.ToArray();
+            }
 
             a = n[2];
             b = n[1];
