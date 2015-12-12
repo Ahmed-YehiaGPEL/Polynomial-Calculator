@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Numerics;
 using System.Collections;
 
@@ -112,10 +113,28 @@ namespace CMath.PolynomialEquation
             }
             _data = _list;
         }
-        //just for test
         public Polynomial(string _input)
         {
-
+            if (string.IsNullOrWhiteSpace(_input))
+            {
+                throw new NullReferenceException("Null polynomial occured");
+            }
+            _data = new SortedList<int, Complex>();
+            var PolynomialStringReader = new StringReader(_input);
+            int degree;
+            double real, imaginary;
+            while (PolynomialStringReader.Peek() != -1)
+            {
+                string[] current = PolynomialStringReader.ReadLine().Split('(',')',',');
+                real = double.Parse(current[1]);
+                imaginary = double.Parse(current[2]);
+                degree = int.Parse(current[4]);
+                if (degree < 0)
+                {
+                    throw new NegativeRankException("Negative rank isn't allowed");
+                }
+                _data.Add(degree,new Complex(real,imaginary));
+            }
         }
         public void add(Term newTerm)
         {
@@ -130,10 +149,18 @@ namespace CMath.PolynomialEquation
         }
         #endregion
         #region operators
-        //just for test
         public override string ToString()
         {
-            return base.ToString();
+            var PolynomialStringWriter = new StringWriter();
+            foreach (var term in this)
+            {
+                PolynomialStringWriter.WriteLine(
+                    "({0},{1})({2})",
+                    term.Coefficient.Real.ToString(),
+                    term.Coefficient.Imaginary.ToString(),
+                    term.Degree.ToString());
+            }
+            return PolynomialStringWriter.ToString();
         }
 
         public bool Equals(Polynomial second)
@@ -232,7 +259,8 @@ namespace CMath.PolynomialEquation
 
             SortedList<int, Complex> Result = new SortedList<int, Complex>();
             for (int i = 0; i < size; i++)
-                if (fourierResult[i].Real >= 1e-7 || fourierResult[i].Real <= -1e-7)
+                if (fourierResult[i].Real >= 1e-7 || fourierResult[i].Real <= -1e-7
+                    || fourierResult[i].Imaginary >= 1e-7 || fourierResult[i].Imaginary <= -1e-7)
                     Result[i] = fourierResult[i];
 
             return new Polynomial(Result);
