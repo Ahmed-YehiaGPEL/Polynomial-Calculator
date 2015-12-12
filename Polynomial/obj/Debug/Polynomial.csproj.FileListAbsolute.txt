@@ -13,3 +13,7 @@ D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\Polynomial\bin\Debug\Polyno
 D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\Polynomial\obj\Debug\Polynomial.csprojResolveAssemblyReference.cache
 D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\Polynomial\obj\Debug\Polynomial.dll
 D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\Polynomial\obj\Debug\Polynomial.pdb
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\Polynomial\bin\Debug\Polynomial.pdb
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\Polynomial\obj\Debug\Polynomial.dll
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\Polynomial\obj\Debug\Polynomial.pdb
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\Polynomial\bin\Debug\Polynomial.dll

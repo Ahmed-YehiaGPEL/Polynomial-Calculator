@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using CMath.PolynomialEquation;
 using System.Numerics;
-
+using CMath.PolynomialEquation;
 
 namespace CMath.Trie
 {

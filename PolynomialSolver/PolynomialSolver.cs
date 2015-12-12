@@ -28,7 +28,7 @@ namespace CMath.PolynomialSolver
             cof = _c;
         }
 
-        private Solver(Polynomial p)
+        public Solver(Polynomial p)
         {
             Complex[] _cn = new Complex[p.Count];
             for (int i = 0; i < p.Count; i++)

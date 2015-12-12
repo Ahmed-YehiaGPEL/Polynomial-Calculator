@@ -19,3 +19,10 @@ D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\PolynomialTree\bin\Debug\Po
 D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\PolynomialTree\obj\Debug\PolynomialTree.csprojResolveAssemblyReference.cache
 D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\PolynomialTree\obj\Debug\PolynomialTree.dll
 D:\MyOwnProjects\PolynomialGit\Polynomial-Calculator\PolynomialTree\obj\Debug\PolynomialTree.pdb
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialTree\obj\Debug\PolynomialTree.csprojResolveAssemblyReference.cache
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialTree\obj\Debug\PolynomialTree.dll
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialTree\bin\Debug\PolynomialTree.dll
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialTree\bin\Debug\PolynomialTree.pdb
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialTree\bin\Debug\Polynomial.dll
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialTree\bin\Debug\Polynomial.pdb
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialTree\obj\Debug\PolynomialTree.pdb

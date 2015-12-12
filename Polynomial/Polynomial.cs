@@ -78,11 +78,22 @@ namespace CMath.PolynomialEquation
         }
         #endregion
         #region data
+        /// <summary>
+        /// Returns a SortedList of degree,coefficient set for polynomial terms
+        /// </summary>
         public SortedList<int, Complex> _data { get; private set; }
+       /// <summary>
+       /// Gets the specified term at the provided index
+       /// </summary>
+       /// <param name="index">index to get term at</param>
+       /// <returns>Term</returns>
         public Term this[int index]
         {
             get { return new Term(_data.ElementAt(index)); }
         }
+        /// <summary>
+        /// Returns the number of terms
+        /// </summary>
         public int Count { get { return _data.Count; } }
         #endregion
         #region construtors
@@ -174,6 +185,16 @@ namespace CMath.PolynomialEquation
                 }
             }
             return result;
+        }
+        // Mock add
+        public static Polynomial operator +(Polynomial first,Polynomial second)
+        {
+            return new Polynomial("");
+        }
+        // Mock subtract
+        public static Polynomial operator -(Polynomial first, Polynomial second)
+        {
+            return new Polynomial("");
         }
         #endregion
         #region MuliplyUtilies
