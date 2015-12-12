@@ -30,9 +30,9 @@ namespace CMath.PolynomialSolver
 
         private Solver(Polynomial p)
         {
-            Complex[] _cn = new Complex[p._data.Count];
-            for (int i = 0; i < p._data.Count; i++)
-                _cn[i] = p._data[i];
+            Complex[] _cn = new Complex[p.Count];
+            for (int i = 0; i < p.Count; i++)
+                _cn[i] = p[i].Coefficient;
             cof = _cn;
         }
 

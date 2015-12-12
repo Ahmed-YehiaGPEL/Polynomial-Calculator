@@ -3,14 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Numerics;
-using System.Threading.Tasks;
+using System.Collections;
 
 namespace CMath.PolynomialEquation
 {
+    #region term
+    public class Term
+    {
+        public int Degree { get; private set; }
+        public Complex Coefficient {get; set;}
+        public Term(KeyValuePair<int, Complex> _t)
+        {
+            Degree = _t.Key;
+            Coefficient = _t.Value;
+        }
+        public Term(int _degree, Complex _coefficient)
+        {
+            Degree = _degree;
+            Coefficient = _coefficient;
+        }
+    }
+    #endregion
     public class Polynomial
     {
+        #region NegativeRankException
         [Serializable]
-        public class NegativeRankException : Exception
+        private class NegativeRankException : Exception
         {
             public NegativeRankException() { }
             public NegativeRankException(string message) : base(message) { }
@@ -20,6 +38,54 @@ namespace CMath.PolynomialEquation
               System.Runtime.Serialization.StreamingContext context)
                 : base(info, context) { }
         }
+        #endregion
+        #region Enumertator
+        public class PolynomialEnumerator
+        {
+            private int position = -1;
+            private Polynomial element;
+
+            public PolynomialEnumerator(Polynomial _e)
+            {
+                this.element = _e;
+            }
+
+            public bool MoveNext()
+            {
+                if (position < element.Count - 1)
+                {
+                    position++;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            public void Reset()
+            {
+                position = -1;
+            }
+
+            public Term Current
+            {
+                get
+                {
+                    return element[position];
+                }
+            }
+        }
+        #endregion
+        #region data
+        public SortedList<int, Complex> _data { get; private set; }
+        public Term this[int index]
+        {
+            get { return new Term(_data.ElementAt(index)); }
+        }
+        public int Count { get { return _data.Count; } }
+        #endregion
+        #region construtors
         public Polynomial(SortedList<int,Complex> _list)
         {
             if (_list.Count == 0)
@@ -35,7 +101,38 @@ namespace CMath.PolynomialEquation
             }
             _data = _list;
         }
-        public SortedList<int, Complex> _data { get; private set; }
+        //just for test
+        public Polynomial(string _input)
+        {
+
+        }
+        public void add(Term newTerm)
+        {
+            if (_data.ContainsKey(newTerm.Degree))
+            {
+                _data[newTerm.Degree] = newTerm.Coefficient;
+            }
+            else
+            {
+                _data.Add(newTerm.Degree, newTerm.Coefficient);
+            }
+        }
+        #endregion
+        #region operators
+        //just for test
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+
+        public bool Equals(Polynomial second)
+        {
+            return _data.SequenceEqual(second._data);
+        }
+        public PolynomialEnumerator GetEnumerator()
+        {
+            return new PolynomialEnumerator(this);
+        }
         public static Polynomial operator *(Polynomial first, Polynomial second)
         {
             int minimum_rank1 = first._data.First().Key;
@@ -78,6 +175,8 @@ namespace CMath.PolynomialEquation
             }
             return result;
         }
+        #endregion
+        #region MuliplyUtilies
         private static Polynomial MultiplyFFT(Polynomial first, Polynomial second)
         {
             int size = 1, lg_size = 0;
@@ -174,6 +273,6 @@ namespace CMath.PolynomialEquation
             }
             return new Polynomial(result);
         }
-
+        #endregion
     }
 }
