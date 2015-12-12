@@ -9,8 +9,6 @@ using CMath.PolynomialEquation;
 
 namespace CMath.PolynomialSolver
 {
-    //Rename this class to your method 
-    // ex : public class NewtonesSolver{}
     public class Solver
     {
         Complex[] cof;
@@ -30,9 +28,9 @@ namespace CMath.PolynomialSolver
 
         public Solver(Polynomial p)
         {
-            Complex[] _cn = new Complex[p.Count];
+            Complex[] _cn = new Complex[p[p.Count - 1].Degree + 1];
             for (int i = 0; i < p.Count; i++)
-                _cn[i] = p[i].Coefficient;
+                _cn[p[i].Degree] = p[i].Coefficient;
             cof = _cn;
         }
 
