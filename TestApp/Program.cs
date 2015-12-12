@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Numerics;
 using CMath.PolynomialEquation;
 using CMath.PolynomialSolver;
 using CMath.Trie;
@@ -13,32 +13,33 @@ namespace TestApp
     {
         static void Main(string[] args)
         {
-            try
+            int n = int.Parse(Console.ReadLine());
+            SortedList<int, Complex> la = new SortedList<int, Complex>(), lb = new SortedList<int, Complex>();
+            int degree;
+            double real;
+            for (int i = 0; i < n; i++)
             {
-                
-                //rank, coef
-             Polynomial pl = new Polynomial(new SortedList<int, decimal> { 
-            {2,(decimal)4.0},
-            {-1,(decimal)3.0},
-            {5,(decimal)5.0},
-            {6,(decimal)8.0},
-            });
-             Console.WriteLine(pl._data.Count.ToString());
-
-             foreach (var item in pl._data)
-             {
-                     Console.WriteLine(item.Key.ToString() + " " + item.Value.ToString());
-             }
-             Console.Read();
-
+                degree = int.Parse(Console.ReadLine());
+                real = double.Parse(Console.ReadLine());
+                la.Add(degree, (Complex)real);
             }
-            catch(Exception e)
+            for (int i = 0; i < n; i++)
             {
-
-                Console.WriteLine(e.Message);
-                Console.Beep();
-                Console.Read();
-
+                degree = int.Parse(Console.ReadLine());
+                real = double.Parse(Console.ReadLine());
+                lb.Add(degree, (Complex)real);
+            }
+            Polynomial a = new Polynomial(la), b = new Polynomial(lb);
+            Polynomial c = a * b;
+            PolynomialTrie t = new PolynomialTrie();
+            t.insert(a, '*', b, c);
+            Polynomial x;
+            if (t.try_search(a, '*', b, out x))
+            {
+                foreach (var term in x)
+                {
+                    Console.WriteLine(term.Degree.ToString() + " " + term.Coefficient.Real.ToString());
+                }
             }
         }
     }
