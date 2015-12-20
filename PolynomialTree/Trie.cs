@@ -62,13 +62,17 @@ namespace CMath.Trie
        }
         #endregion
     }
-    public class Trie<T, TSpecial>
+    public class Trie<T, TSpecial> : IDisposable
     {
         #region Constructor&Properties
         public TreeNode<T, TSpecial> root;
         public Trie()
         {
             root = new TreeNode<T, TSpecial>();
+        }
+        public void Dispose()
+        {
+            GC.Collect();
         }
         public Trie(TreeNode<T, TSpecial> _root)
         {
@@ -211,18 +215,25 @@ namespace CMath.Trie
         }
         #endregion
     }
-    public class PolynomialTrie
+    public class PolynomialTrie : IDisposable
     {
         #region Constructor&Properties
         FirstLevelTrie main;
+        public void Dispose()
+        {
+            main.clear();
+            main.Dispose();
+            GC.Collect();
+        }
         public PolynomialTrie()
         {
             main = new FirstLevelTrie();
         }
         public PolynomialTrie(string FileName)
         {
-            XDocument xDoc = XDocument.Load(FileName);
-            main = new FirstLevelTrie(dfs((XElement)xDoc.FirstNode));
+                XDocument xDoc = XDocument.Load(FileName);
+                main = new FirstLevelTrie(dfs((XElement)xDoc.FirstNode));
+
         }
         #endregion
         #region insert&search&save
