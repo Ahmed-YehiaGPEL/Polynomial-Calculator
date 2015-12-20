@@ -7,6 +7,6 @@ E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialSolver\bin\Debug
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialSolver\bin\Debug\PolynomialSolver.pdb
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialSolver\bin\Debug\Polynomial.dll
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialSolver\bin\Debug\Polynomial.pdb
-E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialSolver\obj\Debug\PolynomialSolver.csprojResolveAssemblyReference.cache
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialSolver\obj\Debug\PolynomialSolver.dll
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialSolver\obj\Debug\PolynomialSolver.pdb
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\PolynomialSolver\obj\Debug\PolynomialSolver.csprojResolveAssemblyReference.cache
