@@ -36,4 +36,8 @@ E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\Cal
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.PolynomialTermControl.resources
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.Properties.Resources.resources
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.csproj.GenerateResource.Cache
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\bin\Debug\appdata.xml
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.HistoryLogViewForm.resources
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.credits.resources
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.MainForm.resources
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.ResultPolynomialTermControl.resources

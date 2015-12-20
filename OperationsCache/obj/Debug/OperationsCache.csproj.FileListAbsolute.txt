@@ -7,3 +7,4 @@ E:\GitHub\Polynomial Calculator\Polynomial-Calculator\OperationsCache\bin\Debug\
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\OperationsCache\bin\Debug\OperationsCache.pdb
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\OperationsCache\obj\Debug\OperationsCache.dll
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\OperationsCache\obj\Debug\OperationsCache.pdb
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\OperationsCache\obj\Debug\OperationsCache.csprojResolveAssemblyReference.cache
