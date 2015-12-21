@@ -35,6 +35,7 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutUsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,7 +64,6 @@
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.LogPanel = new System.Windows.Forms.TextBox();
-            this.clearLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusBar.SuspendLayout();
             this.menuBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -127,16 +127,23 @@
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(175, 24);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(155, 24);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(175, 24);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(155, 24);
             this.saveToolStripMenuItem.Text = "&Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // clearLogToolStripMenuItem
+            // 
+            this.clearLogToolStripMenuItem.Name = "clearLogToolStripMenuItem";
+            this.clearLogToolStripMenuItem.Size = new System.Drawing.Size(155, 24);
+            this.clearLogToolStripMenuItem.Text = "Clear Log";
+            this.clearLogToolStripMenuItem.Click += new System.EventHandler(this.clearLogToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -150,15 +157,16 @@
             // helpToolStripMenuItem1
             // 
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(139, 24);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(175, 24);
             this.helpToolStripMenuItem1.Text = "&Help";
             this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
             // aboutUsToolStripMenuItem
             // 
             this.aboutUsToolStripMenuItem.Name = "aboutUsToolStripMenuItem";
-            this.aboutUsToolStripMenuItem.Size = new System.Drawing.Size(139, 24);
+            this.aboutUsToolStripMenuItem.Size = new System.Drawing.Size(175, 24);
             this.aboutUsToolStripMenuItem.Text = "&About Us";
+            this.aboutUsToolStripMenuItem.Click += new System.EventHandler(this.aboutUsToolStripMenuItem_Click);
             // 
             // timer1
             // 
@@ -426,13 +434,6 @@
             this.LogPanel.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.LogPanel.Size = new System.Drawing.Size(209, 123);
             this.LogPanel.TabIndex = 2;
-            // 
-            // clearLogToolStripMenuItem
-            // 
-            this.clearLogToolStripMenuItem.Name = "clearLogToolStripMenuItem";
-            this.clearLogToolStripMenuItem.Size = new System.Drawing.Size(175, 24);
-            this.clearLogToolStripMenuItem.Text = "Clear Log";
-            this.clearLogToolStripMenuItem.Click += new System.EventHandler(this.clearLogToolStripMenuItem_Click);
             // 
             // MainForm
             // 

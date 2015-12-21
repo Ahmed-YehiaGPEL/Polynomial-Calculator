@@ -374,6 +374,11 @@ namespace CalculatorUI
             }
 
         }
+
+        private void aboutUsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            showForm(new credits(), this, setClose);
+        }
         
     }
     public class HistoryLog
