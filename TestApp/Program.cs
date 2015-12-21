@@ -29,11 +29,23 @@ namespace TestApp
                 real = double.Parse(Console.ReadLine());
                 lb.Add(degree, (Complex)real);
             }
-            Polynomial a = new Polynomial(la), b = new Polynomial(lb);
-            Polynomial c = a * b;
             PolynomialTrie t = new PolynomialTrie();
-            t.insert(a, '*', b, c);
+            Polynomial a = new Polynomial(la), b = new Polynomial(lb);
             Polynomial x;
+            Polynomial c = a * b;
+            Solver s = new Solver(c);
+            t.insert(c, s.solve().ToList());
+            Polynomial d = new Polynomial("(1,0)(0)\n(1,0)(2)");
+            PolynomialTrie t1 = new PolynomialTrie("KK.xml");
+            if (t1.try_search(a, '*', b, out x))
+            {
+                Console.WriteLine("ok");
+            }
+            t.insert(a, '*', b, c);
+            c = d * a;
+            t.insert(d, '*', a, c);
+            c = d * b;
+            t.insert(d, '*', b, c);
             if (t.try_search(a, '*', b, out x))
             {
                 foreach (var term in x)
