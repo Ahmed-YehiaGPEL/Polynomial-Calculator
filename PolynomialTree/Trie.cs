@@ -10,71 +10,69 @@ using System.Numerics;
 namespace CMath.Trie
 {
     #region TypeDefinitions
-    using FirstLevelNode = TreeNode<KeyValuePair<int, Complex>, Trie<KeyValuePair<int, Complex>, Polynomial>>;
-    using SecondLevelNode = TreeNode<KeyValuePair<int, Complex>, Polynomial>;
-    using FirstLevelTrie = Trie<KeyValuePair<int, Complex>, Trie<KeyValuePair<int, Complex>, Polynomial>>;
-    using SecondLevelTrie = Trie<KeyValuePair<int, Complex>, Polynomial>;
+    using Node = TreeNode<KeyValuePair<int, Complex>>;
+    using Trie = Trie<KeyValuePair<int, Complex>>;
     #endregion
 
-    public class TreeNode<T, TSpecial>
+    public class TreeNode<T>
     {
-       #region Properties
-       public Dictionary<T, TreeNode<T, TSpecial>> _children;
-       public Dictionary<Char, TSpecial> _special;
-       public bool isEnd;
-       #endregion
-       #region constructor
-       public TreeNode()
-       {
-           isEnd = false;
-           _children = new Dictionary<T, TreeNode<T, TSpecial>>();
-           _special = new Dictionary<Char, TSpecial>();
-       }
-       #endregion
-       #region functions
-       public void insert(T value, TreeNode<T, TSpecial> child)
-       {
-           _children.Add(value,child);
-       }
-       TreeNode<T, TSpecial> get_child(T value)
-       {
-           if (_children.ContainsKey(value))
-           {
-               return _children[value];
-           }
-           else
-           {
-               throw new KeyNotFoundException("There is no such child");
-           }
-       }
-       public bool try_get_child(T value, out TreeNode<T, TSpecial> result)
-       {
-           try
-           {
-               result = get_child(value);
-               return true;
-           }
-           catch
-           {
-               result = null;
-               return false;
-           }
-       }
+        #region Properties
+        public Dictionary<T, TreeNode<T>> _children;
+        public Dictionary<Char, dynamic> _special;
+        public bool isEnd;
+        #endregion
+        #region constructor
+        public TreeNode()
+        {
+            isEnd = false;
+            _children = new Dictionary<T, TreeNode<T>>();
+            _special = new Dictionary<Char, dynamic>();
+        }
+        #endregion
+        #region functions
+        public void insert(T value, TreeNode<T> child)
+        {
+            _children.Add(value, child);
+        }
+        TreeNode<T> get_child(T value)
+        {
+            if (_children.ContainsKey(value))
+            {
+                return _children[value];
+            }
+            else
+            {
+                throw new KeyNotFoundException("There is no such child");
+            }
+        }
+        public bool try_get_child(T value, out TreeNode<T> result)
+        {
+            try
+            {
+                result = get_child(value);
+                return true;
+            }
+            catch
+            {
+                result = null;
+                return false;
+            }
+        }
         #endregion
     }
-    public class Trie<T, TSpecial> : IDisposable
+    public class Trie<T> : IDisposable
     {
         #region Constructor&Properties
-        public TreeNode<T, TSpecial> root;
+        public TreeNode<T> root;
         public Trie()
         {
-            root = new TreeNode<T, TSpecial>();
+            root = new TreeNode<T>();
         }
         public void Dispose()
         {
             GC.Collect();
         }
-        public Trie(TreeNode<T, TSpecial> _root)
+        public Trie(TreeNode<T> _root)
         {
             root = _root;
         }
@@ -84,18 +82,18 @@ namespace CMath.Trie
         }
         #endregion
         #region insert&search
-        public TreeNode<T, TSpecial> insert(List<T> value)
+        public TreeNode<T> insert(List<T> value)
         {
-            if(value.Count == 0)
+            if (value.Count == 0)
                 throw new ArgumentOutOfRangeException("List cannot be empty;");
 
             var current = root;
             for (int i = 0; i < value.Count; i++)
             {
-                TreeNode<T, TSpecial> next;
-                if (!current.try_get_child(value[i],out next))
+                TreeNode<T> next;
+                if (!current.try_get_child(value[i], out next))
                 {
-                    next = new TreeNode<T, TSpecial>();
+                    next = new TreeNode<T>();
                     current.insert(value[i], next);
                 }
                 current = next;
@@ -103,15 +101,15 @@ namespace CMath.Trie
             current.isEnd = true;
             return current;
         }
-        TreeNode<T, TSpecial> get_node(List<T> value)
+        TreeNode<T> get_node(List<T> value)
         {
-            if(value.Count == 0)
+            if (value.Count == 0)
                 throw new ArgumentOutOfRangeException("List cannot be empty;");
 
             var current = root;
             for (int i = 0; i < value.Count; i++)
             {
-                TreeNode<T, TSpecial> next;
+                TreeNode<T> next;
                 if (!current.try_get_child(value[i], out next))
                 {
                     throw new KeyNotFoundException("There is no such list in the trie;");
@@ -124,7 +122,7 @@ namespace CMath.Trie
             }
             return current;
         }
-        public bool try_get_node(List<T> value, out TreeNode<T, TSpecial> result)
+        public bool try_get_node(List<T> value, out TreeNode<T> result)
         {
             try
             {
@@ -144,11 +142,11 @@ namespace CMath.Trie
             if (value.Count == 0)
                 throw new ArgumentOutOfRangeException("List cannot be empty;");
 
-            var dfs = new Stack<TreeNode<T, TSpecial>>();
+            var dfs = new Stack<TreeNode<T>>();
             var current = root;
             for (int i = 0; i < value.Count; i++)
             {
-                TreeNode<T, TSpecial> next;
+                TreeNode<T> next;
                 if (!current.try_get_child(value[i], out next))
                 {
                     throw new KeyNotFoundException("There is no such list in the trie;");
@@ -199,9 +197,9 @@ namespace CMath.Trie
         }
         public void clear()
         {
-            var bfs = new Queue<TreeNode<T, TSpecial>>();
+            var bfs = new Queue<TreeNode<T>>();
             bfs.Enqueue(root);
-            TreeNode<T, TSpecial> current;
+            TreeNode<T> current;
             while (bfs.Count != 0)
             {
                 current = bfs.Dequeue();
@@ -211,14 +209,14 @@ namespace CMath.Trie
                 }
                 current = null;
             }
-            root = new TreeNode<T, TSpecial>();
+            root = new TreeNode<T>();
         }
         #endregion
     }
     public class PolynomialTrie : IDisposable
     {
         #region Constructor&Properties
-        FirstLevelTrie main;
+        Trie main;
         public void Dispose()
         {
             main.clear();
@@ -227,13 +225,12 @@ namespace CMath.Trie
         }
         public PolynomialTrie()
         {
-            main = new FirstLevelTrie();
+            main = new Trie();
         }
         public PolynomialTrie(string FileName)
         {
-                XDocument xDoc = XDocument.Load(FileName);
-                main = new FirstLevelTrie(dfs((XElement)xDoc.FirstNode));
-
+            XDocument xDoc = XDocument.Load(FileName);
+            main = new Trie(dfs((XElement)xDoc.FirstNode));
         }
         #endregion
         #region insert&search&save
@@ -243,6 +240,22 @@ namespace CMath.Trie
             xDoc.Add(dfs(main.root));
             xDoc.Save(FileName);
         }
+        public void insert(Polynomial equation, List<Complex> solutionSet)
+        {
+            char operation = '=';
+            try
+            {
+                var lastFirst = main.insert(equation._data.ToList());
+                if (!lastFirst._special.ContainsKey(operation))
+                {
+                    lastFirst._special.Add(operation, solutionSet);
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
         public void insert(Polynomial first, Char operation, Polynomial second, Polynomial result)
         {
             try
@@ -250,7 +263,7 @@ namespace CMath.Trie
                 var lastFirst = main.insert(first._data.ToList());
                 if (!lastFirst._special.ContainsKey(operation))
                 {
-                    lastFirst._special.Add(operation, new SecondLevelTrie());
+                    lastFirst._special.Add(operation, new Trie());
                 }
                 var lastSecond = lastFirst._special[operation].insert(second._data.ToList());
                 if (lastSecond._special.ContainsKey('='))
@@ -264,25 +277,39 @@ namespace CMath.Trie
                 throw e;
             }
         }
+        List<Complex> search(Polynomial equation)
+        {
+            Node last;
+            char operation = '=';
+            if (!main.try_get_node(equation._data.ToList(), out last))
+            {
+                throw new KeyNotFoundException("There is no such polynomial in the trie;");
+            }
+            if (!last._special.ContainsKey(operation))
+            {
+                throw new KeyNotFoundException("There is no such operation in the trie;");
+            }
+            return last._special[operation];
+        }
         Polynomial search(Polynomial first, char operation, Polynomial second)
         {
-            FirstLevelNode lastFirst;
-            if (!main.try_get_node(first._data.ToList(),out lastFirst))
+            Node lastFirst;
+            if (!main.try_get_node(first._data.ToList(), out lastFirst))
             {
                 throw new KeyNotFoundException("There is no such polynomial in the trie;");
             }
             if (!lastFirst._special.ContainsKey(operation))
             {
-                throw new KeyNotFoundException("There is no such polynomial in the trie;");
+                throw new KeyNotFoundException("There is no such operation in the trie;");
             }
-            SecondLevelNode lastSecond;
+            Node lastSecond;
             if (!lastFirst._special[operation].try_get_node(second._data.ToList(), out lastSecond))
             {
                 throw new KeyNotFoundException("There is no such polynomial in the trie;");
             }
             if (!lastSecond._special.ContainsKey('='))
             {
-                throw new KeyNotFoundException("There is no such polynomial in the trie;");
+                throw new KeyNotFoundException("There is no such operation in the trie;");
             }
             return lastSecond._special['='];
         }
@@ -299,11 +326,24 @@ namespace CMath.Trie
                 return false;
             }
         }
+        public bool try_search(Polynomial equation, out List<Complex> result)
+        {
+            try
+            {
+                result = search(equation);
+                return true;
+            }
+            catch
+            {
+                result = null;
+                return false;
+            }
+        }
         #endregion
         #region remove&clear
         void remove(Polynomial first, Char operation, Polynomial second)
         {
-            FirstLevelNode lastFirst;
+            Node lastFirst;
             if (main.try_get_node(first._data.ToList(), out lastFirst))
             {
                 throw new KeyNotFoundException("There is no such operation in the trie;");
@@ -342,31 +382,41 @@ namespace CMath.Trie
         }
         #endregion
         #region dfs
-        FirstLevelNode dfs(XElement current)
+        Node dfs(XElement current)
         {
-            FirstLevelNode result = new FirstLevelNode();
+            Node result = new Node();
             result.isEnd = current.Element("isEnd").Value == "True";
             foreach (var edge in current.Elements("Node"))
             {
                 int degree = int.Parse(edge.Element("Edge").Element("Degree").Value);
                 double real = double.Parse(edge.Element("Edge").Element("Coefficient").Element("Real").Value);
                 double imaginary = double.Parse(edge.Element("Edge").Element("Coefficient").Element("Imaginary").Value);
-                result._children.Add(new KeyValuePair<int,Complex>(degree,new Complex(real,imaginary)),dfs(edge));
+                result._children.Add(new KeyValuePair<int, Complex>(degree, new Complex(real, imaginary)), dfs(edge));
             }
             if (result.isEnd)
             {
                 foreach (var edge in current.Elements("Tree"))
                 {
                     char Edge = edge.Element("Edge").Value[0];
-                    SecondLevelTrie special = new SecondLevelTrie(dfsSecond(edge));
-                    result._special.Add(Edge, special);
+                    result._special.Add(Edge, new Trie(dfsSecond(edge)));
+                }
+                foreach (var edge in current.Elements("SolutionSet"))
+                {
+                    char Edge = edge.Element("Edge").Value[0];
+                    List<Complex> solutions = new List<Complex>();
+                    foreach (var solution in edge.Elements("Solution"))
+                    {
+                        solutions.Add(new Complex(double.Parse(solution.Element("Real").Value),
+                            double.Parse(solution.Element("Imaginary").Value)));
+                    }
+                    result._special.Add(Edge, solutions);
                 }
             }
             return result;
         }
-        SecondLevelNode dfsSecond(XElement current)
+        Node dfsSecond(XElement current)
         {
-            SecondLevelNode result = new SecondLevelNode();
+            Node result = new Node();
             result.isEnd = current.Element("isEnd").Value == "True";
             foreach (var edge in current.Elements("Node"))
             {
@@ -381,7 +431,7 @@ namespace CMath.Trie
             }
             return result;
         }
-        XElement dfs(FirstLevelNode node)
+        XElement dfs(Node node)
         {
             XElement result = new XElement("Node");
             result.Add(new XElement("isEnd", node.isEnd.ToString()));
@@ -389,24 +439,39 @@ namespace CMath.Trie
             {
                 var newChild = dfs(edge.Value);
                 newChild.Add(new XElement("Edge",
-                    new XElement("Degree",edge.Key.Key.ToString()),
+                    new XElement("Degree", edge.Key.Key.ToString()),
                     new XElement("Coefficient",
-                        new XElement("Real",edge.Key.Value.Real),
+                        new XElement("Real", edge.Key.Value.Real),
                         new XElement("Imaginary", edge.Key.Value.Imaginary))));
                 result.Add(newChild);
             }
-            if(node.isEnd){
+            if (node.isEnd)
+            {
                 foreach (var special in node._special)
                 {
-                    XElement newChild = dfsSecond(special.Value.root);
-                    newChild.Name = "Tree";
-                    newChild.Add(new XElement("Edge",special.Key.ToString()));
+                    XElement newChild;
+                    if (special.Key == '=')
+                    {
+                        newChild = new XElement("SolutionSet");
+                        foreach (var solution in special.Value)
+                        {
+                            newChild.Add(new XElement("Solution",
+                                new XElement("Real", solution.Real),
+                                new XElement("Imaginary", solution.Imaginary)));
+                        }
+                    }
+                    else
+                    {
+                        newChild = dfsSecond(special.Value.root);
+                        newChild.Name = "Tree";
+                    }
+                    newChild.Add(new XElement("Edge", special.Key.ToString()));
                     result.Add(newChild);
                 }
             }
             return result;
         }
-        XElement dfsSecond(SecondLevelNode node)
+        XElement dfsSecond(Node node)
         {
             XElement result = new XElement("Node");
             result.Add(new XElement("isEnd", node.isEnd.ToString()));

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,6 +14,7 @@ namespace CalculatorUI
 {
     public partial class HistoryLogViewForm : Form
     {
+        private TextBox rootsLog = new TextBox();
         public HistoryLogViewForm()
         {
             InitializeComponent();
@@ -20,7 +22,10 @@ namespace CalculatorUI
         public HistoryLogViewForm(HistoryLog _log)
         {
             InitializeComponent();
-            ShowPolynomial(_log.firstPolynomial, _log.secondPolynomial, _log.resultPolynomial);
+            if (_log.Operation != '=')
+                ShowPolynomial(_log.firstPolynomial, _log.secondPolynomial, _log.resultPolynomial);
+            else
+                showRoots(_log.firstPolynomial, _log.roots);
             this.Text = DateTime.Parse(_log._timeStamp).ToShortTimeString() + " ";
             switch (_log.Operation)
             {
@@ -33,13 +38,16 @@ namespace CalculatorUI
                 case '*':
                     this.Text += " Multiplication";
                     break;
+                case '=':
+                    this.Text += " Finding Roots";
+                    break;
             }
         }
         private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
         {
 
         }
-        public void ShowPolynomial(Polynomial _poly1,Polynomial _poly2,Polynomial _res)
+        public void ShowPolynomial(Polynomial _poly1, Polynomial _poly2, Polynomial _res)
         {
             foreach (var item in _poly1)
             {
@@ -52,21 +60,35 @@ namespace CalculatorUI
                 flowLayoutPanel2.Controls.Add(_ptc);
             }
 
-            for (int i = _res.Count-1; i >=0; i--)
+            for (int i = _res.Count - 1; i >= 0; i--)
             {
                 PolynomialTermControl _ptc = new PolynomialTermControl((decimal)_res[i].Degree, (decimal)_res[i].Coefficient.Real, true, _res[i].Degree == 0);
                 flowLayoutPanel3.Controls.Add(_ptc);
             }
         }
-
-        private void HistoryLogViewForm_Load(object sender, EventArgs e)
+        public void showRoots(Polynomial equation, List<Complex> roots)
         {
-
-        }
-
-        private void polynomialTermControl1_Load(object sender, EventArgs e)
-        {
-
+            foreach (var item in equation)
+            {
+                PolynomialTermControl _ptc = new PolynomialTermControl((decimal)item.Degree, (decimal)item.Coefficient.Real, true, item.Degree == 0);
+                flowLayoutPanel1.Controls.Add(_ptc);
+            }
+            splitContainer1.Panel2.Controls.Remove(splitContainer2);
+            splitContainer1.Panel2.Controls.Add(groupBox2);
+            groupBox2.Text = "Roots";
+            flowLayoutPanel2.Hide();
+            this.groupBox2.Controls.Add(this.rootsLog);
+            this.rootsLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rootsLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rootsLog.Multiline = true;
+            this.rootsLog.Name = "LogPanel";
+            this.rootsLog.ReadOnly = true;
+            this.rootsLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.rootsLog.TabIndex = 2;
+            foreach (var item in roots)
+            {
+                this.rootsLog.Text += item.ToString() + "\r\n";
+            }
         }
     }
 }
