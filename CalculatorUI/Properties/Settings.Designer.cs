@@ -22,5 +22,29 @@ namespace CalculatorUI.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 9pt")]
+        public global::System.Drawing.Font Font {
+            get {
+                return ((global::System.Drawing.Font)(this["Font"]));
+            }
+            set {
+                this["Font"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Black")]
+        public global::System.Drawing.Color Color {
+            get {
+                return ((global::System.Drawing.Color)(this["Color"]));
+            }
+            set {
+                this["Color"] = value;
+            }
+        }
     }
 }

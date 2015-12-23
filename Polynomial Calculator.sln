@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorUI", "CalculatorU
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolynomialSolver", "PolynomialSolver\PolynomialSolver.csproj", "{70254EA6-34F2-4CE2-94E2-8BD66903FFD4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperationsCache", "OperationsCache\OperationsCache.csproj", "{CFB51F43-5CC3-4A53-8335-D8CCF02C17ED}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,10 +39,6 @@ Global
 		{70254EA6-34F2-4CE2-94E2-8BD66903FFD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70254EA6-34F2-4CE2-94E2-8BD66903FFD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70254EA6-34F2-4CE2-94E2-8BD66903FFD4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CFB51F43-5CC3-4A53-8335-D8CCF02C17ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CFB51F43-5CC3-4A53-8335-D8CCF02C17ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CFB51F43-5CC3-4A53-8335-D8CCF02C17ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CFB51F43-5CC3-4A53-8335-D8CCF02C17ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

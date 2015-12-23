@@ -17,3 +17,4 @@ E:\GitHub\Polynomial Calculator\Polynomial-Calculator\Polynomial\bin\Debug\Polyn
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\Polynomial\obj\Debug\Polynomial.dll
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\Polynomial\obj\Debug\Polynomial.pdb
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\Polynomial\bin\Debug\Polynomial.dll
+E:\GitHub\Polynomial Calculator\Polynomial-Calculator\Polynomial\obj\Debug\Polynomial.csprojResolveAssemblyReference.cache

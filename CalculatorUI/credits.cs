@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace CalculatorUI
 {
-    partial class credits : Form
+    partial class Credits : Form
     {
-        public credits()
+        public Credits()
         {
             InitializeComponent();
             this.Text = String.Format("About {0}", AssemblyTitle);

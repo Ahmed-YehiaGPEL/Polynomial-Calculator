@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ColorFont">
+      <HintPath>..\..\..\..\Programming\ColorFont\ColorFont\ColorFont\obj\Debug\ColorFont.dll</HintPath>
+    </Reference>
     <Reference Include="GlassButton">
       <HintPath>E:\Projects And Backups\DB Manager\DB Manager\bin\Debug\GlassButton.dll</HintPath>
     </Reference>
@@ -45,8 +48,12 @@
       <HintPath>..\PolynomialTree\bin\Debug\PolynomialTree.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Activities.Core.Presentation" />
+    <Reference Include="System.Activities.Presentation" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Windows.Presentation" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,11 +64,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="credits.cs">
+    <Compile Include="Credits.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="credits.Designer.cs">
-      <DependentUpon>credits.cs</DependentUpon>
+    <Compile Include="Credits.Designer.cs">
+      <DependentUpon>Credits.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomizeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomizeForm.Designer.cs">
+      <DependentUpon>CustomizeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="HistoryLogViewForm.cs">
       <SubType>Form</SubType>
@@ -89,8 +102,11 @@
     <Compile Include="ResultPolynomialTermControl.Designer.cs">
       <DependentUpon>ResultPolynomialTermControl.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="credits.resx">
-      <DependentUpon>credits.cs</DependentUpon>
+    <EmbeddedResource Include="Credits.resx">
+      <DependentUpon>Credits.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomizeForm.resx">
+      <DependentUpon>CustomizeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HistoryLogViewForm.resx">
       <DependentUpon>HistoryLogViewForm.cs</DependentUpon>

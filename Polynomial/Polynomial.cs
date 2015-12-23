@@ -23,6 +23,10 @@ namespace CMath.PolynomialEquation
             Degree = _degree;
             Coefficient = _coefficient;
         }
+        public override bool Equals(object obj)
+        {
+            return (this.Coefficient.Real == (obj as Term).Coefficient.Real && this.Coefficient.Imaginary == (obj as Term).Coefficient.Imaginary && this.Degree == (obj as Term).Degree);
+        }
     }
     #endregion
     public class Polynomial
@@ -213,15 +217,60 @@ namespace CMath.PolynomialEquation
             }
             return result;
         }
-        // Mock add
         public static Polynomial operator +(Polynomial first,Polynomial second)
         {
-            return new Polynomial("");
+            SortedList<int, Complex> result = new SortedList<int, Complex>();
+            foreach (var firstTerm in first._data)
+            {
+                foreach (var secondTerm in second._data)
+                {
+                    if (firstTerm.Key == secondTerm.Key)
+                    {
+                        result.Add(firstTerm.Key, firstTerm.Value + secondTerm.Value);
+                        break;
+                    }
+                    else if (secondTerm.Key == second._data.Last().Key)
+                    {
+                        result.Add(firstTerm.Key, firstTerm.Value);
+                    }
+                }
+            }
+            foreach (var secondTerm in second._data)
+            {
+                if (!result.ContainsKey(secondTerm.Key))
+                {
+                    result.Add(secondTerm.Key, secondTerm.Value);
+                }
+            }
+            return new Polynomial(result);
         }
-        // Mock subtract
         public static Polynomial operator -(Polynomial first, Polynomial second)
         {
-            return new Polynomial("");
+
+            SortedList<int, Complex> result = new SortedList<int, Complex>();
+            foreach (var firstTerm in first._data)
+            {
+                foreach (var secondTerm in second._data)
+                {
+                    if (firstTerm.Key == secondTerm.Key)
+                    {
+                        result.Add(firstTerm.Key, firstTerm.Value - secondTerm.Value);
+                        break;
+                    }
+                    else if (secondTerm.Key == second._data.Last().Key)
+                    {
+                        result.Add(firstTerm.Key, firstTerm.Value);
+                    }
+                }
+            }
+            foreach (var secondTerm in second._data)
+            {
+                if (!result.ContainsKey(secondTerm.Key))
+                {
+                    result.Add(secondTerm.Key, secondTerm.Value);
+                }
+            }
+            return new Polynomial(result);
         }
         #endregion
         #region MuliplyUtilies

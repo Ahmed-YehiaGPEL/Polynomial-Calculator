@@ -18,13 +18,12 @@ namespace CalculatorUI
         }
         public PolynomialTermControl(decimal _degree,decimal coef,bool isResult,bool isFreeTerm)
         {
-            
             InitializeComponent();
+         
             this.Degree = _degree;
             this.Coefficient = coef;
             this.isResultant = isResult;
             this.isFreeTerm = isFreeTerm;
-
         }
         public bool isResultant
         {
@@ -37,6 +36,7 @@ namespace CalculatorUI
                 this.degree.ReadOnly = value;
                 this.coeff.ReadOnly = value;
                 this.checkBox1.Visible = !value;
+                this.contextMenuStrip1.Enabled = !value;
                 this.Refresh();
             }
         }
