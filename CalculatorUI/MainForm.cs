@@ -521,6 +521,8 @@ namespace CalculatorUI
                     {
                         string ts = s.Replace("X", "");
                         ts = ts.Replace("x", "");
+                        if (ts == "")
+                            ts = "1";
                         sList.Add(1, new Complex(double.Parse(ts), 0));
                     }
                 }

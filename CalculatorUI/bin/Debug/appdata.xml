@@ -6,76 +6,55 @@
     <Node>
       <isEnd>False</isEnd>
       <Node>
-        <isEnd>False</isEnd>
-        <Node>
+        <isEnd>True</isEnd>
+        <Tree>
           <isEnd>False</isEnd>
           <Node>
-            <isEnd>True</isEnd>
-            <Tree>
-              <isEnd>False</isEnd>
-              <Node>
-                <isEnd>False</isEnd>
-                <Node>
-                  <isEnd>True</isEnd>
-                  <Result>(-4,0)(0)
-(6,0)(1)
-(-3,0)(2)
-(1,0)(3)
+            <isEnd>False</isEnd>
+            <Node>
+              <isEnd>True</isEnd>
+              <Result>(5,0)(0)
+(2,0)(1)
+(6,0)(2)
 </Result>
-                  <Edge>
-                    <Degree>1</Degree>
-                    <Coefficient>
-                      <Real>2</Real>
-                      <Imaginary>0</Imaginary>
-                    </Coefficient>
-                  </Edge>
-                </Node>
-                <Edge>
-                  <Degree>0</Degree>
-                  <Coefficient>
-                    <Real>-3</Real>
-                    <Imaginary>0</Imaginary>
-                  </Coefficient>
-                </Edge>
-              </Node>
-              <Edge>/</Edge>
-            </Tree>
+              <Edge>
+                <Degree>1</Degree>
+                <Coefficient>
+                  <Real>1</Real>
+                  <Imaginary>0</Imaginary>
+                </Coefficient>
+              </Edge>
+            </Node>
             <Edge>
-              <Degree>4</Degree>
+              <Degree>0</Degree>
               <Coefficient>
-                <Real>2</Real>
+                <Real>-2</Real>
                 <Imaginary>0</Imaginary>
               </Coefficient>
             </Edge>
           </Node>
-          <Edge>
-            <Degree>3</Degree>
-            <Coefficient>
-              <Real>-9</Real>
-              <Imaginary>0</Imaginary>
-            </Coefficient>
-          </Edge>
-        </Node>
+          <Edge>/</Edge>
+        </Tree>
         <Edge>
-          <Degree>2</Degree>
+          <Degree>3</Degree>
           <Coefficient>
-            <Real>21</Real>
+            <Real>6</Real>
             <Imaginary>0</Imaginary>
           </Coefficient>
         </Edge>
       </Node>
       <Edge>
-        <Degree>1</Degree>
+        <Degree>2</Degree>
         <Coefficient>
-          <Real>-26</Real>
+          <Real>-10</Real>
           <Imaginary>0</Imaginary>
         </Coefficient>
       </Edge>
     </Node>
     <Edge>
-      <Degree>0</Degree>
+      <Degree>1</Degree>
       <Coefficient>
-        <Real>12</Real>
+        <Real>1</Real>
         <Imaginary>0</Imaginary>
       </Coefficient>
     </Edge>
