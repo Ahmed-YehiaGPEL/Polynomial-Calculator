@@ -7,38 +7,25 @@
       <isEnd>False</isEnd>
       <Node>
         <isEnd>True</isEnd>
-        <Tree>
-          <isEnd>False</isEnd>
-          <Node>
-            <isEnd>False</isEnd>
-            <Node>
-              <isEnd>True</isEnd>
-              <Result>(5,0)(0)
-(2,0)(1)
-(6,0)(2)
-</Result>
-              <Edge>
-                <Degree>1</Degree>
-                <Coefficient>
-                  <Real>1</Real>
-                  <Imaginary>0</Imaginary>
-                </Coefficient>
-              </Edge>
-            </Node>
-            <Edge>
-              <Degree>0</Degree>
-              <Coefficient>
-                <Real>-2</Real>
-                <Imaginary>0</Imaginary>
-              </Coefficient>
-            </Edge>
-          </Node>
-          <Edge>/</Edge>
-        </Tree>
+        <SolutionSet>
+          <Solution>
+            <Real>0</Real>
+            <Imaginary>0</Imaginary>
+          </Solution>
+          <Solution>
+            <Real>-6.5413812651491092</Real>
+            <Imaginary>0</Imaginary>
+          </Solution>
+          <Solution>
+            <Real>-0.45861873485089033</Real>
+            <Imaginary>0</Imaginary>
+          </Solution>
+          <Edge>=</Edge>
+        </SolutionSet>
         <Edge>
           <Degree>3</Degree>
           <Coefficient>
-            <Real>6</Real>
+            <Real>-1</Real>
             <Imaginary>0</Imaginary>
           </Coefficient>
         </Edge>
@@ -46,7 +33,7 @@
       <Edge>
         <Degree>2</Degree>
         <Coefficient>
-          <Real>-10</Real>
+          <Real>-7</Real>
           <Imaginary>0</Imaginary>
         </Coefficient>
       </Edge>
@@ -54,7 +41,7 @@
     <Edge>
       <Degree>1</Degree>
       <Coefficient>
-        <Real>1</Real>
+        <Real>-3</Real>
         <Imaginary>0</Imaginary>
       </Coefficient>
     </Edge>

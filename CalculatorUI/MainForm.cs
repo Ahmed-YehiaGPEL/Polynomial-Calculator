@@ -506,7 +506,13 @@ namespace CalculatorUI
                     expr = expr.Insert(i + (delay++), "^");
             }
 
-            string[] terms =expr.Replace("-", "+-").Split('+');
+            expr = expr.Replace("-X", "-1X");
+            expr = expr.Replace("+X", "1X");
+
+            if (expr.StartsWith("X"))
+                expr = "1" + expr;
+
+            string[] terms =expr.Replace("-", "+-").Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (string s in terms)
             {
