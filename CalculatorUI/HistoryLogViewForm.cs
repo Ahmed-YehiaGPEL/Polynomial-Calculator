@@ -77,28 +77,36 @@ namespace CalculatorUI
         private void ParsePolynomial(Polynomial _polynomial, RichTextBox _rtBox)
         {
 
-                for (int i = _polynomial.Count -1; i >=0; i--)
+            for (int i = _polynomial.Count - 1; i >= 0; i--)
+            {
+                if (_polynomial[i].Degree == 0)
                 {
-                    if (_polynomial[i].Degree == 0)
+                    _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
+                    if (i != 0)
                     {
-                        _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
-                        if(i!=0)
-                        _rtBox.AppendText("+");
-                    }
-                    else
-                    {
-                        _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
-                        _rtBox.AppendText("X");
-                        _rtBox.SelectionCharOffset = 7;
-                        _rtBox.AppendText(_polynomial[i].Degree.ToString());
-                        _rtBox.SelectionCharOffset = 0;
-                        if (i != 0)
+                        if (_polynomial[i - 1].Coefficient.Real > 0)
                             _rtBox.AppendText("+");
                     }
-
                 }
-               
-            
+                else
+                {
+                    if (_polynomial[i].Coefficient.Real != 1 && _polynomial[i].Coefficient.Imaginary != 0)
+                        _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
+                    _rtBox.AppendText("X");
+                    _rtBox.SelectionCharOffset = 7;
+                    if (_polynomial[i].Degree > 1)
+                        _rtBox.AppendText(_polynomial[i].Degree.ToString());
+                    _rtBox.SelectionCharOffset = 0;
+                    if (i != 0)
+                    {
+                        if (_polynomial[i - 1].Coefficient.Real > 0)
+                            _rtBox.AppendText("+");
+                    }
+                }
+
+            }
+
+
         }
         private void HistoryLogViewForm_Load(object sender, EventArgs e)
         {

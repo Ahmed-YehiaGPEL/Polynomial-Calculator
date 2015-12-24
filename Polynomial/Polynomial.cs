@@ -217,6 +217,43 @@ namespace CMath.PolynomialEquation
             }
             return result;
         }
+
+        public static Polynomial operator /(Polynomial first, Polynomial second)
+        {
+            Complex[] firstC = new Complex[first[first.Count - 1].Degree + 1];
+            for (int i = 0; i < first.Count; i++)
+                firstC[first[i].Degree] = first[i].Coefficient;
+
+            Complex[] secondC = new Complex[second[second.Count - 1].Degree + 1];
+            for (int i = 0; i < second.Count; i++)
+                secondC[second[i].Degree] = second[i].Coefficient;
+
+            Complex[] res = longDiv(firstC, secondC, false);
+            SortedList<int, Complex> ret = new SortedList<int, Complex>();
+            for (int i = 0; i < res.Length; i++)
+                if (res[i] != new Complex(0, 0))
+                    ret.Add(i, res[i]);
+            return new Polynomial(ret);
+        }
+
+        public static Polynomial operator %(Polynomial first, Polynomial second)
+        {
+            Complex[] firstC = new Complex[first[first.Count - 1].Degree + 1];
+            for (int i = 0; i < first.Count; i++)
+                firstC[first[i].Degree] = first[i].Coefficient;
+
+            Complex[] secondC = new Complex[second[second.Count - 1].Degree + 1];
+            for (int i = 0; i < second.Count; i++)
+                secondC[second[i].Degree] = second[i].Coefficient;
+
+            Complex[] res = longDiv(firstC, secondC, true);
+            SortedList<int, Complex> ret = new SortedList<int, Complex>();
+            for (int i = 0; i < res.Length; i++)
+                if (res[i] != new Complex(0, 0))
+                    ret.Add(i, res[i]);
+            return new Polynomial(ret);
+        }
+
         public static Polynomial operator +(Polynomial first,Polynomial second)
         {
             SortedList<int, Complex> result = new SortedList<int, Complex>();
@@ -370,6 +407,65 @@ namespace CMath.PolynomialEquation
                 }
             }
             return new Polynomial(result);
+        }
+        #endregion
+
+        #region DivisionUtilies
+        private static Complex[] longDiv(Complex[] N, Complex[] D, bool modulus)
+        {
+            int dN, dD, dd, dq, dr;
+            int i;
+
+            dN = N.Length - 1;
+            dD = D.Length - 1;
+
+            dq = dN - dD;
+            dr = dN - dD;
+
+            Complex[] d = new Complex[dN + 1];
+            for (i = dD + 1; i < dN + 1; i++)
+                d[i] = 0;
+
+            Complex[] q = new Complex[dq + 1];
+            for (i = 0; i < dq + 1; i++)
+                q[i] = 0;
+
+            Complex[] r = new Complex[dr + 1];
+            for (i = 0; i < dr + 1; i++)
+                r[i] = 0;
+
+            if (dN >= dD)
+            {
+                while (dN >= dD)
+                {
+                    for (i = 0; i < dN + 1; i++)
+                        d[i] = 0;
+
+                    for (i = 0; i < dD + 1; i++)
+                        d[i + dN - dD] = D[i];
+
+                    dd = dN;
+                    
+                    q[dN - dD] = N[dN] / d[dd];
+                    
+                    for (i = 0; i < dq + 1; i++)
+                        d[i] = d[i] * q[dN - dD];
+
+                    for (i = 0; i < dN + 1; i++)
+                        N[i] = N[i] - d[i];
+
+                    dN--;
+                }
+            }
+
+            for (i = 0; i < dN + 1; i++)
+                r[i] = N[i];
+
+            dr = dN;
+            if (!modulus)
+                return q;
+            else
+                return r;
         }
         #endregion
     }

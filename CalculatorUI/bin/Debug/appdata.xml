@@ -1,1 +1,72 @@
-﻿<?xml version="1.0" encoding="utf-8" ?> 
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Node>
+  <isEnd>False</isEnd>
+  <Node>
+    <isEnd>False</isEnd>
+    <Node>
+      <isEnd>False</isEnd>
+      <Node>
+        <isEnd>False</isEnd>
+        <Node>
+          <isEnd>True</isEnd>
+          <Tree>
+            <isEnd>False</isEnd>
+            <Node>
+              <isEnd>False</isEnd>
+              <Node>
+                <isEnd>True</isEnd>
+                <Result>(-2,0)(0)
+(2,0)(1)
+(1,0)(2)
+</Result>
+                <Edge>
+                  <Degree>1</Degree>
+                  <Coefficient>
+                    <Real>2</Real>
+                    <Imaginary>0</Imaginary>
+                  </Coefficient>
+                </Edge>
+              </Node>
+              <Edge>
+                <Degree>0</Degree>
+                <Coefficient>
+                  <Real>3</Real>
+                  <Imaginary>0</Imaginary>
+                </Coefficient>
+              </Edge>
+            </Node>
+            <Edge>/</Edge>
+          </Tree>
+          <Edge>
+            <Degree>3</Degree>
+            <Coefficient>
+              <Real>2</Real>
+              <Imaginary>0</Imaginary>
+            </Coefficient>
+          </Edge>
+        </Node>
+        <Edge>
+          <Degree>2</Degree>
+          <Coefficient>
+            <Real>7</Real>
+            <Imaginary>0</Imaginary>
+          </Coefficient>
+        </Edge>
+      </Node>
+      <Edge>
+        <Degree>1</Degree>
+        <Coefficient>
+          <Real>2</Real>
+          <Imaginary>0</Imaginary>
+        </Coefficient>
+      </Edge>
+    </Node>
+    <Edge>
+      <Degree>0</Degree>
+      <Coefficient>
+        <Real>9</Real>
+        <Imaginary>0</Imaginary>
+      </Coefficient>
+    </Edge>
+  </Node>
+</Node>

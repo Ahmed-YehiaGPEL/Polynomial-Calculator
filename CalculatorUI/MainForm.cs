@@ -21,10 +21,14 @@ namespace CalculatorUI
         Addition,
         Subtraction,
         Multiplication,
+        Division,
+        Modulus,
         SolveFirst,
         SolveSecond,
         Generate,
         OldMultiplication,
+        OldModulus,
+        OldDivision,
         OldAddition,
         OldSubtration,
         OldSolve
@@ -120,6 +124,12 @@ namespace CalculatorUI
                 case OperationTypeEnum.Multiplication:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Multiplied Polynomials.");
                     break;
+                case OperationTypeEnum.Modulus:
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Reminder Polynomial Calculated.");
+                    break;
+                case OperationTypeEnum.Division:
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Divided Polynomials.");
+                    break;
                 case OperationTypeEnum.SolveFirst:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Solved\r\nRoots:\n");
                     break;
@@ -128,6 +138,12 @@ namespace CalculatorUI
                     break;
                 case OperationTypeEnum.Generate:
                     LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Stored Polynomial.\r");
+                    break;
+                case OperationTypeEnum.OldDivision:
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Division retrieved.");
+                    break;
+                case OperationTypeEnum.OldModulus:
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Reminder Polynomials.");
                     break;
                 case OperationTypeEnum.OldMultiplication:
                     LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Multiplication retrieved.\r");
@@ -175,6 +191,11 @@ namespace CalculatorUI
                     hL = new HistoryLog(polynomial1, polynomial2, '*', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
+                case OperationTypeEnum.Division:
+                    _historyTrie.insert(polynomial1, '/', polynomial2, resultPolynomial);
+                    hL = new HistoryLog(polynomial1, polynomial2, '/', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
+                    break;
                 case OperationTypeEnum.SolveFirst:
                     _historyTrie.insert(polynomial1, roots);
                     hL = new HistoryLog(polynomial1, roots, DateTime.Now.TimeOfDay.ToString());
@@ -204,6 +225,12 @@ namespace CalculatorUI
                 case '*':
                     _log.DisplayName += " Multiplication";
                     break;
+                case '/':
+                    _log.DisplayName += " Division";
+                    break;
+                case '%':
+                    _log.DisplayName += " Modulus";
+                    break;
                 case '=':
                     _log.DisplayName += " Root finding";
                     break;
@@ -221,79 +248,107 @@ namespace CalculatorUI
             Polynomial searchResult;
             //try
             //{
-                switch ((sender as Glass.GlassButton).Tag as string)
-                {
-                    case "Add":
-                        if (_historyTrie.try_search(polynomial1, '+', polynomial2, out searchResult))
-                        {
-                            PolynomialParse(searchResult, resPolyText,true);
-                            LogOperation(OperationTypeEnum.Addition);
-                        }
-                        else
-                        {
-                            resultPolynomial = polynomial1 + polynomial2;
-                            PolynomialParse(resultPolynomial, resPolyText,true);
-                            LogInHistory(OperationTypeEnum.Addition);
-                            LogOperation(OperationTypeEnum.Addition);
-                        }
-                        break;
-                    case "Subtract":
-                        if (_historyTrie.try_search(polynomial1, '-', polynomial2, out searchResult))
-                        {
-                            PolynomialParse(searchResult, resPolyText, true);
+            switch ((sender as Glass.GlassButton).Tag as string)
+            {
+                case "Add":
+                    if (_historyTrie.try_search(polynomial1, '+', polynomial2, out searchResult))
+                    {
+                        PolynomialParse(searchResult, resPolyText, true);
+                        LogOperation(OperationTypeEnum.Addition);
+                    }
+                    else
+                    {
+                        resultPolynomial = polynomial1 + polynomial2;
+                        PolynomialParse(resultPolynomial, resPolyText, true);
+                        LogInHistory(OperationTypeEnum.Addition);
+                        LogOperation(OperationTypeEnum.Addition);
+                    }
+                    break;
+                case "Subtract":
+                    if (_historyTrie.try_search(polynomial1, '-', polynomial2, out searchResult))
+                    {
+                        PolynomialParse(searchResult, resPolyText, true);
 
-                            LogOperation(OperationTypeEnum.OldSubtration);
-                        }
-                        else
-                        {
-                            resultPolynomial = polynomial1 - polynomial2;
-                            PolynomialParse(resultPolynomial, resPolyText, true);
-                            LogInHistory(OperationTypeEnum.Subtraction);
-                            LogOperation(OperationTypeEnum.Subtraction);
-                        }
-                        break;
-                    case "Multiply":
-                        if (_historyTrie.try_search(polynomial1, '*', polynomial2, out searchResult))
-                        {
-                            PolynomialParse(searchResult, resPolyText, true);
-                            LogOperation(OperationTypeEnum.OldMultiplication);
-                        }
-                        else
-                        {
-                            resultPolynomial = polynomial1 * polynomial2;
-                            PolynomialParse(resultPolynomial, resPolyText, true);
-                            LogInHistory(OperationTypeEnum.Multiplication);
-                            LogOperation(OperationTypeEnum.Multiplication);
-                        }
-                        break;
-                    case "Find X1":
-                        if (_historyTrie.try_search(polynomial1, out roots))
-                        {
-                            LogOperation(OperationTypeEnum.OldSolve);
-                            ShowRoots();
-                        }
-                        else
-                        {
-                            SolvePolynomial(polynomial1, ref roots);
-                            LogInHistory(OperationTypeEnum.SolveFirst);
-                            LogOperation(OperationTypeEnum.SolveFirst);
-                        }
-                        break;
-                    case "Find X2":
-                        if (_historyTrie.try_search(polynomial2, out roots))
-                        {
-                            LogOperation(OperationTypeEnum.OldSolve);
-                        }
-                        else
-                        {
-                            SolvePolynomial(polynomial1, ref roots);
-                            LogInHistory(OperationTypeEnum.SolveSecond);
-                            LogOperation(OperationTypeEnum.SolveSecond);
-                            ShowRoots();
+                        LogOperation(OperationTypeEnum.OldSubtration);
+                    }
+                    else
+                    {
+                        resultPolynomial = polynomial1 - polynomial2;
+                        PolynomialParse(resultPolynomial, resPolyText, true);
+                        LogInHistory(OperationTypeEnum.Subtraction);
+                        LogOperation(OperationTypeEnum.Subtraction);
+                    }
+                    break;
+                case "Multiply":
+                    if (_historyTrie.try_search(polynomial1, '*', polynomial2, out searchResult))
+                    {
+                        PolynomialParse(searchResult, resPolyText, true);
+                        LogOperation(OperationTypeEnum.OldMultiplication);
+                    }
+                    else
+                    {
+                        resultPolynomial = polynomial1 * polynomial2;
+                        PolynomialParse(resultPolynomial, resPolyText, true);
+                        LogInHistory(OperationTypeEnum.Multiplication);
+                        LogOperation(OperationTypeEnum.Multiplication);
+                    }
+                    break;
+                case "Division":
+                    if (_historyTrie.try_search(polynomial1, '/', polynomial2, out searchResult))
+                    {
+                        PolynomialParse(searchResult, resPolyText, true);
+                        LogOperation(OperationTypeEnum.OldDivision);
+                    }
+                    else
+                    {
+                        resultPolynomial = polynomial1 / polynomial2;
+                        PolynomialParse(resultPolynomial, resPolyText, true);
+                        LogInHistory(OperationTypeEnum.Division);
+                        LogOperation(OperationTypeEnum.Division);
+                    }
+                    break;
+                case "Modulus":
+                    if (_historyTrie.try_search(polynomial1, '%', polynomial2, out searchResult))
+                    {
+                        PolynomialParse(searchResult, resPolyText, true);
+                        LogOperation(OperationTypeEnum.OldDivision);
+                    }
+                    else
+                    {
+                        resultPolynomial = polynomial1 % polynomial2;
+                        PolynomialParse(resultPolynomial, resPolyText, true);
+                        LogInHistory(OperationTypeEnum.Division);
+                        LogOperation(OperationTypeEnum.Division);
+                    }
+                    break;
+                case "Find X1":
+                    if (_historyTrie.try_search(polynomial1, out roots))
+                    {
+                        LogOperation(OperationTypeEnum.OldSolve);
+                        ShowRoots();
+                    }
+                    else
+                    {
+                        SolvePolynomial(polynomial1, ref roots);
+                        LogInHistory(OperationTypeEnum.SolveFirst);
+                        LogOperation(OperationTypeEnum.SolveFirst);
+                    }
+                    break;
+                case "Find X2":
+                    if (_historyTrie.try_search(polynomial2, out roots))
+                    {
+                        LogOperation(OperationTypeEnum.OldSolve);
+                    }
+                    else
+                    {
+                        SolvePolynomial(polynomial1, ref roots);
+                        LogInHistory(OperationTypeEnum.SolveSecond);
+                        LogOperation(OperationTypeEnum.SolveSecond);
+                        ShowRoots();
 
-                        }
-                        break;
-                }
+                    }
+                    break;
+            }
             //}
             //catch (Exception ex)
             //{
@@ -437,73 +492,119 @@ namespace CalculatorUI
         /// <returns></returns>
        internal Polynomial PolynomialParse(RichTextBox _rtBox)
        {
-           string _deg = "", _coeff = "";
+           //string _deg = "", _coeff = "";
            SortedList<int, Complex> sList = new SortedList<int, Complex>();
-           for (int i = 0; i < _rtBox.TextLength; i++)
-           {
-               _rtBox.SelectionStart = i;
-               _rtBox.SelectionLength = 1;
-               if (_rtBox.SelectionCharOffset > 0)
-               {
-                   _deg += _rtBox.SelectedText;
-               }
-               else
-               {
-                   if ((_rtBox.SelectedText == "X" || _rtBox.SelectedText == "x"))
-                   {
-                       continue;
-                   }
-                   else if (_rtBox.SelectedText != "+" && _rtBox.SelectedText != "-")
-                   {
-                       _coeff += _rtBox.SelectedText;
-                   }
-                   else
-                   {
-                       sList.Add(int.Parse(_deg), new System.Numerics.Complex(double.Parse(_coeff), 0));
-                       _deg = "";
-                       _coeff = "";
-                   }
-               }
-           }
-           sList.Add(int.Parse(_deg), new System.Numerics.Complex(double.Parse(_coeff), 0));
-           return new Polynomial(sList);
-       }
-       /// <summary>
-       /// Parse polynomial to RichTextBox with superscript and base considration
-       /// </summary>
-       /// <param name="_polynomial">Polynomial to be parsed</param>
-       /// <param name="_rtBox">RichTextBox to parse to</param>
-       internal void PolynomialParse(Polynomial _polynomial, RichTextBox _rtBox,bool isResult)
-       {
-           if (isResult)
-           {
-               _rtBox.Text = "";
-           }
-           for (int i = _polynomial.Count - 1; i >= 0; i--)
-           {
-               if (_polynomial[i].Degree == 0)
-               {
-                   _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
-                   if (i != 0)
-                       _rtBox.AppendText("+");
-               }
-               else
-               {
-                   _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
-                   _rtBox.AppendText("X");
-                   _rtBox.SelectionCharOffset = 7;
-                   _rtBox.AppendText(_polynomial[i].Degree.ToString());
-                   _rtBox.SelectionCharOffset = 0;
-                   if (i != 0)
-                       _rtBox.AppendText("+");
-               }
 
-           }
-           if(isResult)
-           {
-               LoadColorFont(_rtBox);
-           }
+            string expr = _rtBox.Text;
+            int delay = 0;
+
+            for (int i = 0; i < _rtBox.TextLength; i++)
+            {
+                _rtBox.SelectionStart = i;
+                _rtBox.SelectionLength = 1;
+                if (_rtBox.SelectionCharOffset > 0)
+                    expr = expr.Insert(i + (delay++), "^");
+            }
+
+            string[] terms =expr.Replace("-", "+-").Split('+');
+
+            foreach (string s in terms)
+            {
+                if (s.Contains('x') || s.Contains('X'))
+                {
+                    if (s.Contains('^'))
+                    {
+                        string[] cofpow = s.Split(new string[] { "x^", "X^" }, StringSplitOptions.RemoveEmptyEntries);
+                        sList.Add(int.Parse(cofpow[1]), new Complex(double.Parse(cofpow[0]), 0));
+                    }
+                    else
+                    {
+                        string ts = s.Replace("X", "");
+                        ts = ts.Replace("x", "");
+                        sList.Add(1, new Complex(double.Parse(ts), 0));
+                    }
+                }
+                else
+                    sList.Add(0, new Complex(double.Parse(s), 0));
+            }
+
+            //for (int i = 0; i < _rtBox.TextLength; i++)
+            //{
+            //    _rtBox.SelectionStart = i;
+            //    _rtBox.SelectionLength = 1;
+            //    if (_rtBox.SelectionCharOffset > 0)
+            //    {
+            //        _deg += _rtBox.SelectedText;
+            //    }
+            //    else
+            //    {
+            //        if ((_rtBox.SelectedText == "X" || _rtBox.SelectedText == "x"))
+            //        {
+            //            continue;
+            //        }
+            //        else if (_rtBox.SelectedText != "+" && _rtBox.SelectedText != "-")
+            //        {
+            //            _coeff += _rtBox.SelectedText;
+            //        }
+            //        else
+            //        {
+            //            if (_deg == "")
+            //                _deg = "1"; 
+            //            sList.Add(int.Parse(_deg), new System.Numerics.Complex(double.Parse(_coeff), 0));
+            //            _deg = "";
+            //            _coeff = "";
+            //        }
+            //    }
+            //}
+            //if (_deg == "")
+            //    _deg = "0";
+            //sList.Add(int.Parse(_deg), new System.Numerics.Complex(double.Parse(_coeff), 0));
+
+            return new Polynomial(sList);
        }
+        /// <summary>
+        /// Parse polynomial to RichTextBox with superscript and base considration
+        /// </summary>
+        /// <param name="_polynomial">Polynomial to be parsed</param>
+        /// <param name="_rtBox">RichTextBox to parse to</param>
+        internal void PolynomialParse(Polynomial _polynomial, RichTextBox _rtBox, bool isResult)
+        {
+            if (isResult)
+            {
+                _rtBox.Text = "";
+            }
+            for (int i = _polynomial.Count - 1; i >= 0; i--)
+            {
+                if (_polynomial[i].Degree == 0)
+                {
+                    _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
+                    if (i != 0)
+                    {
+                        if (_polynomial[i - 1].Coefficient.Real > 0)
+                            _rtBox.AppendText("+");
+                    }
+                }
+                else
+                {
+                    if (_polynomial[i].Coefficient.Real != 1 && _polynomial[i].Coefficient.Imaginary != 0)
+                        _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
+                    _rtBox.AppendText("X");
+                    _rtBox.SelectionCharOffset = 7;
+                    if (_polynomial[i].Degree > 1)
+                        _rtBox.AppendText(_polynomial[i].Degree.ToString());
+                    _rtBox.SelectionCharOffset = 0;
+                    if (i != 0)
+                    {
+                        if (_polynomial[i - 1].Coefficient.Real > 0)
+                            _rtBox.AppendText("+");
+                    }
+                }
+            }
+            if (isResult)
+            {
+                LoadColorFont(_rtBox);
+            }
+        }
        internal void LoadColorFont(RichTextBox _rbox)
        {
            for (int i = 0; i < _rbox.TextLength; i++)
@@ -533,7 +634,12 @@ namespace CalculatorUI
             }
        }
 
-       private void BaseOnEnter(object sender, KeyPressEventArgs e)
+        private void BtnDiv_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BaseOnEnter(object sender, KeyPressEventArgs e)
        {
            try
            {
@@ -556,7 +662,7 @@ namespace CalculatorUI
                }
            }
            catch (Exception ex)
-           {
+          {
                MessageBox.Show(ex.Message);
            }
        }
