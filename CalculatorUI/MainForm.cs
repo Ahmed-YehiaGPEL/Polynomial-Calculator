@@ -196,6 +196,11 @@ namespace CalculatorUI
                     hL = new HistoryLog(polynomial1, polynomial2, '/', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
+                case OperationTypeEnum.Modulus:
+                    _historyTrie.insert(polynomial1, '%', polynomial2, resultPolynomial);
+                    hL = new HistoryLog(polynomial1, polynomial2, '%', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
+                    break;
                 case OperationTypeEnum.SolveFirst:
                     _historyTrie.insert(polynomial1, roots);
                     hL = new HistoryLog(polynomial1, roots, DateTime.Now.TimeOfDay.ToString());
@@ -507,7 +512,7 @@ namespace CalculatorUI
             }
 
             expr = expr.Replace("-X", "-1X");
-            expr = expr.Replace("+X", "1X");
+            expr = expr.Replace("+X", "+1X");
 
             if (expr.StartsWith("X"))
                 expr = "1" + expr;
@@ -641,11 +646,6 @@ namespace CalculatorUI
                 }
             }
        }
-
-        private void BtnDiv_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void BaseOnEnter(object sender, KeyPressEventArgs e)
        {
