@@ -90,7 +90,7 @@ namespace CalculatorUI
                 }
                 else
                 {
-                    if (_polynomial[i].Coefficient.Real != 1 && _polynomial[i].Coefficient.Imaginary != 0)
+                    if (_polynomial[i].Coefficient.Real != 1 || _polynomial[i].Coefficient.Imaginary != 0)
                         _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
                     _rtBox.AppendText("X");
                     _rtBox.SelectionCharOffset = 7;
