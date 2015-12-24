@@ -44,3 +44,23 @@ E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\Cal
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.CustomizeForm.resources
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\bin\Debug\ColorFont.dll
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\bin\Debug\ColorFont.pdb
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\bin\Debug\appdata.xml
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\bin\Debug\CalculatorUI.exe
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\bin\Debug\CalculatorUI.pdb
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\bin\Debug\Polynomial.dll
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\bin\Debug\PolynomialSolver.dll
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\bin\Debug\PolynomialTree.dll
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\bin\Debug\ColorFont.pdb
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\bin\Debug\GlassButton.xml
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\bin\Debug\Polynomial.pdb
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\bin\Debug\PolynomialSolver.pdb
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\bin\Debug\PolynomialTree.pdb
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.csprojResolveAssemblyReference.cache
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.Credits.resources
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.CustomizeForm.resources
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.HistoryLogViewForm.resources
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.MainForm.resources
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.PolynomialTermControl.resources
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.Properties.Resources.resources
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.ResultPolynomialTermControl.resources
+F:\TROJAN\Projects\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.csproj.GenerateResource.Cache

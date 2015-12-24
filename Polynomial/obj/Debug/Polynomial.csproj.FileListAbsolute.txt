@@ -18,3 +18,8 @@ E:\GitHub\Polynomial Calculator\Polynomial-Calculator\Polynomial\obj\Debug\Polyn
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\Polynomial\obj\Debug\Polynomial.pdb
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\Polynomial\bin\Debug\Polynomial.dll
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\Polynomial\obj\Debug\Polynomial.csprojResolveAssemblyReference.cache
+F:\TROJAN\Projects\Polynomial-Calculator\Polynomial\bin\Debug\Polynomial.dll
+F:\TROJAN\Projects\Polynomial-Calculator\Polynomial\bin\Debug\Polynomial.pdb
+F:\TROJAN\Projects\Polynomial-Calculator\Polynomial\obj\Debug\Polynomial.csprojResolveAssemblyReference.cache
+F:\TROJAN\Projects\Polynomial-Calculator\Polynomial\obj\Debug\Polynomial.dll
+F:\TROJAN\Projects\Polynomial-Calculator\Polynomial\obj\Debug\Polynomial.pdb
