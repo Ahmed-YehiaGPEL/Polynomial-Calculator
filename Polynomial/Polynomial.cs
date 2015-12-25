@@ -139,6 +139,10 @@ namespace CMath.PolynomialEquation
         }
         public void Add(Term newTerm)
         {
+            if(this.Contains(new Term(0,0)))
+            {
+                this.Remove(0);
+            }
             if (_data.ContainsKey(newTerm.Degree))
             {
                 _data[newTerm.Degree] = newTerm.Coefficient;
@@ -308,8 +312,10 @@ namespace CMath.PolynomialEquation
             {
                 if (second.Contains(firstTerm.Degree))
                 {
-                    result.Add(new Term(firstTerm.Degree, second.CoefficientOf(firstTerm.Degree) + firstTerm.Coefficient));
+                    if(second.CoefficientOf(firstTerm.Degree) + firstTerm.Coefficient != 0)
+                        result.Add(new Term(firstTerm.Degree, second.CoefficientOf(firstTerm.Degree) + firstTerm.Coefficient));
                 }else{
+                    if(firstTerm.Coefficient != 0)
                        result.Add(firstTerm);
                 }
             }
@@ -317,7 +323,8 @@ namespace CMath.PolynomialEquation
             {
                 if (!result.Contains(secondTerm.Degree))
                 {
-                    result.Add(secondTerm);
+                    if (secondTerm.Coefficient != 0)
+                        result.Add(secondTerm);
                 }
             }
             return result;
@@ -330,11 +337,13 @@ namespace CMath.PolynomialEquation
             {
                 if (second.Contains(firstTerm))
                 {
-                    result.Add(new Term(firstTerm.Degree, second.CoefficientOf(firstTerm.Degree) - firstTerm.Coefficient));
+                    if (second.CoefficientOf(firstTerm.Degree) - firstTerm.Coefficient != 0)
+                        result.Add(new Term(firstTerm.Degree, second.CoefficientOf(firstTerm.Degree) - firstTerm.Coefficient));
                 }
                 else
                 {
-                    result.Add(firstTerm);
+                    if (firstTerm.Coefficient != 0)
+                        result.Add(firstTerm);
                 }
             }
             foreach (var secondTerm in second)
@@ -342,7 +351,8 @@ namespace CMath.PolynomialEquation
                 if (!result.Contains(secondTerm.Degree))
                 {
                     secondTerm.Coefficient = -secondTerm.Coefficient;
-                    result.Add(secondTerm);
+                    if (secondTerm.Coefficient != 0)
+                        result.Add(secondTerm);
                 }
             }
             return result;
@@ -489,6 +499,12 @@ namespace CMath.PolynomialEquation
 
             dN = N.Length - 1;
             dD = D.Length - 1;
+
+            if (dD > dN)
+            {
+                if (modulus) return N;
+                else return new Complex[1];
+            }
 
             dq = dN - dD;
             dr = dN - dD;
