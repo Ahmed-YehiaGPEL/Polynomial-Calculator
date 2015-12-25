@@ -96,12 +96,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResultPolynomialTermControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ResultPolynomialTermControl.Designer.cs">
-      <DependentUpon>ResultPolynomialTermControl.cs</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="Credits.resx">
       <DependentUpon>Credits.cs</DependentUpon>
     </EmbeddedResource>
@@ -126,9 +120,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ResultPolynomialTermControl.resx">
-      <DependentUpon>ResultPolynomialTermControl.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

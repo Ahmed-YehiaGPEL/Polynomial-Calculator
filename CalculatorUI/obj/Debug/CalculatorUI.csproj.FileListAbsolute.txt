@@ -40,7 +40,6 @@ E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\bin\Debug\app
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.HistoryLogViewForm.resources
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.credits.resources
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.MainForm.resources
-E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.ResultPolynomialTermControl.resources
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\obj\Debug\CalculatorUI.CustomizeForm.resources
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\bin\Debug\ColorFont.dll
 E:\GitHub\Polynomial Calculator\Polynomial-Calculator\CalculatorUI\bin\Debug\ColorFont.pdb

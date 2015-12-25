@@ -152,7 +152,7 @@
             this.okButton.TabIndex = 24;
             this.okButton.Text = "&OK";
             // 
-            // credits
+            // Credits
             // 
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -163,7 +163,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "credits";
+            this.Name = "Credits";
             this.Padding = new System.Windows.Forms.Padding(12, 11, 12, 11);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

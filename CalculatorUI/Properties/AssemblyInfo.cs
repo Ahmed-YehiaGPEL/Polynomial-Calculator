@@ -9,7 +9,7 @@ using System.Resources;
 [assembly: AssemblyTitle("Polynomial Calculator")]
 [assembly: AssemblyDescription("Calculate polynomials, add-sub-mult. and solve.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("The VS-Team")]
+[assembly: AssemblyCompany("Team Name")]
 [assembly: AssemblyProduct("Polynomial Calculator")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]

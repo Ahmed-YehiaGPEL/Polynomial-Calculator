@@ -25,7 +25,7 @@ namespace CalculatorUI
         Modulus,
         SolveFirst,
         SolveSecond,
-        Generate,
+        PolynomialAccepted,
         OldMultiplication,
         OldModulus,
         OldDivision,
@@ -52,12 +52,13 @@ namespace CalculatorUI
             loadThread = new Thread(LoadThread);
             loadThread.Start();
             //Initialize display,value members for later history viewing
-            listBox1.DisplayMember = "DisplayName";
-            listBox1.ValueMember = "returnType";
+            historyListBox.DisplayMember = "DisplayName";
+            historyListBox.ValueMember = "returnType";
             //Load colerd font properties
             LoadColorFont(polynomial1Text);
             LoadColorFont(polynomial2Text);
             LoadColorFont(resPolyText);
+            
 
         }
 
@@ -74,76 +75,99 @@ namespace CalculatorUI
                 _historyTrie = new PolynomialTrie();
             }
         }
-        //TODO Delete when parser finishes
-
-        /// <summary>
-        /// Display result polynomial to the user.
-        /// </summary>
-        /// <param name="_poly">Polynomial to show</param>
-        
-        public void ShowPolynomial(Polynomial _poly)
-        {
-            flowResultPoly.Controls.Clear();
-            for (int i = _poly.Count - 1; i >= 0; i--)
-            {
-                PolynomialTermControl _ptc = new PolynomialTermControl((decimal)_poly[i].Degree, (decimal)_poly[i].Coefficient.Real, true, _poly[i].Degree == 0);
-                flowResultPoly.Controls.Add(_ptc);
-                Label l = new Label();
-                l.Text = "+";
-                l.TextAlign = ContentAlignment.MiddleCenter;
-
-                flowResultPoly.Controls.Add(l);
-            }
-            flowResultPoly.Controls.RemoveAt(flowResultPoly.Controls.Count - 1);
-        }
-
+       
         /// <summary>
         /// Show roots of polynomial in the Log Panel
         /// </summary>
         public void ShowRoots()
         {
+            rootsTextBox.Clear();
+            rootsTextBox.Text += "Polynomial roots:\r\n";
             foreach (var item in roots)
             {
-                LogPanel.Text += "\r\n" + item.ToString();
+                if (item.Imaginary == 0)
+                    rootsTextBox.Text += item.Real.ToString() + "\r\n";
+                else
+                {
+                    rootsTextBox.Text += item.Real.ToString() + " ";
+                    if (item.Imaginary > 0)
+                    {
+                        rootsTextBox.Text += "+ " + item.Imaginary.ToString() + "i" + "\r\n";
+                    }
+                    else
+                    {
+                        rootsTextBox.Text += "- " + item.Imaginary.ToString().Substring(1);
+                        rootsTextBox.AppendText("i\r\n");
+                    }
+                }
             }
         }
+
+        #region Solve
+        void SolvePolynomial(Polynomial _poly, ref List<Complex> result)
+        {
+            _solverInstance = new Solver(_poly);
+            roots = _solverInstance.solve().ToList();
+        }
+        #endregion
+        #region History
         /// <summary>
-        /// Logs an operation into the Log Panel
+        /// Logs an operation into the Log Panel and History
         /// </summary>
         /// <param name="_operation">Operation type to be logged</param>
         public void LogOperation(OperationTypeEnum _operation)
         {
+            HistoryLog hL;
+
             switch (_operation)
             {
                 case OperationTypeEnum.Addition:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Added Polynomials.");
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Added Polynomials.\r");
+                    _historyTrie.insert(polynomial1, '+', polynomial2, resultPolynomial);
+                    hL = new HistoryLog(polynomial1, polynomial2, '+', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
                     break;
                 case OperationTypeEnum.Subtraction:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Subtracted Polynomials.");
+                    _historyTrie.insert(polynomial1, '-', polynomial2, resultPolynomial);
+                    hL = new HistoryLog(polynomial1, polynomial2, '-', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
                     break;
                 case OperationTypeEnum.Multiplication:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Multiplied Polynomials.");
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Multiplied Polynomials.\r");
+                    _historyTrie.insert(polynomial1, '*', polynomial2, resultPolynomial);
+                    hL = new HistoryLog(polynomial1, polynomial2, '*', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
                     break;
                 case OperationTypeEnum.Modulus:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Reminder Polynomial Calculated.");
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Reminder Polynomial Calculated.\r");
+                    _historyTrie.insert(polynomial1, '%', polynomial2, resultPolynomial);
+                    hL = new HistoryLog(polynomial1, polynomial2, '%', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
                     break;
                 case OperationTypeEnum.Division:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Divided Polynomials.");
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Divided Polynomials.\r");
+                    _historyTrie.insert(polynomial1, '/', polynomial2, resultPolynomial);
+                    hL = new HistoryLog(polynomial1, polynomial2, '/', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
                     break;
                 case OperationTypeEnum.SolveFirst:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Solved\r\nRoots:\n");
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Solved.\r");
+                    _historyTrie.insert(polynomial1, roots);
+                    hL = new HistoryLog(polynomial1, roots, DateTime.Now.TimeOfDay.ToString());
+                    LogItem(hL);
                     break;
                 case OperationTypeEnum.SolveSecond:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Second Polynomial Solved\r\nRoots:\n");
-                    break;
-                case OperationTypeEnum.Generate:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Stored Polynomial.\r");
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Second Polynomial Solved.\r");
+                    _historyTrie.insert(polynomial2, roots);
+                    hL = new HistoryLog(polynomial2, roots, DateTime.Now.TimeOfDay.ToString());
+                    LogItem(hL);
                     break;
                 case OperationTypeEnum.OldDivision:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Division retrieved.");
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Division retrieved.\r");
                     break;
                 case OperationTypeEnum.OldModulus:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Reminder Polynomials.");
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Reminder Polynomials.\r");
                     break;
                 case OperationTypeEnum.OldMultiplication:
                     LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Multiplication retrieved.\r");
@@ -155,69 +179,18 @@ namespace CalculatorUI
                     LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Addition retrieved.\r");
                     break;
                 case OperationTypeEnum.OldSolve:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Polynomial root retrieved\r\nRoots:\n");
+                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Polynomial root retrieved\r");
                     break;
-            }
-        }
-        #region Solve
-        void SolvePolynomial(Polynomial _poly, ref List<Complex> result)
-        {
-            _solverInstance = new Solver(_poly);
-            roots = _solverInstance.solve().ToList();
-        }
-        #endregion
-        #region History
-        /// <summary>
-        /// Adds current operation in a Trie instance to be saved for later history saving.
-        /// </summary>
-        /// <param name="_typeEnum"></param>
-        public void LogInHistory(OperationTypeEnum _typeEnum)
-        {
-            HistoryLog hL;
-            switch (_typeEnum)
-            {
-                case OperationTypeEnum.Addition:
-                    _historyTrie.insert(polynomial1, '+', polynomial2, resultPolynomial);
-                    hL = new HistoryLog(polynomial1, polynomial2, '+', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
-                    LogItem(hL);
-                    break;
-                case OperationTypeEnum.Subtraction:
-                    _historyTrie.insert(polynomial1, '-', polynomial2, resultPolynomial);
-                    hL = new HistoryLog(polynomial1, polynomial2, '-', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
-                    LogItem(hL);
-                    break;
-                case OperationTypeEnum.Multiplication:
-                    _historyTrie.insert(polynomial1, '*', polynomial2, resultPolynomial);
-                    hL = new HistoryLog(polynomial1, polynomial2, '*', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
-                    LogItem(hL);
-                    break;
-                case OperationTypeEnum.Division:
-                    _historyTrie.insert(polynomial1, '/', polynomial2, resultPolynomial);
-                    hL = new HistoryLog(polynomial1, polynomial2, '/', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
-                    LogItem(hL);
-                    break;
-                case OperationTypeEnum.Modulus:
-                    _historyTrie.insert(polynomial1, '%', polynomial2, resultPolynomial);
-                    hL = new HistoryLog(polynomial1, polynomial2, '%', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
-                    LogItem(hL);
-                    break;
-                case OperationTypeEnum.SolveFirst:
-                    _historyTrie.insert(polynomial1, roots);
-                    hL = new HistoryLog(polynomial1, roots, DateTime.Now.TimeOfDay.ToString());
-                    LogItem(hL);
-                    break;
-                case OperationTypeEnum.SolveSecond:
-                    _historyTrie.insert(polynomial2, roots);
-                    hL = new HistoryLog(polynomial2, roots, DateTime.Now.TimeOfDay.ToString());
-                    LogItem(hL);
+                case OperationTypeEnum.PolynomialAccepted:
+                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Polynomial entered\r");
                     break;
             }
         }
         /// <summary>
         /// Adds item to HistoryBox
         /// </summary>
-        /// <param name="_log"></param>
-        void LogItem(HistoryLog _log)
+        /// <param name="_log">History Log to insert</param>
+        internal void LogItem(HistoryLog _log)
         {
             switch (_log.Operation)
             {
@@ -240,7 +213,7 @@ namespace CalculatorUI
                     _log.DisplayName += " Root finding";
                     break;
             }
-            listBox1.Items.Add(_log);
+            historyListBox.Items.Add(_log);
         }
         #endregion
         /// <summary>
@@ -251,158 +224,112 @@ namespace CalculatorUI
         {
             
             Polynomial searchResult;
-            //try
-            //{
-            switch ((sender as Glass.GlassButton).Tag as string)
+            try
             {
-                case "Add":
-                    if (_historyTrie.try_search(polynomial1, '+', polynomial2, out searchResult))
-                    {
-                        PolynomialParse(searchResult, resPolyText, true);
-                        LogOperation(OperationTypeEnum.Addition);
-                    }
-                    else
-                    {
-                        resultPolynomial = polynomial1 + polynomial2;
-                        PolynomialParse(resultPolynomial, resPolyText, true);
-                        LogInHistory(OperationTypeEnum.Addition);
-                        LogOperation(OperationTypeEnum.Addition);
-                    }
-                    break;
-                case "Subtract":
-                    if (_historyTrie.try_search(polynomial1, '-', polynomial2, out searchResult))
-                    {
-                        PolynomialParse(searchResult, resPolyText, true);
-
-                        LogOperation(OperationTypeEnum.OldSubtration);
-                    }
-                    else
-                    {
-                        resultPolynomial = polynomial1 - polynomial2;
-                        PolynomialParse(resultPolynomial, resPolyText, true);
-                        LogInHistory(OperationTypeEnum.Subtraction);
-                        LogOperation(OperationTypeEnum.Subtraction);
-                    }
-                    break;
-                case "Multiply":
-                    if (_historyTrie.try_search(polynomial1, '*', polynomial2, out searchResult))
-                    {
-                        PolynomialParse(searchResult, resPolyText, true);
-                        LogOperation(OperationTypeEnum.OldMultiplication);
-                    }
-                    else
-                    {
-                        resultPolynomial = polynomial1 * polynomial2;
-                        PolynomialParse(resultPolynomial, resPolyText, true);
-                        LogInHistory(OperationTypeEnum.Multiplication);
-                        LogOperation(OperationTypeEnum.Multiplication);
-                    }
-                    break;
-                case "Division":
-                    if (_historyTrie.try_search(polynomial1, '/', polynomial2, out searchResult))
-                    {
-                        PolynomialParse(searchResult, resPolyText, true);
-                        LogOperation(OperationTypeEnum.OldDivision);
-                    }
-                    else
-                    {
-                        resultPolynomial = polynomial1 / polynomial2;
-                        PolynomialParse(resultPolynomial, resPolyText, true);
-                        LogInHistory(OperationTypeEnum.Division);
-                        LogOperation(OperationTypeEnum.Division);
-                    }
-                    break;
-                case "Modulus":
-                    if (_historyTrie.try_search(polynomial1, '%', polynomial2, out searchResult))
-                    {
-                        PolynomialParse(searchResult, resPolyText, true);
-                        LogOperation(OperationTypeEnum.OldDivision);
-                    }
-                    else
-                    {
-                        resultPolynomial = polynomial1 % polynomial2;
-                        PolynomialParse(resultPolynomial, resPolyText, true);
-                        LogInHistory(OperationTypeEnum.Division);
-                        LogOperation(OperationTypeEnum.Division);
-                    }
-                    break;
-                case "Find X1":
-                    if (_historyTrie.try_search(polynomial1, out roots))
-                    {
-                        LogOperation(OperationTypeEnum.OldSolve);
-                        ShowRoots();
-                    }
-                    else
-                    {
-                        SolvePolynomial(polynomial1, ref roots);
-                        LogInHistory(OperationTypeEnum.SolveFirst);
-                        LogOperation(OperationTypeEnum.SolveFirst);
-                    }
-                    break;
-                case "Find X2":
-                    if (_historyTrie.try_search(polynomial2, out roots))
-                    {
-                        LogOperation(OperationTypeEnum.OldSolve);
-                    }
-                    else
-                    {
-                        SolvePolynomial(polynomial1, ref roots);
-                        LogInHistory(OperationTypeEnum.SolveSecond);
-                        LogOperation(OperationTypeEnum.SolveSecond);
-                        ShowRoots();
-
-                    }
-                    break;
-            }
-            //}
-            //catch (Exception ex)
-            //{
-
-            //    MessageBox.Show(ex.Message);
-            //}
-        }
-     //TODO To be deleted after using RichTextBoxes
-        /// <summary>
-        /// Creates a Polynomial from terms control collection
-        /// <see cref="PolynomialTerm.cs"/> for information about input control.
-        /// </summary>
-        /// <param name="PolynomialTerms">The control collection to get Terms from</param>
-        /// <returns></returns>
-        internal Polynomial GetPolynomial(Control.ControlCollection PolynomialTerms)
-        {
-            SortedList<int, Complex> _polynomialTerms = new SortedList<int, Complex>();
-            foreach (var item in PolynomialTerms)
-            {   
-                var ct = item as PolynomialTermControl;
-                Complex n = new Complex((double)ct.Coefficient, 0.0);
-                _polynomialTerms.Add((int)ct.Degree, n);
-            }
-            return new Polynomial(_polynomialTerms);
-        }
-      //TODO Delete when parser finished
-        /// <summary>
-        /// Generates terms upon number
-        /// </summary>
-        /// <param name="termNumber">number of terms to generate</param>
-        /// <param name="polyNumber">Polynomial 1 or 2</param>
-        void GeneratePolynomialTerms(int termNumber, byte polyNumber)
-        {
-            for (int i = 0; i < termNumber; i++)
-            {
-                PolynomialTermControl pTerm = new PolynomialTermControl();
-                if (polyNumber == 1)
+                switch ((sender as Glass.GlassButton).Tag as string)
                 {
-                    pTerm.Name = "pTerm01-" + i.ToString();
-                    flowPolynomial1.Controls.Add(pTerm);
-                }
-                else
-                {
-                    pTerm.Name = "pTerm02-" + i.ToString();
-                    flowPolynomial2.Controls.Add(pTerm);
+                    case "Add":
+                        if (_historyTrie.try_search(polynomial1, '+', polynomial2, out searchResult))
+                        {
+                            PolynomialParse(searchResult, resPolyText, true);
+                            LogOperation(OperationTypeEnum.OldAddition);
+                        }
+                        else
+                        {
+                            resultPolynomial = polynomial1 + polynomial2;
+                            PolynomialParse(resultPolynomial, resPolyText, true);
+                            LogOperation(OperationTypeEnum.Addition);
+                        }
+                        break;
+                    case "Subtract":
+                        if (_historyTrie.try_search(polynomial1, '-', polynomial2, out searchResult))
+                        {
+                            PolynomialParse(searchResult, resPolyText, true);
+
+                            LogOperation(OperationTypeEnum.OldSubtration);
+                        }
+                        else
+                        {
+                            resultPolynomial = polynomial1 - polynomial2;
+                            PolynomialParse(resultPolynomial, resPolyText, true);
+                            LogOperation(OperationTypeEnum.Subtraction);
+                        }
+                        break;
+                    case "Multiply":
+                        if (_historyTrie.try_search(polynomial1, '*', polynomial2, out searchResult))
+                        {
+                            PolynomialParse(searchResult, resPolyText, true);
+                            LogOperation(OperationTypeEnum.OldMultiplication);
+                        }
+                        else
+                        {
+                            resultPolynomial = polynomial1 * polynomial2;
+                            PolynomialParse(resultPolynomial, resPolyText, true);
+                            LogOperation(OperationTypeEnum.Multiplication);
+                        }
+                        break;
+                    case "Division":
+                        if (_historyTrie.try_search(polynomial1, '/', polynomial2, out searchResult))
+                        {
+                            PolynomialParse(searchResult, resPolyText, true);
+                            LogOperation(OperationTypeEnum.OldDivision);
+                        }
+                        else
+                        {
+                            resultPolynomial = polynomial1 / polynomial2;
+                            PolynomialParse(resultPolynomial, resPolyText, true);
+                            LogOperation(OperationTypeEnum.Division);
+                        }
+                        break;
+                    case "Modulus":
+                        if (_historyTrie.try_search(polynomial1, '%', polynomial2, out searchResult))
+                        {
+                            PolynomialParse(searchResult, resPolyText, true);
+                            LogOperation(OperationTypeEnum.OldDivision);
+                        }
+                        else
+                        {
+                            resultPolynomial = polynomial1 % polynomial2;
+                            PolynomialParse(resultPolynomial, resPolyText, true);
+                            LogOperation(OperationTypeEnum.Division);
+                        }
+                        break;
+                    case "Find X1":
+                        if (_historyTrie.try_search(polynomial1, out roots))
+                        {
+                            LogOperation(OperationTypeEnum.OldSolve);
+                            ShowRoots();
+                        }
+                        else
+                        {
+                            SolvePolynomial(polynomial1, ref roots);
+
+                            LogOperation(OperationTypeEnum.SolveFirst);
+                            ShowRoots();
+                        }
+                        break;
+                    case "Find X2":
+                        if (_historyTrie.try_search(polynomial2, out roots))
+                        {
+                            LogOperation(OperationTypeEnum.OldSolve);
+                        }
+                        else
+                        {
+                            SolvePolynomial(polynomial2, ref roots);
+                            LogOperation(OperationTypeEnum.SolveSecond);
+                            ShowRoots();
+
+                        }
+                        break;
                 }
             }
-        }
+            catch (Exception ex)
+            {
 
+                MessageBox.Show(ex.Message);
+            }
+        }
+    
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (!loadThread.IsAlive)
@@ -416,6 +343,8 @@ namespace CalculatorUI
         {
             if (MessageBox.Show("Are you sure you want to exit?", " Exit ?", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
+                _historyTrie.save(filePath);
+
                 Application.Exit();
             }
         }
@@ -456,27 +385,37 @@ namespace CalculatorUI
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-            HistoryLogViewForm hForm = new HistoryLogViewForm(listBox1.SelectedItem as HistoryLog);
+            HistoryLogViewForm hForm = new HistoryLogViewForm(historyListBox.SelectedItem as HistoryLog);
             showForm(hForm, this, setClose);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _historyTrie.save(filePath);
+            if (MessageBox.Show("Are you sure you want to exit?", " Exit ?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                _historyTrie.save(filePath);
+            }
+            else
+            {
+                e.Cancel = true;
+            }
         }
 
-        //TODO Modify after parser finishesbt
+       
         private void clearLogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Are you sure you want to clear all past operations ?\n this action cannot be reverse", "Alert", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
             {
                 System.IO.File.Delete(filePath);
                 _historyTrie.Dispose();
-                listBox1.Items.Clear();
+                historyListBox.Items.Clear();
                 LogPanel.Text = "Log started " + DateTime.Now.ToShortTimeString();
-                flowResultPoly.Controls.Clear();
-                flowPolynomial1.Controls.Clear();
-                flowPolynomial2.Controls.Clear();
+                polynomial1Text.Text = "First Polynomial";
+                polynomial2Text.Text = "Second Polynomial";
+                resPolyText.Text = "Result";
+                LoadColorFont(polynomial1Text);
+                LoadColorFont(polynomial2Text);
+                LoadColorFont(resPolyText);
             }
 
         }
@@ -526,7 +465,7 @@ namespace CalculatorUI
                     if (s.Contains('^'))
                     {
                         string[] cofpow = s.Split(new string[] { "x^", "X^" }, StringSplitOptions.RemoveEmptyEntries);
-                        sList.Add(int.Parse(cofpow[1]), new Complex(double.Parse(cofpow[0]), 0));
+                        sList.Add(int.Parse(cofpow[1]), new Complex(double.Parse(cofpow[0]), 0)); // N Coeff
                     }
                     else
                     {
@@ -534,11 +473,11 @@ namespace CalculatorUI
                         ts = ts.Replace("x", "");
                         if (ts == "")
                             ts = "1";
-                        sList.Add(1, new Complex(double.Parse(ts), 0));
+                        sList.Add(1, new Complex(double.Parse(ts), 0)); //Coeff 1 
                     }
                 }
                 else
-                    sList.Add(0, new Complex(double.Parse(s), 0));
+                    sList.Add(0, new Complex(double.Parse(s), 0)); //Free term
             }
 
             //for (int i = 0; i < _rtBox.TextLength; i++)
@@ -580,7 +519,7 @@ namespace CalculatorUI
         /// </summary>
         /// <param name="_polynomial">Polynomial to be parsed</param>
         /// <param name="_rtBox">RichTextBox to parse to</param>
-        internal void PolynomialParse(Polynomial _polynomial, RichTextBox _rtBox, bool isResult)
+       internal void PolynomialParse(Polynomial _polynomial, RichTextBox _rtBox, bool isResult)
         {
             if (isResult)
             {
@@ -646,8 +585,7 @@ namespace CalculatorUI
                 }
             }
        }
-
-        private void BaseOnEnter(object sender, KeyPressEventArgs e)
+       private void BaseOnEnter(object sender, KeyPressEventArgs e)
        {
            try
            {
@@ -665,7 +603,7 @@ namespace CalculatorUI
                        else if ((rtBox.Tag as string) == "Poly2")
                            polynomial2 = PolynomialParse(rtBox);
 
-                       LogOperation(OperationTypeEnum.Generate);
+                       LogOperation(OperationTypeEnum.PolynomialAccepted);
                    }
                }
            }
@@ -675,6 +613,11 @@ namespace CalculatorUI
            }
        }
        private void statusBar_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+       {
+
+       }
+
+       private void MainForm_ClientSizeChanged(object sender, EventArgs e)
        {
 
        }
