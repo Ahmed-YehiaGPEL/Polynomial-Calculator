@@ -240,15 +240,14 @@ namespace CMath.Trie
             xDoc.Add(dfs(main.root));
             xDoc.Save(FileName);
         }
-        public void insert(Polynomial equation, List<Complex> solutionSet)
+        public void insert(Polynomial equation,Char operation, dynamic storage)
         {
-            char operation = '=';
             try
             {
                 var lastFirst = main.insert(equation._data.ToList());
                 if (!lastFirst._special.ContainsKey(operation))
                 {
-                    lastFirst._special.Add(operation, solutionSet);
+                    lastFirst._special.Add(operation, storage);
                 }
             }
             catch (Exception e)
@@ -277,10 +276,9 @@ namespace CMath.Trie
                 throw e;
             }
         }
-        List<Complex> search(Polynomial equation)
+        dynamic search(Polynomial equation, Char operation)
         {
             Node last;
-            char operation = '=';
             if (!main.try_get_node(equation._data.ToList(), out last))
             {
                 throw new KeyNotFoundException("There is no such polynomial in the trie;");
@@ -326,11 +324,11 @@ namespace CMath.Trie
                 return false;
             }
         }
-        public bool try_search(Polynomial equation, out List<Complex> result)
+        public bool try_search(Polynomial equation,char operation, out object result)
         {
             try
             {
-                result = search(equation);
+                result = search(equation, operation);
                 return true;
             }
             catch
@@ -341,6 +339,23 @@ namespace CMath.Trie
         }
         #endregion
         #region remove&clear
+        public bool try_remove(Polynomial first)
+        {
+            return main.try_remove(first._data.ToList());
+        }
+        void remove(Polynomial first, Char operation)
+        {
+            Node lastFirst;
+            if (main.try_get_node(first._data.ToList(), out lastFirst))
+            {
+                throw new KeyNotFoundException("There is no such operation in the trie;");
+            }
+            lastFirst._special.Remove(operation);
+            if (lastFirst._special.Count == 0)
+            {
+                try_remove(first);
+            }
+        }
         void remove(Polynomial first, Char operation, Polynomial second)
         {
             Node lastFirst;
@@ -358,13 +373,10 @@ namespace CMath.Trie
             }
             if (lastFirst._special[operation].isEmpty())
             {
-                try
+                lastFirst._special.Remove(operation);
+                if (lastFirst._special.Count == 0)
                 {
-                    main.try_remove(first._data.ToList());
-                }
-                catch
-                {
-                    throw new Exception("Unknown error happened;");
+                    try_remove(first);
                 }
             }
         }
@@ -410,6 +422,17 @@ namespace CMath.Trie
                             double.Parse(solution.Element("Imaginary").Value)));
                     }
                     result._special.Add(Edge, solutions);
+                }
+                foreach (var edge in current.Elements("Derivatives"))
+                {
+                    char Edge = edge.Element("Edge").Value[0];
+                    SortedList<int, Polynomial> derivatives = new SortedList<int,Polynomial>();
+                    foreach (var detivative in edge.Elements("Derivative"))
+                    {
+                        derivatives.Add(int.Parse(detivative.Element("level").Value),
+                            new Polynomial(detivative.Element("result").Value));
+                    }
+                    result._special.Add(Edge, derivatives);
                 }
             }
             return result;
@@ -458,6 +481,16 @@ namespace CMath.Trie
                             newChild.Add(new XElement("Solution",
                                 new XElement("Real", solution.Real),
                                 new XElement("Imaginary", solution.Imaginary)));
+                        }
+                    }
+                    else if (special.Key == '^')
+                    {
+                        newChild = new XElement("Derivatives");
+                        foreach(var detivative in special.Value)
+                        {
+                            newChild.Add(new XElement("Derivative",
+                                new XElement("level", detivative.Key.ToString()),
+                                new XElement("result", detivative.Value.ToString())));
                         }
                     }
                     else
