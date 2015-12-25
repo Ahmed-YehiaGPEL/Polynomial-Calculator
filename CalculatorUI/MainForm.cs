@@ -299,26 +299,26 @@ namespace CalculatorUI
                         if (_historyTrie.try_search(polynomial1, '%', polynomial2, out searchResult))
                         {
                             PolynomialParse(searchResult, resPolyText, true);
-                            LogOperation(OperationTypeEnum.OldDivision);
+                            LogOperation(OperationTypeEnum.OldModulus);
                         }
                         else
                         {
                             resultPolynomial = polynomial1 % polynomial2;
                             PolynomialParse(resultPolynomial, resPolyText, true);
-                            LogOperation(OperationTypeEnum.Division);
+                            LogOperation(OperationTypeEnum.Modulus);
                         }
                         break;
                     case "GCD":
                         if (_historyTrie.try_search(polynomial1, 'g', polynomial2, out searchResult))
                         {
                             PolynomialParse(searchResult, resPolyText, true);
-                            LogOperation(OperationTypeEnum.OldDivision);
+                            LogOperation(OperationTypeEnum.OldGcd);
                         }
                         else
                         {
                             resultPolynomial = Polynomial.__gcd(polynomial1, polynomial2);
                             PolynomialParse(resultPolynomial, resPolyText, true);
-                            LogOperation(OperationTypeEnum.Division);
+                            LogOperation(OperationTypeEnum.Gcd);
                         }
                         break;
                     case "Find X1":
@@ -409,6 +409,7 @@ namespace CalculatorUI
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _historyTrie.save(filePath);
+            MessageBox.Show("Log saved");
         }
         // Load history logs
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -442,6 +443,7 @@ namespace CalculatorUI
                 polynomial1Text.Text = "First Polynomial";
                 polynomial2Text.Text = "Second Polynomial";
                 resPolyText.Text = "Result";
+                rootsTextBox.Clear();
                 LoadColorFont(polynomial1Text);
                 LoadColorFont(polynomial2Text);
                 LoadColorFont(resPolyText);

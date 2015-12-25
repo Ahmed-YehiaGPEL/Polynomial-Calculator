@@ -89,7 +89,7 @@
             this.statusBar.Location = new System.Drawing.Point(0, 441);
             this.statusBar.Name = "statusBar";
             this.statusBar.Padding = new System.Windows.Forms.Padding(1, 0, 13, 0);
-            this.statusBar.Size = new System.Drawing.Size(736, 25);
+            this.statusBar.Size = new System.Drawing.Size(786, 25);
             this.statusBar.TabIndex = 0;
             this.statusBar.Text = "statusStrip1";
             this.statusBar.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.statusBar_ItemClicked);
@@ -115,7 +115,7 @@
             this.menuBar.Location = new System.Drawing.Point(0, 0);
             this.menuBar.Name = "menuBar";
             this.menuBar.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuBar.Size = new System.Drawing.Size(736, 28);
+            this.menuBar.Size = new System.Drawing.Size(786, 28);
             this.menuBar.TabIndex = 1;
             this.menuBar.Text = "menuStrip1";
             // 
@@ -220,7 +220,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(736, 413);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(786, 413);
             this.tableLayoutPanel1.TabIndex = 5;
             // 
             // tableLayoutPanel2
@@ -239,7 +239,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 72F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 85F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(492, 407);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(525, 407);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // LogPanel
@@ -250,7 +250,8 @@
             this.LogPanel.Multiline = true;
             this.LogPanel.Name = "LogPanel";
             this.LogPanel.ReadOnly = true;
-            this.LogPanel.Size = new System.Drawing.Size(486, 172);
+            this.LogPanel.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.LogPanel.Size = new System.Drawing.Size(519, 172);
             this.LogPanel.TabIndex = 5;
             // 
             // groupBox1
@@ -259,7 +260,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(486, 66);
+            this.groupBox1.Size = new System.Drawing.Size(519, 66);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Polyonomial 1";
@@ -270,7 +271,7 @@
             this.polynomial1Text.Location = new System.Drawing.Point(3, 18);
             this.polynomial1Text.Multiline = false;
             this.polynomial1Text.Name = "polynomial1Text";
-            this.polynomial1Text.Size = new System.Drawing.Size(480, 45);
+            this.polynomial1Text.Size = new System.Drawing.Size(513, 45);
             this.polynomial1Text.TabIndex = 0;
             this.polynomial1Text.Tag = "Poly1";
             this.polynomial1Text.Text = "Polynomial1";
@@ -283,7 +284,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(3, 75);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(486, 66);
+            this.groupBox2.Size = new System.Drawing.Size(519, 66);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Polynomial 2";
@@ -294,8 +295,8 @@
             this.polynomial2Text.Location = new System.Drawing.Point(3, 18);
             this.polynomial2Text.Multiline = false;
             this.polynomial2Text.Name = "polynomial2Text";
-            this.polynomial2Text.Size = new System.Drawing.Size(480, 45);
-            this.polynomial2Text.TabIndex = 0;
+            this.polynomial2Text.Size = new System.Drawing.Size(513, 45);
+            this.polynomial2Text.TabIndex = 1;
             this.polynomial2Text.Tag = "Poly2";
             this.polynomial2Text.Text = "Polynomial2";
             this.polynomial2Text.TextChanged += new System.EventHandler(this.SuperScriptOnX);
@@ -307,7 +308,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(3, 147);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(486, 79);
+            this.groupBox3.Size = new System.Drawing.Size(519, 79);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Result polynomial";
@@ -318,7 +319,7 @@
             this.resPolyText.Location = new System.Drawing.Point(3, 18);
             this.resPolyText.Name = "resPolyText";
             this.resPolyText.ReadOnly = true;
-            this.resPolyText.Size = new System.Drawing.Size(480, 58);
+            this.resPolyText.Size = new System.Drawing.Size(513, 58);
             this.resPolyText.TabIndex = 0;
             this.resPolyText.Text = "";
             // 
@@ -330,13 +331,13 @@
             this.tableLayoutPanel3.Controls.Add(this.groupBox4, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.historyListBox, 0, 1);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(501, 3);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(534, 3);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 3;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 52.7027F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 47.2973F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 184F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(232, 407);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(249, 407);
             this.tableLayoutPanel3.TabIndex = 1;
             // 
             // groupBox5
@@ -352,86 +353,95 @@
             this.groupBox5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox5.Location = new System.Drawing.Point(3, 225);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(226, 179);
+            this.groupBox5.Size = new System.Drawing.Size(243, 179);
             this.groupBox5.TabIndex = 6;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Operations";
             // 
             // glassButton1
             // 
+            this.glassButton1.GlowColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
             this.glassButton1.Location = new System.Drawing.Point(115, 106);
             this.glassButton1.Name = "glassButton1";
             this.glassButton1.Size = new System.Drawing.Size(105, 31);
-            this.glassButton1.TabIndex = 12;
-            this.glassButton1.Tag = "Gcd";
+            this.glassButton1.TabIndex = 7;
+            this.glassButton1.Tag = "GCD";
             this.glassButton1.Text = "GCD";
+            this.glassButton1.Click += new System.EventHandler(this.PerformOperation);
             // 
             // btnPoly2
             // 
+            this.btnPoly2.GlowColor = System.Drawing.Color.Purple;
             this.btnPoly2.Location = new System.Drawing.Point(115, 143);
             this.btnPoly2.Name = "btnPoly2";
             this.btnPoly2.Size = new System.Drawing.Size(105, 31);
-            this.btnPoly2.TabIndex = 11;
+            this.btnPoly2.TabIndex = 9;
             this.btnPoly2.Tag = "Find X2";
             this.btnPoly2.Text = "Poly2. roots";
             this.btnPoly2.Click += new System.EventHandler(this.PerformOperation);
             // 
             // btnPoly1
             // 
+            this.btnPoly1.GlowColor = System.Drawing.Color.Purple;
             this.btnPoly1.Location = new System.Drawing.Point(4, 143);
             this.btnPoly1.Name = "btnPoly1";
             this.btnPoly1.Size = new System.Drawing.Size(105, 31);
-            this.btnPoly1.TabIndex = 10;
+            this.btnPoly1.TabIndex = 8;
             this.btnPoly1.Tag = "Find X1";
             this.btnPoly1.Text = "Poly.1 roots";
             this.btnPoly1.Click += new System.EventHandler(this.PerformOperation);
             // 
             // btnModulous
             // 
+            this.btnModulous.GlowColor = System.Drawing.Color.Olive;
             this.btnModulous.Location = new System.Drawing.Point(4, 106);
             this.btnModulous.Name = "btnModulous";
             this.btnModulous.Size = new System.Drawing.Size(105, 31);
-            this.btnModulous.TabIndex = 8;
+            this.btnModulous.TabIndex = 6;
             this.btnModulous.Tag = "Modulus";
             this.btnModulous.Text = "Modulus";
             this.btnModulous.Click += new System.EventHandler(this.PerformOperation);
             // 
             // btnDiv
             // 
+            this.btnDiv.GlowColor = System.Drawing.Color.Lime;
             this.btnDiv.Location = new System.Drawing.Point(115, 69);
             this.btnDiv.Name = "btnDiv";
             this.btnDiv.Size = new System.Drawing.Size(105, 31);
-            this.btnDiv.TabIndex = 7;
+            this.btnDiv.TabIndex = 5;
             this.btnDiv.Tag = "Division";
             this.btnDiv.Text = "Divide";
             this.btnDiv.Click += new System.EventHandler(this.PerformOperation);
             // 
             // btnMultiply
             // 
+            this.btnMultiply.GlowColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.btnMultiply.Location = new System.Drawing.Point(4, 69);
             this.btnMultiply.Name = "btnMultiply";
             this.btnMultiply.Size = new System.Drawing.Size(105, 31);
-            this.btnMultiply.TabIndex = 6;
+            this.btnMultiply.TabIndex = 4;
             this.btnMultiply.Tag = "Multiply";
             this.btnMultiply.Text = "Multiply";
             this.btnMultiply.Click += new System.EventHandler(this.PerformOperation);
             // 
             // btnSubtract
             // 
+            this.btnSubtract.GlowColor = System.Drawing.Color.Red;
             this.btnSubtract.Location = new System.Drawing.Point(115, 32);
             this.btnSubtract.Name = "btnSubtract";
             this.btnSubtract.Size = new System.Drawing.Size(105, 31);
-            this.btnSubtract.TabIndex = 5;
+            this.btnSubtract.TabIndex = 3;
             this.btnSubtract.Tag = "Subtract";
             this.btnSubtract.Text = "Subtract";
             this.btnSubtract.Click += new System.EventHandler(this.PerformOperation);
             // 
             // btnAdd
             // 
+            this.btnAdd.GlowColor = System.Drawing.Color.Blue;
             this.btnAdd.Location = new System.Drawing.Point(4, 32);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(105, 31);
-            this.btnAdd.TabIndex = 4;
+            this.btnAdd.TabIndex = 2;
             this.btnAdd.Tag = "Add";
             this.btnAdd.Text = "Add";
             this.btnAdd.Click += new System.EventHandler(this.PerformOperation);
@@ -442,7 +452,7 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox4.Location = new System.Drawing.Point(3, 3);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(226, 111);
+            this.groupBox4.Size = new System.Drawing.Size(243, 111);
             this.groupBox4.TabIndex = 5;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Root finding";
@@ -455,7 +465,8 @@
             this.rootsTextBox.Multiline = true;
             this.rootsTextBox.Name = "rootsTextBox";
             this.rootsTextBox.ReadOnly = true;
-            this.rootsTextBox.Size = new System.Drawing.Size(220, 90);
+            this.rootsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.rootsTextBox.Size = new System.Drawing.Size(237, 90);
             this.rootsTextBox.TabIndex = 3;
             // 
             // historyListBox
@@ -466,7 +477,8 @@
             this.historyListBox.ItemHeight = 22;
             this.historyListBox.Location = new System.Drawing.Point(3, 120);
             this.historyListBox.Name = "historyListBox";
-            this.historyListBox.Size = new System.Drawing.Size(226, 99);
+            this.historyListBox.ScrollAlwaysVisible = true;
+            this.historyListBox.Size = new System.Drawing.Size(243, 99);
             this.historyListBox.TabIndex = 1;
             this.historyListBox.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -474,12 +486,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(736, 466);
+            this.ClientSize = new System.Drawing.Size(786, 466);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.statusBar);
             this.Controls.Add(this.menuBar);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuBar;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Polynomial Calculator";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
