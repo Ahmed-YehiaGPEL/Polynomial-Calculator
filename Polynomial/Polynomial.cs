@@ -8,10 +8,38 @@ using System.Collections;
 
 namespace CMath.PolynomialEquation
 {
+    #region NegativeRankException
+    [Serializable]
+    class NegativeRankException : Exception
+    {
+        public NegativeRankException() { }
+        public NegativeRankException(string message) : base(message) { }
+        public NegativeRankException(string message, Exception inner) : base(message, inner) { }
+        protected NegativeRankException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
+    #endregion
     #region term
     public class Term
     {
-        public int Degree { get; private set; }
+        private int _degree;
+        public int Degree
+        {
+            get
+            {
+                return _degree;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new NegativeRankException();
+                }
+                _degree = value;
+            }
+        }
         public Complex Coefficient {get; set;}
         public Term(KeyValuePair<int, Complex> _t)
         {
@@ -27,23 +55,19 @@ namespace CMath.PolynomialEquation
         {
             return (this.Coefficient.Real == (obj as Term).Coefficient.Real && this.Coefficient.Imaginary == (obj as Term).Coefficient.Imaginary && this.Degree == (obj as Term).Degree);
         }
+        public KeyValuePair<int, Complex> ToPair()
+        {
+            return new KeyValuePair<int, Complex>(this.Degree, this.Coefficient);
+        }
+        public override string ToString()
+        {
+            return "(" + this.Coefficient.Real.ToString() + "," 
+                + this.Coefficient.Imaginary.ToString() + ")(" + this.Degree.ToString() + ")";
+        }
     }
     #endregion
     public class Polynomial
     {
-        #region NegativeRankException
-        [Serializable]
-        private class NegativeRankException : Exception
-        {
-            public NegativeRankException() { }
-            public NegativeRankException(string message) : base(message) { }
-            public NegativeRankException(string message, Exception inner) : base(message, inner) { }
-            protected NegativeRankException(
-              System.Runtime.Serialization.SerializationInfo info,
-              System.Runtime.Serialization.StreamingContext context)
-                : base(info, context) { }
-        }
-        #endregion
         #region Enumertator
         public class PolynomialEnumerator
         {
@@ -99,29 +123,67 @@ namespace CMath.PolynomialEquation
         /// <summary>
         /// Returns the number of terms
         /// </summary>
-        public int Count { get { return _data.Count; } }
+        public int Count
+        {
+            get { return _data.Count; }
+        }
+        public int Degree { 
+            get { return this[this.Count - 1].Degree; }
+        }
+        public Term Back { 
+            get { return this[this.Count - 1]; } 
+        }
+        public Complex CoefficientOf(int degree)
+        {
+            return _data[degree];
+        }
+        public void Add(Term newTerm)
+        {
+            if (_data.ContainsKey(newTerm.Degree))
+            {
+                _data[newTerm.Degree] = newTerm.Coefficient;
+            }
+            else
+            {
+                _data.Add(newTerm.Degree, newTerm.Coefficient);
+            }
+        }
+        public bool Contains(Term _term)
+        {
+            return _data.Contains(_term.ToPair());
+        }
+        public bool Contains(int degree)
+        {
+            return _data.ContainsKey(degree);
+        }
+        public void Remove(int degree)
+        {
+            _data.Remove(degree);
+        }
         #endregion
         #region construtors
         public Polynomial(SortedList<int,Complex> _list)
         {
             if (_list.Count == 0)
             {
-                throw new NullReferenceException("Null polynomial occured");
+                _list.Add(0, 0);
             }
-            else
+            if (_list.ElementAt(0).Key < 0)
             {
-                if (_list.ElementAt(0).Key < 0)
-                {
-                    throw new NegativeRankException("Negative rank isn't allowed");
-                }
+                throw new NegativeRankException("Negative rank isn't allowed");
             }
             _data = _list;
+        }
+        public Polynomial()
+        {
+            _data = new SortedList<int, Complex>();
+            _data.Add(0, 0);
         }
         public Polynomial(string _input)
         {
             if (string.IsNullOrWhiteSpace(_input))
             {
-                throw new NullReferenceException("Null polynomial occured");
+                _input += "(0,0)(0)";
             }
             _data = new SortedList<int, Complex>();
             var PolynomialStringReader = new StringReader(_input);
@@ -140,17 +202,6 @@ namespace CMath.PolynomialEquation
                 _data.Add(degree,new Complex(real,imaginary));
             }
         }
-        public void add(Term newTerm)
-        {
-            if (_data.ContainsKey(newTerm.Degree))
-            {
-                _data[newTerm.Degree] = newTerm.Coefficient;
-            }
-            else
-            {
-                _data.Add(newTerm.Degree, newTerm.Coefficient);
-            }
-        }
         #endregion
         #region operators
         public override string ToString()
@@ -158,11 +209,7 @@ namespace CMath.PolynomialEquation
             var PolynomialStringWriter = new StringWriter();
             foreach (var term in this)
             {
-                PolynomialStringWriter.WriteLine(
-                    "({0},{1})({2})",
-                    term.Coefficient.Real.ToString(),
-                    term.Coefficient.Imaginary.ToString(),
-                    term.Degree.ToString());
+                PolynomialStringWriter.WriteLine(term.ToString());
             }
             return PolynomialStringWriter.ToString();
         }
@@ -177,42 +224,42 @@ namespace CMath.PolynomialEquation
         }
         public static Polynomial operator *(Polynomial first, Polynomial second)
         {
-            int minimum_rank1 = first._data.First().Key;
-            int minimum_rank2 = second._data.First().Key;
+            int minimum_rank1 = first[0].Degree;
+            int minimum_rank2 = second[0].Degree;
             if (minimum_rank1 != 0)
             {
-                for (int i = 0; i < first._data.Keys.Count; i++)
+                for (int i = 0; i < first.Count; i++)
                 {
-                    int oldKey = first._data.Keys[i];
-                    Complex Val = first._data[oldKey];
-                    first._data.Remove(oldKey);
-                    first._data.Add(oldKey - minimum_rank1, Val);
+                    Term current = first[i];
+                    first.Remove(current.Degree);
+                    current.Degree -= minimum_rank1;
+                    first.Add(current);
                 }
             }
             if (minimum_rank2 != 0)
             {
-                for (int i = 0; i < second._data.Keys.Count; i++)
+                for (int i = 0; i < second.Count; i++)
                 {
-                    int oldKey = second._data.Keys[i];
-                    Complex Val = second._data[oldKey];
-                    second._data.Remove(oldKey);
-                    second._data.Add(oldKey - minimum_rank2, Val);
+                    Term current = second[i];
+                    second.Remove(current.Degree);
+                    current.Degree -= minimum_rank1;
+                    second.Add(current);
                 }
             }
             Polynomial result;
-            if (first._data.Count * second._data.Count <= first._data.Last().Key + second._data.Last().Key)
+            if (first.Count * second.Count <= first.Back.Degree + second.Back.Degree)
                 result = NormalMultiply(first, second);
             else
                 result = MultiplyFFT(first, second);
 
             if (minimum_rank1 + minimum_rank2 != 0)
             {
-                for (int i = result._data.Keys.Count - 1; i >= 0; i--)
+                for (int i = result.Count - 1; i >= 0; i--)
                 {
-                    int oldKey = result._data.Keys[i];
-                    Complex Val = result._data[oldKey];
-                    result._data.Remove(oldKey);
-                    result._data.Add(oldKey + minimum_rank1 + minimum_rank2, Val);
+                    Term current = result[i];
+                    result.Remove(current.Degree);
+                    current.Degree += minimum_rank1 + minimum_rank2;
+                    result.Add(current);
                 }
             }
             return result;
@@ -220,116 +267,138 @@ namespace CMath.PolynomialEquation
 
         public static Polynomial operator /(Polynomial first, Polynomial second)
         {
-            Complex[] firstC = new Complex[first[first.Count - 1].Degree + 1];
+            Complex[] firstC = new Complex[first.Degree + 1];
             for (int i = 0; i < first.Count; i++)
                 firstC[first[i].Degree] = first[i].Coefficient;
 
-            Complex[] secondC = new Complex[second[second.Count - 1].Degree + 1];
+            Complex[] secondC = new Complex[second.Degree + 1];
             for (int i = 0; i < second.Count; i++)
                 secondC[second[i].Degree] = second[i].Coefficient;
 
             Complex[] res = longDiv(firstC, secondC, false);
-            SortedList<int, Complex> ret = new SortedList<int, Complex>();
+            Polynomial ret = new Polynomial();
             for (int i = 0; i < res.Length; i++)
                 if (res[i] != new Complex(0, 0))
-                    ret.Add(i, res[i]);
-            return new Polynomial(ret);
+                    ret.Add(new Term(i, res[i]));
+            return ret;
         }
 
         public static Polynomial operator %(Polynomial first, Polynomial second)
         {
-            Complex[] firstC = new Complex[first[first.Count - 1].Degree + 1];
+            Complex[] firstC = new Complex[first.Degree + 1];
             for (int i = 0; i < first.Count; i++)
                 firstC[first[i].Degree] = first[i].Coefficient;
 
-            Complex[] secondC = new Complex[second[second.Count - 1].Degree + 1];
+            Complex[] secondC = new Complex[second.Degree + 1];
             for (int i = 0; i < second.Count; i++)
                 secondC[second[i].Degree] = second[i].Coefficient;
 
             Complex[] res = longDiv(firstC, secondC, true);
-            SortedList<int, Complex> ret = new SortedList<int, Complex>();
+            Polynomial ret = new Polynomial();
             for (int i = 0; i < res.Length; i++)
                 if (res[i] != new Complex(0, 0))
-                    ret.Add(i, res[i]);
-            return new Polynomial(ret);
+                    ret.Add(new Term(i, res[i]));
+            return ret;
         }
 
         public static Polynomial operator +(Polynomial first,Polynomial second)
         {
-            SortedList<int, Complex> result = new SortedList<int, Complex>();
-            foreach (var firstTerm in first._data)
+            Polynomial result = new Polynomial();
+            foreach (var firstTerm in first)
             {
-                foreach (var secondTerm in second._data)
+                if (second.Contains(firstTerm.Degree))
                 {
-                    if (firstTerm.Key == secondTerm.Key)
-                    {
-                        result.Add(firstTerm.Key, firstTerm.Value + secondTerm.Value);
-                        break;
-                    }
-                    else if (secondTerm.Key == second._data.Last().Key)
-                    {
-                        result.Add(firstTerm.Key, firstTerm.Value);
-                    }
+                    result.Add(new Term(firstTerm.Degree, second.CoefficientOf(firstTerm.Degree) + firstTerm.Coefficient));
+                }else{
+                       result.Add(firstTerm);
                 }
             }
-            foreach (var secondTerm in second._data)
+            foreach (var secondTerm in second)
             {
-                if (!result.ContainsKey(secondTerm.Key))
+                if (!result.Contains(secondTerm.Degree))
                 {
-                    result.Add(secondTerm.Key, secondTerm.Value);
+                    result.Add(secondTerm);
                 }
             }
-            return new Polynomial(result);
+            return result;
         }
         public static Polynomial operator -(Polynomial first, Polynomial second)
         {
 
-            SortedList<int, Complex> result = new SortedList<int, Complex>();
-            foreach (var firstTerm in first._data)
+            Polynomial result = new Polynomial();
+            foreach (var firstTerm in first)
             {
-                foreach (var secondTerm in second._data)
+                if (second.Contains(firstTerm))
                 {
-                    if (firstTerm.Key == secondTerm.Key)
-                    {
-                        result.Add(firstTerm.Key, firstTerm.Value - secondTerm.Value);
-                        break;
-                    }
-                    else if (secondTerm.Key == second._data.Last().Key)
-                    {
-                        result.Add(firstTerm.Key, firstTerm.Value);
-                    }
+                    result.Add(new Term(firstTerm.Degree, second.CoefficientOf(firstTerm.Degree) - firstTerm.Coefficient));
+                }
+                else
+                {
+                    result.Add(firstTerm);
                 }
             }
-            foreach (var secondTerm in second._data)
+            foreach (var secondTerm in second)
             {
-                if (!result.ContainsKey(secondTerm.Key))
+                if (!result.Contains(secondTerm.Degree))
                 {
-                    result.Add(secondTerm.Key, secondTerm.Value);
+                    secondTerm.Coefficient = -secondTerm.Coefficient;
+                    result.Add(secondTerm);
                 }
             }
-            return new Polynomial(result);
+            return result;
+        }
+        /// <summary>
+        /// Returns the level-th derivative of the equation
+        /// </summary>
+        /// <returns></returns>
+        public static Polynomial operator^(Polynomial equation, int level)
+        {
+            Polynomial result = new Polynomial();
+            foreach (var item in equation)
+            {
+                if (item.Degree < level) 
+                    continue;
+                item.Degree -= level;
+                result.Add(item);
+            }
+            return result;
+        }
+        public static Polynomial __gcd(Polynomial first, Polynomial second)
+        {
+            if (second.Degree > first.Degree)
+            {
+                Polynomial temp = second;
+                second = first;
+                first = temp;
+            }
+            while (second.Count > 1 || second[0].Coefficient != 0)
+            {
+                first = second;
+                second = first % second;
+            }
+            return first;
         }
         #endregion
         #region MuliplyUtilies
         private static Polynomial MultiplyFFT(Polynomial first, Polynomial second)
         {
             int size = 1, lg_size = 0;
-            while (size <= first._data.Last().Key + second._data.Last().Key)
+            while (size <= first.Degree + second.Degree)
             {
                 size *= 2;
-                lg_size += 1;
+                lg_size ++;
             }
 
             List<Complex> fourierFirst = new List<Complex>(Enumerable.Repeat(new Complex(0.0, 0.0), size)),
                 fourierSecond = new List<Complex>(Enumerable.Repeat(new Complex(0.0, 0.0), size)),
                 fourierResult = new List<Complex>(Enumerable.Repeat(new Complex(0.0, 0.0), size));
-            foreach (var term in first._data)
+            foreach (var term in first)
             {
-                fourierFirst[term.Key] = term.Value;
+                fourierFirst[term.Degree] = term.Coefficient;
             }
-            foreach (var term in second._data)
+            foreach (var term in second)
             {
-                fourierSecond[term.Key] = term.Value;
+                fourierSecond[term.Degree] = term.Coefficient;
             }
 
             fft(ref fourierFirst, lg_size, false);
@@ -343,13 +412,13 @@ namespace CMath.PolynomialEquation
 
             fft(ref fourierResult, lg_size, true);
 
-            SortedList<int, Complex> Result = new SortedList<int, Complex>();
+            Polynomial Result = new Polynomial();
             for (int i = 0; i < size; i++)
                 if (fourierResult[i].Real >= 1e-7 || fourierResult[i].Real <= -1e-7
                     || fourierResult[i].Imaginary >= 1e-7 || fourierResult[i].Imaginary <= -1e-7)
-                    Result[i] = fourierResult[i];
+                    Result.Add(new Term(i,fourierResult[i]));
 
-            return new Polynomial(Result);
+            return Result;
         }
         private static void fft(ref List<Complex> input, int lg_size, bool invert)
         {
@@ -395,18 +464,20 @@ namespace CMath.PolynomialEquation
         }
         private static Polynomial NormalMultiply(Polynomial first, Polynomial second)
         {
-            SortedList<int, Complex> result = new SortedList<int, Complex>();
-            foreach (var termFirst in first._data)
+            Polynomial result = new Polynomial();
+            foreach (var termFirst in first)
             {
-                foreach (var termSecond in second._data)
+                foreach (var termSecond in second)
                 {
-                    if(result.Keys.Contains(termFirst.Key + termSecond.Key))
-                        result[termFirst.Key + termSecond.Key] += termFirst.Value * termSecond.Value;
+                    if (result.Contains(termFirst.Degree + termSecond.Degree))
+                        result.Add(new Term(termFirst.Degree + termSecond.Degree,
+                            termFirst.Coefficient * termSecond.Coefficient
+                            + result.CoefficientOf(termFirst.Degree + termSecond.Degree)));
                     else
-                        result.Add(termFirst.Key + termSecond.Key, termFirst.Value * termSecond.Value);
+                        result.Add(new Term(termFirst.Degree + termSecond.Degree, termFirst.Coefficient * termSecond.Coefficient));
                 }
             }
-            return new Polynomial(result);
+            return result;
         }
         #endregion
 
@@ -458,6 +529,7 @@ namespace CMath.PolynomialEquation
                 }
             }
 
+            while (dN > 0 && N[dN] == 0) dN--;
             for (i = 0; i < dN + 1; i++)
                 r[i] = N[i];
 

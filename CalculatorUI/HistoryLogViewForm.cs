@@ -49,6 +49,9 @@ namespace CalculatorUI
                 case '=':
                     this.Text += " Finding Roots";
                     break;
+                case 'g':
+                    this.Text += " GCD";
+                    break;
             }
         }
         public void showRoots(Polynomial equation, List<Complex> roots)
