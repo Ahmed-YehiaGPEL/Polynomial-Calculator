@@ -139,10 +139,6 @@ namespace CMath.PolynomialEquation
         }
         public void Add(Term newTerm)
         {
-            if(this.Contains(new Term(0,0)))
-            {
-                this.Remove(0);
-            }
             if (_data.ContainsKey(newTerm.Degree))
             {
                 _data[newTerm.Degree] = newTerm.Coefficient;
@@ -150,6 +146,10 @@ namespace CMath.PolynomialEquation
             else
             {
                 _data.Add(newTerm.Degree, newTerm.Coefficient);
+            }
+            if (this.Contains(new Term(0, 0)) && newTerm.Degree != 0)
+            {
+                this.Remove(0);
             }
         }
         public bool Contains(Term _term)
@@ -163,6 +163,7 @@ namespace CMath.PolynomialEquation
         public void Remove(int degree)
         {
             _data.Remove(degree);
+            if (Count == 0) this.Add(new Term(0, 0));
         }
         #endregion
         #region construtors
@@ -321,7 +322,7 @@ namespace CMath.PolynomialEquation
             }
             foreach (var secondTerm in second)
             {
-                if (!result.Contains(secondTerm.Degree))
+                if (!result.Contains(secondTerm.Degree) && !first.Contains(secondTerm.Degree))
                 {
                     if (secondTerm.Coefficient != 0)
                         result.Add(secondTerm);
@@ -348,7 +349,7 @@ namespace CMath.PolynomialEquation
             }
             foreach (var secondTerm in second)
             {
-                if (!result.Contains(secondTerm.Degree))
+                if (!result.Contains(secondTerm.Degree) && !first.Contains(secondTerm.Degree))
                 {
                     secondTerm.Coefficient = -secondTerm.Coefficient;
                     if (secondTerm.Coefficient != 0)
