@@ -23,6 +23,7 @@ namespace CalculatorUI
         Multiplication,
         Division,
         Modulus,
+        Gcd,
         SolveFirst,
         SolveSecond,
         PolynomialAccepted,
@@ -31,6 +32,7 @@ namespace CalculatorUI
         OldDivision,
         OldAddition,
         OldSubtration,
+        OldGcd,
         OldSolve
     }
     //TODO use rich text box instead of flowlayout panel    
@@ -151,15 +153,21 @@ namespace CalculatorUI
                     hL = new HistoryLog(polynomial1, polynomial2, '/', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
+				case OperationTypeEnum.Gcd:
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Greatest Common Divisor Polynomial computed.\r");
+                    _historyTrie.insert(polynomial1, 'g', polynomial2, resultPolynomial);
+                    hL = new HistoryLog(polynomial1, polynomial2, 'g', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
+                    break;
                 case OperationTypeEnum.SolveFirst:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Solved.\r");
-                    _historyTrie.insert(polynomial1, roots);
+                    _historyTrie.insert(polynomial1, '=', roots);
                     hL = new HistoryLog(polynomial1, roots, DateTime.Now.TimeOfDay.ToString());
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.SolveSecond:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Second Polynomial Solved.\r");
-                    _historyTrie.insert(polynomial2, roots);
+                    _historyTrie.insert(polynomial2, '=', roots);
                     hL = new HistoryLog(polynomial2, roots, DateTime.Now.TimeOfDay.ToString());
                     LogItem(hL);
                     break;
@@ -184,6 +192,8 @@ namespace CalculatorUI
                 case OperationTypeEnum.PolynomialAccepted:
                     LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Polynomial entered\r");
                     break;
+                default:
+                    return;
             }
         }
         /// <summary>
@@ -212,6 +222,9 @@ namespace CalculatorUI
                 case '=':
                     _log.DisplayName += " Root finding";
                     break;
+                case 'g':
+                    _log.DisplayName += " GCD";
+                    break;
             }
             historyListBox.Items.Add(_log);
         }
@@ -222,8 +235,9 @@ namespace CalculatorUI
         /// <!--Casts the sender as GlassButton then switch over the Tag property then execute operation-->
         private void PerformOperation(object sender, EventArgs e)
         {
-            
+
             Polynomial searchResult;
+            object RootResult;
             try
             {
                 switch ((sender as Glass.GlassButton).Tag as string)
@@ -294,9 +308,23 @@ namespace CalculatorUI
                             LogOperation(OperationTypeEnum.Division);
                         }
                         break;
-                    case "Find X1":
-                        if (_historyTrie.try_search(polynomial1, out roots))
+                    case "GCD":
+                        if (_historyTrie.try_search(polynomial1, 'g', polynomial2, out searchResult))
                         {
+                            PolynomialParse(searchResult, resPolyText, true);
+                            LogOperation(OperationTypeEnum.OldDivision);
+                        }
+                        else
+                        {
+                            resultPolynomial = Polynomial.__gcd(polynomial1, polynomial2);
+                            PolynomialParse(resultPolynomial, resPolyText, true);
+                            LogOperation(OperationTypeEnum.Division);
+                        }
+                        break;
+                    case "Find X1":
+                        if (_historyTrie.try_search(polynomial1, '=', out RootResult))
+                        {
+                            roots = (List<Complex>)RootResult;
                             LogOperation(OperationTypeEnum.OldSolve);
                             ShowRoots();
                         }
@@ -309,8 +337,9 @@ namespace CalculatorUI
                         }
                         break;
                     case "Find X2":
-                        if (_historyTrie.try_search(polynomial2, out roots))
+                        if (_historyTrie.try_search(polynomial2, '=', out RootResult))
                         {
+                            roots = (List<Complex>)RootResult;
                             LogOperation(OperationTypeEnum.OldSolve);
                         }
                         else
@@ -451,9 +480,11 @@ namespace CalculatorUI
             }
 
             expr = expr.Replace("-X", "-1X");
+            expr = expr.Replace("-x", "-1x");
             expr = expr.Replace("+X", "+1X");
+            expr = expr.Replace("+x", "+1x");
 
-            if (expr.StartsWith("X"))
+            if (expr.StartsWith("X",true,System.Globalization.CultureInfo.CurrentCulture))
                 expr = "1" + expr;
 
             string[] terms =expr.Replace("-", "+-").Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);

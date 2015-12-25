@@ -1,0 +1,9 @@
+/CalculatorUI/bin
+obj
+.vs
+/Polynomial Calculator.v12.suo
+/TestApp/obj
+/TestApp/bin
+/PolynomialTree/obj
+/PolynomialTree/bin
+bin
