@@ -115,8 +115,19 @@ namespace CalculatorUI
         #region Solve
         void SolvePolynomial(Polynomial _poly, ref List<Complex> result)
         {
-            _solverInstance = new Solver(_poly);
-            roots = _solverInstance.solve().ToList();
+            try
+            {
+                _solverInstance = new Solver(_poly);
+                roots = _solverInstance.solve().ToList();
+            }
+            catch (ArgumentException e)
+            {
+                roots = new List<Complex>();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
         #endregion
         #region History
@@ -333,15 +344,13 @@ namespace CalculatorUI
                         {
                             roots = (List<Complex>)RootResult;
                             LogOperation(OperationTypeEnum.OldSolve);
-                            ShowRoots();
                         }
                         else
                         {
                             SolvePolynomial(polynomial1, ref roots);
-
                             LogOperation(OperationTypeEnum.SolveFirst);
-                            ShowRoots();
                         }
+                        ShowRoots();
                         break;
                     case "Find X2":
                         if (_historyTrie.try_search(polynomial2, '=', out RootResult))
@@ -353,9 +362,9 @@ namespace CalculatorUI
                         {
                             SolvePolynomial(polynomial2, ref roots);
                             LogOperation(OperationTypeEnum.SolveSecond);
-                            ShowRoots();
 
                         }
+                        ShowRoots();
                         break;
                 }
             }

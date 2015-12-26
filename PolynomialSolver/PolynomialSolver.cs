@@ -114,7 +114,7 @@ namespace CMath.PolynomialSolver
             Complex identifier = 0;
 
             if (n.Length == 1)
-                throw new Exception("This Polynomial Has No Roots!");
+                throw new ArgumentException("This Polynomial Has No Roots!");
 
             if (n.Length == 2)
             {
