@@ -137,6 +137,10 @@ namespace CMath.PolynomialEquation
         {
             return _data[degree];
         }
+        public bool isnull()
+        {
+            return (Count == 1 && this[0].Coefficient == 0);
+        }
         public void Add(Term newTerm)
         {
             if (_data.ContainsKey(newTerm.Degree))
@@ -247,16 +251,36 @@ namespace CMath.PolynomialEquation
                 {
                     Term current = second[i];
                     second.Remove(current.Degree);
-                    current.Degree -= minimum_rank1;
+                    current.Degree -= minimum_rank2;
                     second.Add(current);
                 }
             }
             Polynomial result;
-            if (first.Count * second.Count <= first.Back.Degree + second.Back.Degree)
+            if (first.Count * second.Count <= first.Degree + second.Degree)
                 result = NormalMultiply(first, second);
             else
                 result = MultiplyFFT(first, second);
 
+            if (minimum_rank1 != 0)
+            {
+                for (int i = first.Count - 1; i >= 0; i--)
+                {
+                    Term current = first[i];
+                    first.Remove(current.Degree);
+                    current.Degree += minimum_rank1;
+                    first.Add(current);
+                }
+            }
+            if (minimum_rank2 != 0)
+            {
+                for (int i = second.Count - 1; i >= 0; i--)
+                {
+                    Term current = second[i];
+                    second.Remove(current.Degree);
+                    current.Degree += minimum_rank2;
+                    second.Add(current);
+                }
+            }
             if (minimum_rank1 + minimum_rank2 != 0)
             {
                 for (int i = result.Count - 1; i >= 0; i--)
@@ -382,7 +406,7 @@ namespace CMath.PolynomialEquation
                 second = first;
                 first = temp;
             }
-            while (second.Count > 1 || second[0].Coefficient != 0)
+            while (!second.isnull())
             {
                 Polynomial temp = first;
                 first = second;
