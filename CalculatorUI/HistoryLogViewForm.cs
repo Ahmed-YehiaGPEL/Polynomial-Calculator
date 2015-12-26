@@ -25,9 +25,9 @@ namespace CalculatorUI
             InitializeComponent();
             if (_log.Operation != '=')
             {
-                ParsePolynomial(_log.firstPolynomial, richTextBox1);
-                ParsePolynomial(_log.secondPolynomial, richTextBox2);
-                ParsePolynomial(_log.resultPolynomial, richTextBox3);
+                ParsePolynomial(_log.firstPolynomial, polynomial1TextBox);
+                ParsePolynomial(_log.secondPolynomial, polynomial2TextBox);
+                ParsePolynomial(_log.resultPolynomial, resultPolynomialTextBox);
             }
             else
             {
@@ -56,23 +56,23 @@ namespace CalculatorUI
         }
         public void showRoots(Polynomial equation, List<Complex> roots)
         {
-            ParsePolynomial(equation, richTextBox1);
+            ParsePolynomial(equation, polynomial1TextBox);
             splitContainer2.Panel1Collapsed = true;
             foreach (var item in roots)
             {
                 if(item.Imaginary == 0)
-                    richTextBox3.Text += item.Real.ToString() + "\r\n";
+                    resultPolynomialTextBox.Text += item.Real.ToString() + "\r\n";
                 else
                 {
-                    richTextBox3.Text += item.Real.ToString() + " ";
+                    resultPolynomialTextBox.Text += item.Real.ToString() + " ";
                     if(item.Imaginary > 0)
                     {
-                        richTextBox3.Text += "+ "+ item.Imaginary.ToString() + "i" + "\r\n";
+                        resultPolynomialTextBox.Text += "+ "+ item.Imaginary.ToString() + "i" + "\r\n";
                     }
                     else
                     {
-                        richTextBox3.Text += "- " + item.Imaginary.ToString().Substring(1);
-                        richTextBox3.AppendText("i\r\n");
+                        resultPolynomialTextBox.Text += "- " + item.Imaginary.ToString().Substring(1);
+                        resultPolynomialTextBox.AppendText("i\r\n");
                     }
                 }
             }
@@ -113,9 +113,9 @@ namespace CalculatorUI
         }
         private void HistoryLogViewForm_Load(object sender, EventArgs e)
         {
-            LoadColorFont(richTextBox1);
-            LoadColorFont(richTextBox2);
-            LoadColorFont(richTextBox3);
+            LoadColorFont(polynomial1TextBox);
+            LoadColorFont(polynomial2TextBox);
+            LoadColorFont(resultPolynomialTextBox);
         }
         void LoadColorFont(RichTextBox _rbox)
         {

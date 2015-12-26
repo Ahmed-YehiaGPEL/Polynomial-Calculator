@@ -22,29 +22,24 @@ namespace CalculatorUI
         internal Font fnt;
         public CustomizeForm()
         {
+            //Initialize old stored settings
+
             clr = Properties.Settings.Default.Color;
             fnt = Properties.Settings.Default.Font;
    
             InitializeComponent();
-            for (int i = 0; i < richTextBox1.TextLength; i++)
+            //Load color,font into richtextbox
+            for (int i = 0; i < sampleTextBox.TextLength; i++)
             {
-                richTextBox1.SelectionStart = i;
-                richTextBox1.SelectionLength = 1;
-                richTextBox1.SelectionFont = fnt;
-                richTextBox1.SelectionColor = clr;
+                sampleTextBox.SelectionStart = i;
+                sampleTextBox.SelectionLength = 1;
+                sampleTextBox.SelectionFont = fnt;
+                sampleTextBox.SelectionColor = clr;
             }
 
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
 
-        }
-
-        private void CustomizeForm_Load(object sender, EventArgs e)
-        {
-          
-        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -52,11 +47,11 @@ namespace CalculatorUI
             if (dResult == System.Windows.Forms.DialogResult.OK)
             {
                 fnt = fontDialog1.Font;
-                for (int i = 0; i < richTextBox1.TextLength; i++)
+                for (int i = 0; i < sampleTextBox.TextLength; i++)
                 {
-                    richTextBox1.SelectionStart = i;
-                    richTextBox1.SelectionLength = 1;
-                    richTextBox1.SelectionFont = fontDialog1.Font;
+                    sampleTextBox.SelectionStart = i;
+                    sampleTextBox.SelectionLength = 1;
+                    sampleTextBox.SelectionFont = fontDialog1.Font;
                 }
             }
         }
@@ -67,11 +62,11 @@ namespace CalculatorUI
             if (dResult == System.Windows.Forms.DialogResult.OK)
             {
                 clr = colorDialog1.Color;
-                for (int i = 0; i < richTextBox1.TextLength; i++)
+                for (int i = 0; i < sampleTextBox.TextLength; i++)
             {
-                richTextBox1.SelectionStart = i;
-                richTextBox1.SelectionLength = 1;
-                richTextBox1.SelectionColor = colorDialog1.Color;
+                sampleTextBox.SelectionStart = i;
+                sampleTextBox.SelectionLength = 1;
+                sampleTextBox.SelectionColor = colorDialog1.Color;
             }
 
             }
@@ -89,12 +84,12 @@ namespace CalculatorUI
 
         private void revertButton_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < richTextBox1.TextLength; i++)
+            for (int i = 0; i < sampleTextBox.TextLength; i++)
             {
-                richTextBox1.SelectionStart = i;
-                richTextBox1.SelectionLength = 1;
-                richTextBox1.SelectionFont = Properties.Settings.Default.Font;
-                richTextBox1.SelectionColor = Properties.Settings.Default.Color;
+                sampleTextBox.SelectionStart = i;
+                sampleTextBox.SelectionLength = 1;
+                sampleTextBox.SelectionFont = Properties.Settings.Default.Font;
+                sampleTextBox.SelectionColor = Properties.Settings.Default.Color;
             }
         }
       
@@ -102,12 +97,12 @@ namespace CalculatorUI
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
             
-            if (richTextBox1.TextLength != 0)
+            if (sampleTextBox.TextLength != 0)
             {
-                char lastChar = richTextBox1.Text.Last();
+                char lastChar = sampleTextBox.Text.Last();
                 if (lastChar == 'X' || lastChar == 'x')
                 {
-                    richTextBox1.SelectionCharOffset = 7;
+                    sampleTextBox.SelectionCharOffset = 7;
                 }
             }
         }
@@ -116,7 +111,7 @@ namespace CalculatorUI
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                richTextBox1.SelectionCharOffset = 0;
+                sampleTextBox.SelectionCharOffset = 0;
             }
         }
 

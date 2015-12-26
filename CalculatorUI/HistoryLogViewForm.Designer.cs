@@ -30,12 +30,12 @@
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.polynomial1TextBox = new System.Windows.Forms.RichTextBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
+            this.polynomial2TextBox = new System.Windows.Forms.RichTextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.richTextBox3 = new System.Windows.Forms.RichTextBox();
+            this.resultPolynomialTextBox = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -70,7 +70,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.richTextBox1);
+            this.groupBox1.Controls.Add(this.polynomial1TextBox);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
@@ -79,14 +79,14 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Polynomial";
             // 
-            // richTextBox1
+            // polynomial1TextBox
             // 
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Location = new System.Drawing.Point(3, 18);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(811, 55);
-            this.richTextBox1.TabIndex = 1;
-            this.richTextBox1.Text = "";
+            this.polynomial1TextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.polynomial1TextBox.Location = new System.Drawing.Point(3, 18);
+            this.polynomial1TextBox.Name = "polynomial1TextBox";
+            this.polynomial1TextBox.Size = new System.Drawing.Size(811, 55);
+            this.polynomial1TextBox.TabIndex = 1;
+            this.polynomial1TextBox.Text = "";
             // 
             // splitContainer2
             // 
@@ -109,7 +109,7 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.richTextBox2);
+            this.groupBox2.Controls.Add(this.polynomial2TextBox);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(0, 0);
             this.groupBox2.Name = "groupBox2";
@@ -118,18 +118,18 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Polynomial 2";
             // 
-            // richTextBox2
+            // polynomial2TextBox
             // 
-            this.richTextBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox2.Location = new System.Drawing.Point(3, 18);
-            this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(811, 49);
-            this.richTextBox2.TabIndex = 2;
-            this.richTextBox2.Text = "";
+            this.polynomial2TextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.polynomial2TextBox.Location = new System.Drawing.Point(3, 18);
+            this.polynomial2TextBox.Name = "polynomial2TextBox";
+            this.polynomial2TextBox.Size = new System.Drawing.Size(811, 49);
+            this.polynomial2TextBox.TabIndex = 2;
+            this.polynomial2TextBox.Text = "";
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.richTextBox3);
+            this.groupBox3.Controls.Add(this.resultPolynomialTextBox);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
@@ -138,14 +138,14 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Result";
             // 
-            // richTextBox3
+            // resultPolynomialTextBox
             // 
-            this.richTextBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox3.Location = new System.Drawing.Point(3, 18);
-            this.richTextBox3.Name = "richTextBox3";
-            this.richTextBox3.Size = new System.Drawing.Size(811, 81);
-            this.richTextBox3.TabIndex = 2;
-            this.richTextBox3.Text = "";
+            this.resultPolynomialTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.resultPolynomialTextBox.Location = new System.Drawing.Point(3, 18);
+            this.resultPolynomialTextBox.Name = "resultPolynomialTextBox";
+            this.resultPolynomialTextBox.Size = new System.Drawing.Size(811, 81);
+            this.resultPolynomialTextBox.TabIndex = 2;
+            this.resultPolynomialTextBox.Text = "";
             // 
             // HistoryLogViewForm
             // 
@@ -182,9 +182,9 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.RichTextBox richTextBox2;
-        private System.Windows.Forms.RichTextBox richTextBox3;
+        private System.Windows.Forms.RichTextBox polynomial1TextBox;
+        private System.Windows.Forms.RichTextBox polynomial2TextBox;
+        private System.Windows.Forms.RichTextBox resultPolynomialTextBox;
 
     }
 }

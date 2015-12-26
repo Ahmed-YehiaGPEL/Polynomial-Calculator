@@ -92,7 +92,6 @@
             this.statusBar.Size = new System.Drawing.Size(786, 25);
             this.statusBar.TabIndex = 0;
             this.statusBar.Text = "statusStrip1";
-            this.statusBar.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.statusBar_ItemClicked);
             // 
             // toolStripStatusLabel1
             // 
@@ -498,7 +497,6 @@
             this.Text = "Polynomial Calculator";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
-            this.ClientSizeChanged += new System.EventHandler(this.MainForm_ClientSizeChanged);
             this.statusBar.ResumeLayout(false);
             this.statusBar.PerformLayout();
             this.menuBar.ResumeLayout(false);

@@ -16,6 +16,11 @@ using System.Threading;
 namespace CalculatorUI
 {
 
+    /// <summary>
+    /// Enum that holds the operation to be stored / processed
+    /// </summary>
+    /// <!--Whatever opeation to be added later should be added here along with another old-like version of it ex:-->
+    /// <!--GCD , OldGCD -->
     public enum OperationTypeEnum
     {
         Addition,
@@ -35,7 +40,6 @@ namespace CalculatorUI
         OldGcd,
         OldSolve
     }
-    //TODO use rich text box instead of flowlayout panel    
     public partial class MainForm : Form
     {
         #region Internal Declrations
@@ -63,7 +67,10 @@ namespace CalculatorUI
             
 
         }
-
+        /// <summary>
+        /// Load thread
+        /// </summary>
+        /// <!--Put whatever takes load in memory here-->
         internal void LoadThread()
         {   
             try
@@ -79,7 +86,7 @@ namespace CalculatorUI
         }
        
         /// <summary>
-        /// Show roots of polynomial in the Log Panel
+        /// Show roots of polynomial in the roots log panel
         /// </summary>
         public void ShowRoots()
         {
@@ -383,7 +390,9 @@ namespace CalculatorUI
             LogPanel.AppendText("Log started " + DateTime.Now.ToShortTimeString());
         }
 
-
+        /// <summary>
+        /// Close handler of the form, applies settings on close and renables the owner form
+        /// </summary>
         public void setClose(object sender, FormClosedEventArgs e)
         {
             this.Enabled = true;
@@ -414,7 +423,6 @@ namespace CalculatorUI
         // Load history logs
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
             HistoryLogViewForm hForm = new HistoryLogViewForm(historyListBox.SelectedItem as HistoryLog);
             showForm(hForm, this, setClose);
         }
@@ -431,7 +439,13 @@ namespace CalculatorUI
             }
         }
 
-       
+       /// <summary>
+       /// Clears items stored in log, disposes history trie and deletes history log file
+       /// reinitiates the log panel, polynomials input text boxes,roots log and history log
+       /// reinitiate the colored font settings.
+       /// </summary>
+       /// <param name="sender"></param>
+       /// <param name="e"></param>
         private void clearLogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Are you sure you want to clear all past operations ?\n this action cannot be reverse", "Alert", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
@@ -460,11 +474,14 @@ namespace CalculatorUI
        {
            showForm(new CustomizeForm(), this, setClose);
        }
-        /// <summary>
-        /// Parse polynomial from rich text box
-        /// </summary>
-        /// <param name="_rtBox">RichTextBox that contains the data</param>
-        /// <returns></returns>
+       #region RTF Handling
+
+       #region Parsing Algorithms
+       /// <summary>
+       /// Parse polynomial from rich text box
+       /// </summary>
+       /// <param name="_rtBox">RichTextBox that contains the data</param>
+       /// <returns></returns>
        internal Polynomial PolynomialParse(RichTextBox _rtBox)
        {
            //string _deg = "", _coeff = "";
@@ -513,45 +530,13 @@ namespace CalculatorUI
                     sList.Add(0, new Complex(double.Parse(s), 0)); //Free term
             }
 
-            //for (int i = 0; i < _rtBox.TextLength; i++)
-            //{
-            //    _rtBox.SelectionStart = i;
-            //    _rtBox.SelectionLength = 1;
-            //    if (_rtBox.SelectionCharOffset > 0)
-            //    {
-            //        _deg += _rtBox.SelectedText;
-            //    }
-            //    else
-            //    {
-            //        if ((_rtBox.SelectedText == "X" || _rtBox.SelectedText == "x"))
-            //        {
-            //            continue;
-            //        }
-            //        else if (_rtBox.SelectedText != "+" && _rtBox.SelectedText != "-")
-            //        {
-            //            _coeff += _rtBox.SelectedText;
-            //        }
-            //        else
-            //        {
-            //            if (_deg == "")
-            //                _deg = "1"; 
-            //            sList.Add(int.Parse(_deg), new System.Numerics.Complex(double.Parse(_coeff), 0));
-            //            _deg = "";
-            //            _coeff = "";
-            //        }
-            //    }
-            //}
-            //if (_deg == "")
-            //    _deg = "0";
-            //sList.Add(int.Parse(_deg), new System.Numerics.Complex(double.Parse(_coeff), 0));
-
             return new Polynomial(sList);
        }
-        /// <summary>
-        /// Parse polynomial to RichTextBox with superscript and base considration
-        /// </summary>
-        /// <param name="_polynomial">Polynomial to be parsed</param>
-        /// <param name="_rtBox">RichTextBox to parse to</param>
+       /// <summary>
+       /// Parse polynomial to RichTextBox with superscript and base considration
+       /// </summary>
+       /// <param name="_polynomial">Polynomial to be parsed</param>
+       /// <param name="_rtBox">RichTextBox to parse to</param>
        internal void PolynomialParse(Polynomial _polynomial, RichTextBox _rtBox, bool isResult)
         {
             if (isResult)
@@ -590,6 +575,12 @@ namespace CalculatorUI
                 LoadColorFont(_rtBox);
             }
         }
+
+       #endregion
+        /// <summary>
+        /// Loads color and font settings to polylnomials text boxes
+        /// </summary>
+        /// <param name="_rbox"></param>
        internal void LoadColorFont(RichTextBox _rbox)
        {
            for (int i = 0; i < _rbox.TextLength; i++)
@@ -600,8 +591,7 @@ namespace CalculatorUI
                _rbox.SelectionColor = Properties.Settings.Default.Color;
            }
        }
-
-        /// <summary>
+       /// <summary>
         /// Enables superscript writing for power
         /// </summary>
         /// <param name="sender"></param>
@@ -618,6 +608,11 @@ namespace CalculatorUI
                 }
             }
        }
+        /// <summary>
+        /// Switch to base and parse polynomial on pressing enter
+        /// </summary>
+        /// <param name="sender">Control sender</param>
+        /// <param name="e">KeyPress Param</param>
        private void BaseOnEnter(object sender, KeyPressEventArgs e)
        {
            try
@@ -645,17 +640,14 @@ namespace CalculatorUI
                MessageBox.Show(ex.Message);
            }
        }
-       private void statusBar_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-       {
 
-       }
+       #endregion
 
-       private void MainForm_ClientSizeChanged(object sender, EventArgs e)
-       {
-
-       }
-       
     }
+    /// <summary>
+    /// Class that holds the history item, each instance holds one record of operation and two polynomials
+    /// The record can hold one operation and its roots.
+    /// </summary>
     public class HistoryLog
     {
         public Polynomial firstPolynomial, secondPolynomial, resultPolynomial;
