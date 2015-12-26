@@ -137,6 +137,10 @@ namespace CMath.PolynomialEquation
         {
             return _data[degree];
         }
+        public bool isnull()
+        {
+            return (Count == 1 && this[0].Coefficient == 0);
+        }
         public void Add(Term newTerm)
         {
             if (_data.ContainsKey(newTerm.Degree))
@@ -247,16 +251,36 @@ namespace CMath.PolynomialEquation
                 {
                     Term current = second[i];
                     second.Remove(current.Degree);
-                    current.Degree -= minimum_rank1;
+                    current.Degree -= minimum_rank2;
                     second.Add(current);
                 }
             }
             Polynomial result;
-            if (first.Count * second.Count <= first.Back.Degree + second.Back.Degree)
+            if (first.Count * second.Count <= first.Degree + second.Degree)
                 result = NormalMultiply(first, second);
             else
                 result = MultiplyFFT(first, second);
 
+            if (minimum_rank1 != 0)
+            {
+                for (int i = first.Count - 1; i >= 0; i--)
+                {
+                    Term current = first[i];
+                    first.Remove(current.Degree);
+                    current.Degree += minimum_rank1;
+                    first.Add(current);
+                }
+            }
+            if (minimum_rank2 != 0)
+            {
+                for (int i = second.Count - 1; i >= 0; i--)
+                {
+                    Term current = second[i];
+                    second.Remove(current.Degree);
+                    current.Degree += minimum_rank2;
+                    second.Add(current);
+                }
+            }
             if (minimum_rank1 + minimum_rank2 != 0)
             {
                 for (int i = result.Count - 1; i >= 0; i--)
@@ -336,10 +360,10 @@ namespace CMath.PolynomialEquation
             Polynomial result = new Polynomial();
             foreach (var firstTerm in first)
             {
-                if (second.Contains(firstTerm))
+                if (second.Contains(firstTerm.Degree))
                 {
-                    if (second.CoefficientOf(firstTerm.Degree) - firstTerm.Coefficient != 0)
-                        result.Add(new Term(firstTerm.Degree, second.CoefficientOf(firstTerm.Degree) - firstTerm.Coefficient));
+                    if (firstTerm.Coefficient - second.CoefficientOf(firstTerm.Degree) != 0)
+                        result.Add(new Term(firstTerm.Degree, firstTerm.Coefficient - second.CoefficientOf(firstTerm.Degree)));
                 }
                 else
                 {
@@ -382,10 +406,11 @@ namespace CMath.PolynomialEquation
                 second = first;
                 first = temp;
             }
-            while (second.Count > 1 || second[0].Coefficient != 0)
+            while (!second.isnull())
             {
+                Polynomial temp = first;
                 first = second;
-                second = first % second;
+                second = temp % second;
             }
             return first;
         }
@@ -425,8 +450,7 @@ namespace CMath.PolynomialEquation
 
             Polynomial Result = new Polynomial();
             for (int i = 0; i < size; i++)
-                if (fourierResult[i].Real >= 1e-7 || fourierResult[i].Real <= -1e-7
-                    || fourierResult[i].Imaginary >= 1e-7 || fourierResult[i].Imaginary <= -1e-7)
+                if (fourierResult[i] != 0)
                     Result.Add(new Term(i,fourierResult[i]));
 
             return Result;
@@ -478,6 +502,7 @@ namespace CMath.PolynomialEquation
             Polynomial result = new Polynomial();
             foreach (var termFirst in first)
             {
+                if (termFirst.Coefficient == 0) continue;
                 foreach (var termSecond in second)
                 {
                     if (result.Contains(termFirst.Degree + termSecond.Degree))
@@ -486,6 +511,8 @@ namespace CMath.PolynomialEquation
                             + result.CoefficientOf(termFirst.Degree + termSecond.Degree)));
                     else
                         result.Add(new Term(termFirst.Degree + termSecond.Degree, termFirst.Coefficient * termSecond.Coefficient));
+                    if (result.CoefficientOf(termFirst.Degree + termSecond.Degree) == 0) 
+                        result.Remove(termFirst.Degree + termSecond.Degree);
                 }
             }
             return result;

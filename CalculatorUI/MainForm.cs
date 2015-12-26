@@ -115,8 +115,19 @@ namespace CalculatorUI
         #region Solve
         void SolvePolynomial(Polynomial _poly, ref List<Complex> result)
         {
-            _solverInstance = new Solver(_poly);
-            roots = _solverInstance.solve().ToList();
+            try
+            {
+                _solverInstance = new Solver(_poly);
+                roots = _solverInstance.solve().ToList();
+            }
+            catch (ArgumentException e)
+            {
+                roots = new List<Complex>();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
         #endregion
         #region History
@@ -242,7 +253,6 @@ namespace CalculatorUI
         /// <!--Casts the sender as GlassButton then switch over the Tag property then execute operation-->
         private void PerformOperation(object sender, EventArgs e)
         {
-
             Polynomial searchResult;
             object RootResult;
             try
@@ -333,15 +343,13 @@ namespace CalculatorUI
                         {
                             roots = (List<Complex>)RootResult;
                             LogOperation(OperationTypeEnum.OldSolve);
-                            ShowRoots();
                         }
                         else
                         {
                             SolvePolynomial(polynomial1, ref roots);
-
                             LogOperation(OperationTypeEnum.SolveFirst);
-                            ShowRoots();
                         }
+                        ShowRoots();
                         break;
                     case "Find X2":
                         if (_historyTrie.try_search(polynomial2, '=', out RootResult))
@@ -353,9 +361,9 @@ namespace CalculatorUI
                         {
                             SolvePolynomial(polynomial2, ref roots);
                             LogOperation(OperationTypeEnum.SolveSecond);
-                            ShowRoots();
 
                         }
+                        ShowRoots();
                         break;
                 }
             }
@@ -529,7 +537,6 @@ namespace CalculatorUI
                 else
                     sList.Add(0, new Complex(double.Parse(s), 0)); //Free term
             }
-
             return new Polynomial(sList);
        }
        /// <summary>
@@ -543,30 +550,35 @@ namespace CalculatorUI
             {
                 _rtBox.Text = "";
             }
-            for (int i = _polynomial.Count - 1; i >= 0; i--)
+            if (_polynomial.isnull())
             {
-                if (_polynomial[i].Degree == 0)
+                _rtBox.Text = "0";
+            }
+            else
+            {
+                for (int i = _polynomial.Count - 1; i >= 0; i--)
                 {
-                    _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
-                    if (i != 0)
+                    if (_polynomial[i].Coefficient.Real < 0)
                     {
-                        if (_polynomial[i - 1].Coefficient.Real > 0)
-                            _rtBox.AppendText("+");
+                        _rtBox.AppendText("-");
                     }
-                }
-                else
-                {
-                    if (_polynomial[i].Coefficient.Real != 1 || _polynomial[i].Coefficient.Imaginary != 0)
-                        _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
-                    _rtBox.AppendText("X");
-                    _rtBox.SelectionCharOffset = 7;
-                    if (_polynomial[i].Degree > 1)
-                        _rtBox.AppendText(_polynomial[i].Degree.ToString());
-                    _rtBox.SelectionCharOffset = 0;
-                    if (i != 0)
+                    else if (i < _polynomial.Count - 1 || _polynomial[i].Coefficient != 1)
                     {
-                        if (_polynomial[i - 1].Coefficient.Real > 0)
-                            _rtBox.AppendText("+");
+                        _rtBox.AppendText("+");
+                    }
+                    if (_polynomial[i].Degree == 0)
+                    {
+                        _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
+                    }
+                    else
+                    {
+                        if (Math.Abs(_polynomial[i].Coefficient.Real) != 1)
+                            _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
+                        _rtBox.AppendText("X");
+                        _rtBox.SelectionCharOffset = 7;
+                        if (_polynomial[i].Degree > 1)
+                            _rtBox.AppendText(_polynomial[i].Degree.ToString());
+                        _rtBox.SelectionCharOffset = 0;
                     }
                 }
             }
