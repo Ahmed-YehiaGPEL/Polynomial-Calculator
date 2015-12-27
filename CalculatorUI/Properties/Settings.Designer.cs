@@ -46,5 +46,17 @@ namespace CalculatorUI.Properties {
                 this["Color"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AskOnExit {
+            get {
+                return ((bool)(this["AskOnExit"]));
+            }
+            set {
+                this["AskOnExit"] = value;
+            }
+        }
     }
 }

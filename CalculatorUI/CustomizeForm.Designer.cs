@@ -35,12 +35,13 @@
             this.sampleTextBox = new System.Windows.Forms.RichTextBox();
             this.revertButton = new Glass.GlassButton();
             this.applyButton = new Glass.GlassButton();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // colorChangeButton
             // 
             this.colorChangeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.colorChangeButton.Location = new System.Drawing.Point(256, 12);
+            this.colorChangeButton.Location = new System.Drawing.Point(256, 54);
             this.colorChangeButton.Name = "colorChangeButton";
             this.colorChangeButton.Size = new System.Drawing.Size(125, 32);
             this.colorChangeButton.TabIndex = 4;
@@ -51,7 +52,7 @@
             // fontChangeButton
             // 
             this.fontChangeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.fontChangeButton.Location = new System.Drawing.Point(12, 12);
+            this.fontChangeButton.Location = new System.Drawing.Point(12, 54);
             this.fontChangeButton.Name = "fontChangeButton";
             this.fontChangeButton.Size = new System.Drawing.Size(125, 32);
             this.fontChangeButton.TabIndex = 5;
@@ -61,7 +62,7 @@
             // 
             // sampleTextBox
             // 
-            this.sampleTextBox.Location = new System.Drawing.Point(12, 50);
+            this.sampleTextBox.Location = new System.Drawing.Point(12, 92);
             this.sampleTextBox.Multiline = false;
             this.sampleTextBox.Name = "sampleTextBox";
             this.sampleTextBox.Size = new System.Drawing.Size(370, 120);
@@ -72,7 +73,7 @@
             // 
             // revertButton
             // 
-            this.revertButton.Location = new System.Drawing.Point(225, 176);
+            this.revertButton.Location = new System.Drawing.Point(225, 218);
             this.revertButton.Name = "revertButton";
             this.revertButton.Size = new System.Drawing.Size(156, 34);
             this.revertButton.TabIndex = 7;
@@ -81,18 +82,32 @@
             // 
             // applyButton
             // 
-            this.applyButton.Location = new System.Drawing.Point(12, 176);
+            this.applyButton.Location = new System.Drawing.Point(12, 218);
             this.applyButton.Name = "applyButton";
             this.applyButton.Size = new System.Drawing.Size(156, 34);
             this.applyButton.TabIndex = 6;
             this.applyButton.Text = "Apply Changes";
             this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBox1.Font = new System.Drawing.Font("Consolas", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox1.Location = new System.Drawing.Point(12, 12);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(324, 24);
+            this.checkBox1.TabIndex = 9;
+            this.checkBox1.Text = "Ask me every time I want to exit.";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // CustomizeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(393, 220);
+            this.ClientSize = new System.Drawing.Size(393, 258);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.sampleTextBox);
             this.Controls.Add(this.revertButton);
             this.Controls.Add(this.applyButton);
@@ -103,6 +118,7 @@
             this.Name = "CustomizeForm";
             this.Text = "CustomizeForm";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -115,6 +131,7 @@
         private System.Windows.Forms.RichTextBox sampleTextBox;
         private Glass.GlassButton revertButton;
         private Glass.GlassButton applyButton;
+        private System.Windows.Forms.CheckBox checkBox1;
 
     }
 }

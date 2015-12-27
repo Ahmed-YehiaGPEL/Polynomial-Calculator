@@ -21,7 +21,7 @@ namespace CMath.PolynomialEquation
             : base(info, context) { }
     }
     #endregion
-    #region term
+    #region Term
     public class Term
     {
         private int _degree;
@@ -518,7 +518,6 @@ namespace CMath.PolynomialEquation
             return result;
         }
         #endregion
-
         #region DivisionUtilies
         private static Complex[] longDiv(Complex[] N, Complex[] D, bool modulus)
         {

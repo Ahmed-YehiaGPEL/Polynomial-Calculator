@@ -36,7 +36,7 @@ namespace CalculatorUI
                 sampleTextBox.SelectionFont = fnt;
                 sampleTextBox.SelectionColor = clr;
             }
-
+            checkBox1.Checked = Properties.Settings.Default.AskOnExit;
         }
 
 
@@ -113,6 +113,11 @@ namespace CalculatorUI
             {
                 sampleTextBox.SelectionCharOffset = 0;
             }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.AskOnExit = checkBox1.Checked;
         }
 
       

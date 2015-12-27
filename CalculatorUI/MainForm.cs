@@ -385,12 +385,7 @@ namespace CalculatorUI
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to exit?", " Exit ?", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                _historyTrie.save(filePath);
-
-                Application.Exit();
-            }
+            this.Close();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -437,13 +432,21 @@ namespace CalculatorUI
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to exit?", " Exit ?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (Properties.Settings.Default.AskOnExit)
             {
-                _historyTrie.save(filePath);
+                if (MessageBox.Show("Are you sure you want to exit?", " Exit ?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    _historyTrie.save(filePath);
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
             }
             else
             {
-                e.Cancel = true;
+                _historyTrie.save(filePath);
+                
             }
         }
 
@@ -654,6 +657,11 @@ namespace CalculatorUI
        }
 
        #endregion
+
+       private void licenseToolStripMenuItem_Click(object sender, EventArgs e)
+       {
+           showForm(new LicenseForm(), this, setClose);
+       }
 
     }
     /// <summary>
