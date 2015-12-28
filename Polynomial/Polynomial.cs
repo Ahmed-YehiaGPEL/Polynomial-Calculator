@@ -150,7 +150,6 @@ namespace CMath.PolynomialEquation
                 Math.Round(newTerm.Coefficient.Imaginary * Math.Pow(10.0, (double)Settings.Default.Precision))
                 / Math.Pow(10.0, (double)Settings.Default.Precision)
                 );
-            if (newTerm.Coefficient == 0 && newTerm.Degree != 0) return;
             if (_data.ContainsKey(newTerm.Degree))
             {
                 _data[newTerm.Degree] = newTerm.Coefficient;
@@ -159,9 +158,13 @@ namespace CMath.PolynomialEquation
             {
                 _data.Add(newTerm.Degree, newTerm.Coefficient);
             }
-            if (this.Contains(new Term(0, 0)) && newTerm.Degree != 0)
+            if (newTerm.Coefficient == 0 && newTerm.Degree != 0)
             {
-                this.Remove(0);
+                Remove(newTerm.Degree);
+            }
+            if (Contains(new Term(0, 0)) && Count > 1)
+            {
+                Remove(0);
             }
         }
         public bool Contains(Term _term)
