@@ -5,12 +5,13 @@ using System.Text;
 using System.IO;
 using System.Numerics;
 using System.Collections;
+using PolynomialEquation.Properties;
 
 namespace CMath.PolynomialEquation
 {
     #region NegativeRankException
     [Serializable]
-    class NegativeRankException : Exception
+    public class NegativeRankException : ArgumentException
     {
         public NegativeRankException() { }
         public NegativeRankException(string message) : base(message) { }
@@ -143,6 +144,13 @@ namespace CMath.PolynomialEquation
         }
         public void Add(Term newTerm)
         {
+            newTerm.Coefficient = new Complex(
+                Math.Round(newTerm.Coefficient.Real * Math.Pow(10.0, (double)Settings.Default.Precision))
+                / Math.Pow(10.0, (double)Settings.Default.Precision),
+                Math.Round(newTerm.Coefficient.Imaginary * Math.Pow(10.0, (double)Settings.Default.Precision))
+                / Math.Pow(10.0, (double)Settings.Default.Precision)
+                );
+            if (newTerm.Coefficient == 0 && newTerm.Degree != 0) return;
             if (_data.ContainsKey(newTerm.Degree))
             {
                 _data[newTerm.Degree] = newTerm.Coefficient;
@@ -201,9 +209,10 @@ namespace CMath.PolynomialEquation
             while (PolynomialStringReader.Peek() != -1)
             {
                 string[] current = PolynomialStringReader.ReadLine().Split('(',')',',');
-                real = double.Parse(current[1]);
-                imaginary = double.Parse(current[2]);
-                degree = int.Parse(current[4]);
+                if (current.Length != 6) throw new FormatException("bad polynomial format");
+                if (!double.TryParse(current[1], out real)) throw new FormatException("bad polynomial format");
+                if (!double.TryParse(current[2], out imaginary)) throw new FormatException("bad polynomial format");
+                if (!int.TryParse(current[4], out degree)) throw new FormatException("bad polynomial format");
                 if (degree < 0)
                 {
                     throw new NegativeRankException("Negative rank isn't allowed");
