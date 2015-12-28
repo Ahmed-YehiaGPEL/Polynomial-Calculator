@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    tools:gridSpec="1|8|#0093eeff|K:#ee8700ff:16,l:72,l:16,r|S:#83ee00ff:16,0,l:16,56,l:16,0,r">
+    <ListView
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="248.5dp"
+        android:transcriptMode="alwaysScroll"
+        android:id="@+id/listPoly"
+        android:layout_marginBottom="0.0dp" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="74.5dp"
+        android:id="@+id/linearLayout1">
+        <Button
+            android:text="Add Polynomial"
+            android:id="@+id/BtnAddPoly"
+            android:layout_width="136.5dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="116.0dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="85.5dp"
+        android:id="@+id/linearLayout2">
+        <Button
+            android:text="Add"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            style="?android:attr/borderlessButtonStyle"
+            android:id="@+id/buttonAdd" />
+        <Button
+            android:text="Subtract"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            style="?android:attr/borderlessButtonStyle"
+            android:id="@+id/buttonSub" />
+        <Button
+            android:text="Multiply"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            style="?android:attr/borderlessButtonStyle"
+            android:id="@+id/buttonMul" />
+        <Button
+            android:text="Divide"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            style="?android:attr/borderlessButtonStyle"
+            android:id="@+id/buttonDiv" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="85.5dp"
+        android:id="@+id/linearLayout3">
+        <Button
+            android:text="Modulus"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            style="?android:attr/borderlessButtonStyle"
+            android:id="@+id/buttonMod"
+            android:layout_marginLeft="52.0dp" />
+        <Button
+            android:text="Solve"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            style="?android:attr/borderlessButtonStyle"
+            android:id="@+id/buttonSlv" />
+        <Button
+            android:text="GCD"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            style="?android:attr/borderlessButtonStyle"
+            android:id="@+id/buttonGcd" />
+    </LinearLayout>
+</LinearLayout>
