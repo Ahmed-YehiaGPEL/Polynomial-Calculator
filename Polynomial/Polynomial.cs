@@ -434,6 +434,15 @@ namespace CMath.PolynomialEquation
             }
             return result;
         }
+        public Complex definite_integral(Complex a, Complex b)
+        {
+            Polynomial integral = new Polynomial();
+            foreach (var term in this)
+            {
+                integral.Add(new Term(term.Degree+1,term.Coefficient/(term.Degree+1)));
+            }
+            return integral.substitute(b) - integral.substitute(a);
+        }
         #endregion
         #region MuliplyUtilies
         private static Polynomial MultiplyFFT(Polynomial first, Polynomial second)

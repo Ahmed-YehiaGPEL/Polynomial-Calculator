@@ -145,7 +145,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="appdata.xml" />
+    <Content Include="help.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\Splash.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GraphLib\GraphLib.csproj">
+      <Project>{0c0a1f4d-1363-4544-a7c5-196c76d26cca}</Project>
+      <Name>GraphLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
