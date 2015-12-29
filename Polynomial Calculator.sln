@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polynomial", "Polynomial\Polynomial.csproj", "{8318A4DC-3C73-461D-8F03-98ED5AAF357A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolynomialTree", "PolynomialTree\PolynomialTree.csproj", "{FCB8B304-AA3F-41C3-83DC-76C3C8DA45AD}"
@@ -18,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolynomialSolver", "PolynomialSolver\PolynomialSolver.csproj", "{70254EA6-34F2-4CE2-94E2-8BD66903FFD4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{5E707297-0694-49F1-AA4E-D240114DC681}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stress", "Stress\Stress.csproj", "{56B81693-9058-4275-92C4-3B60CD5F95D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,10 @@ Global
 		{5E707297-0694-49F1-AA4E-D240114DC681}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E707297-0694-49F1-AA4E-D240114DC681}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E707297-0694-49F1-AA4E-D240114DC681}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56B81693-9058-4275-92C4-3B60CD5F95D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56B81693-9058-4275-92C4-3B60CD5F95D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56B81693-9058-4275-92C4-3B60CD5F95D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56B81693-9058-4275-92C4-3B60CD5F95D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

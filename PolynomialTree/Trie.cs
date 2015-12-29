@@ -240,6 +240,22 @@ namespace CMath.Trie
             xDoc.Add(dfs(main.root));
             xDoc.Save(FileName);
         }
+        public void insert(Polynomial equation, Complex X, Complex result)
+        {
+            try
+            {
+                var lastFirst = main.insert(equation._data.ToList());
+                if (!lastFirst._special.ContainsKey('s'))
+                {
+                    lastFirst._special.Add('s', new Dictionary<Complex,Complex>());
+                }
+                lastFirst._special['s'].Add(X, result);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
         public void insert(Polynomial equation,Char operation, dynamic storage)
         {
             try
@@ -289,6 +305,23 @@ namespace CMath.Trie
             }
             return last._special[operation];
         }
+        Complex search(Polynomial equation, Complex X)
+        {
+            Node last;
+            if (!main.try_get_node(equation._data.ToList(), out last))
+            {
+                throw new KeyNotFoundException("There is no such polynomial in the trie;");
+            }
+            if (!last._special.ContainsKey('s'))
+            {
+                throw new KeyNotFoundException("There is no such operation in the trie;");
+            }
+            if (!last._special['s'].ContainsKey(X))
+            {
+                throw new KeyNotFoundException("There is no such operation in the trie;");
+            }
+            return last._special['s'][X];
+        }
         Polynomial search(Polynomial first, char operation, Polynomial second)
         {
             Node lastFirst;
@@ -337,11 +370,36 @@ namespace CMath.Trie
                 return false;
             }
         }
+        public bool try_search(Polynomial equation, Complex X, out Complex result)
+        {
+            try
+            {
+                result = search(equation, X);
+                return true;
+            }
+            catch
+            {
+                result = 0;
+                return false;
+            }
+        }
         #endregion
         #region remove&clear
         public bool try_remove(Polynomial first)
         {
             return main.try_remove(first._data.ToList());
+        }
+        public bool try_remove(Polynomial first, char operation)
+        {
+            try
+            {
+                remove(first, operation);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         void remove(Polynomial first, Char operation)
         {
@@ -423,16 +481,25 @@ namespace CMath.Trie
                     }
                     result._special.Add(Edge, solutions);
                 }
-                foreach (var edge in current.Elements("Derivatives"))
+                foreach (var edge in current.Elements("substitutions"))
                 {
                     char Edge = edge.Element("Edge").Value[0];
-                    SortedList<int, Polynomial> derivatives = new SortedList<int,Polynomial>();
-                    foreach (var detivative in edge.Elements("Derivative"))
+                    var substitutions = new Dictionary<Complex, Complex>();
+                    foreach (var substitution in edge.Elements("substitution"))
                     {
-                        derivatives.Add(int.Parse(detivative.Element("level").Value),
-                            new Polynomial(detivative.Element("result").Value));
+                        string[] temp = substitution.Element("X").Value.Split('(', ',', ')');
+                        string[] temp1 = substitution.Element("Result").Value.Split('(', ',', ')');
+                        substitutions.Add(
+                            new Complex(double.Parse(temp[1]), double.Parse(temp[2])),
+                             new Complex(double.Parse(temp1[1]), double.Parse(temp1[2])));
                     }
-                    result._special.Add(Edge, derivatives);
+                    result._special.Add(Edge, substitutions);
+                }
+                foreach (var edge in current.Elements("derivative"))
+                {
+                    char Edge = edge.Element("Edge").Value[0];
+                    var derivative = new Polynomial(edge.Element("Result").Value);
+                    result._special.Add(Edge, derivative);
                 }
             }
             return result;
@@ -483,15 +550,20 @@ namespace CMath.Trie
                                 new XElement("Imaginary", solution.Imaginary)));
                         }
                     }
+                    else if (special.Key == 's')
+                    {
+                        newChild = new XElement("substitutions");
+                        foreach (var substitution in special.Value)
+                        {
+                            newChild.Add(new XElement("substitution",
+                                new XElement("X", substitution.Key.ToString()),
+                                new XElement("Result", substitution.Value.ToString())));
+                        }
+                    }
                     else if (special.Key == '^')
                     {
-                        newChild = new XElement("Derivatives");
-                        foreach(var detivative in special.Value)
-                        {
-                            newChild.Add(new XElement("Derivative",
-                                new XElement("level", detivative.Key.ToString()),
-                                new XElement("result", detivative.Value.ToString())));
-                        }
+                        newChild = new XElement("derivative");
+                        newChild.Add(new XElement("Result", special.Value.ToString()));
                     }
                     else
                     {

@@ -394,18 +394,15 @@ namespace CMath.PolynomialEquation
             }
             return result;
         }
-        /// <summary>
-        /// Returns the level-th derivative of the equation
-        /// </summary>
-        /// <returns></returns>
-        public static Polynomial operator^(Polynomial equation, int level)
+        public static Polynomial derivative(Polynomial equation)
         {
             Polynomial result = new Polynomial();
             foreach (var item in equation)
             {
-                if (item.Degree < level) 
+                if (item.Degree < 1) 
                     continue;
-                item.Degree -= level;
+                item.Degree --;
+                item.Coefficient *= (item.Degree + 1);
                 result.Add(item);
             }
             return result;
@@ -425,6 +422,17 @@ namespace CMath.PolynomialEquation
                 second = temp % second;
             }
             return first;
+        }
+        public Complex substitute(Complex X)
+        {
+            Complex result = 0;
+            foreach (var term in this)
+            {
+                Complex x = 1;
+                for (int i = 0; i < term.Degree;i++ ) x *= X;
+                result += term.Coefficient * x;
+            }
+            return result;
         }
         #endregion
         #region MuliplyUtilies
@@ -523,8 +531,6 @@ namespace CMath.PolynomialEquation
                             + result.CoefficientOf(termFirst.Degree + termSecond.Degree)));
                     else
                         result.Add(new Term(termFirst.Degree + termSecond.Degree, termFirst.Coefficient * termSecond.Coefficient));
-                    if (result.CoefficientOf(termFirst.Degree + termSecond.Degree) == 0) 
-                        result.Remove(termFirst.Degree + termSecond.Degree);
                 }
             }
             return result;
@@ -546,7 +552,6 @@ namespace CMath.PolynomialEquation
             }
 
             dq = dN - dD;
-            dr = dN - dD;
 
             Complex[] d = new Complex[dN + 1];
             for (i = dD + 1; i < dN + 1; i++)
@@ -556,9 +561,7 @@ namespace CMath.PolynomialEquation
             for (i = 0; i < dq + 1; i++)
                 q[i] = 0;
 
-            Complex[] r = new Complex[dr + 1];
-            for (i = 0; i < dr + 1; i++)
-                r[i] = 0;
+            
 
             if (dN >= dD)
             {
@@ -585,10 +588,11 @@ namespace CMath.PolynomialEquation
             }
 
             while (dN > 0 && N[dN] == 0) dN--;
+            dr = dN;
+            Complex[] r = new Complex[dr + 1];
             for (i = 0; i < dN + 1; i++)
                 r[i] = N[i];
 
-            dr = dN;
             if (!modulus)
                 return q;
             else

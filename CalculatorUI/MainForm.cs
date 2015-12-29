@@ -29,6 +29,10 @@ namespace CalculatorUI
         Division,
         Modulus,
         Gcd,
+        DerivativeFirst,
+        DerivativeSecond,
+        SubstitutionFirst,
+        SubstitutionSecond,
         SolveFirst,
         SolveSecond,
         PolynomialAccepted,
@@ -38,6 +42,8 @@ namespace CalculatorUI
         OldAddition,
         OldSubtration,
         OldGcd,
+        OldDerivative,
+        OldSubstitution,
         OldSolve
     }
     public partial class MainForm : Form
@@ -46,17 +52,18 @@ namespace CalculatorUI
         internal Polynomial polynomial1, polynomial2, resultPolynomial;
         internal Solver _solverInstance;
         internal List<Complex> roots;
-        internal PolynomialTrie _historyTrie;
-        internal Thread loadThread;
+        internal Complex subResult,X;
+        internal Thread exitThread, saveThread;
         //If not found wil be created
         internal string filePath = Application.StartupPath + "\\appdata.xml";
         #endregion
 
         public MainForm()
         {
+            
             InitializeComponent();
-            loadThread = new Thread(LoadThread);
-            loadThread.Start();
+            exitThread = new Thread(ExitThread);
+            saveThread = new Thread(SaveThread);
             //Initialize display,value members for later history viewing
             historyListBox.DisplayMember = "DisplayName";
             historyListBox.ValueMember = "returnType";
@@ -64,27 +71,17 @@ namespace CalculatorUI
             LoadColorFont(polynomial1Text);
             LoadColorFont(polynomial2Text);
             LoadColorFont(resPolyText);
-            
+        }
 
-        }
         /// <summary>
-        /// Load thread
+        /// A thread to handle exit process
         /// </summary>
-        /// <!--Put whatever takes load in memory here-->
-        internal void LoadThread()
-        {   
-            try
-            {
-                
-                _historyTrie = new PolynomialTrie(filePath);
-                
-            }
-            catch
-            {
-                _historyTrie = new PolynomialTrie();
-            }
+       internal void ExitThread()
+        {
+          Program._historyTrie.save(filePath);
+          Application.Exit();
+            
         }
-       
         /// <summary>
         /// Show roots of polynomial in the roots log panel
         /// </summary>
@@ -131,73 +128,103 @@ namespace CalculatorUI
             switch (_operation)
             {
                 case OperationTypeEnum.Addition:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Added Polynomials.\r");
-                    _historyTrie.insert(polynomial1, '+', polynomial2, resultPolynomial);
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Added Polynomials.");
+                    Program._historyTrie.insert(polynomial1, '+', polynomial2, resultPolynomial);
                     hL = new HistoryLog(polynomial1, polynomial2, '+', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.Subtraction:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Subtracted Polynomials.");
-                    _historyTrie.insert(polynomial1, '-', polynomial2, resultPolynomial);
+                    Program._historyTrie.insert(polynomial1, '-', polynomial2, resultPolynomial);
                     hL = new HistoryLog(polynomial1, polynomial2, '-', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.Multiplication:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Multiplied Polynomials.\r");
-                    _historyTrie.insert(polynomial1, '*', polynomial2, resultPolynomial);
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Multiplied Polynomials.");
+                    Program._historyTrie.insert(polynomial1, '*', polynomial2, resultPolynomial);
                     hL = new HistoryLog(polynomial1, polynomial2, '*', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.Modulus:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Reminder Polynomial Calculated.\r");
-                    _historyTrie.insert(polynomial1, '%', polynomial2, resultPolynomial);
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Reminder Polynomial Calculated.");
+                    Program._historyTrie.insert(polynomial1, '%', polynomial2, resultPolynomial);
                     hL = new HistoryLog(polynomial1, polynomial2, '%', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.Division:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Divided Polynomials.\r");
-                    _historyTrie.insert(polynomial1, '/', polynomial2, resultPolynomial);
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Divided Polynomials.");
+                    Program._historyTrie.insert(polynomial1, '/', polynomial2, resultPolynomial);
                     hL = new HistoryLog(polynomial1, polynomial2, '/', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
 				case OperationTypeEnum.Gcd:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Greatest Common Divisor Polynomial computed.\r");
-                    _historyTrie.insert(polynomial1, 'g', polynomial2, resultPolynomial);
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Greatest Common Divisor Polynomial computed.");
+                    Program._historyTrie.insert(polynomial1, 'g', polynomial2, resultPolynomial);
                     hL = new HistoryLog(polynomial1, polynomial2, 'g', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.SolveFirst:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Solved.\r");
-                    _historyTrie.insert(polynomial1, '=', roots);
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Solved.");
+                    Program._historyTrie.insert(polynomial1, '=', roots);
                     hL = new HistoryLog(polynomial1, roots, DateTime.Now.TimeOfDay.ToString());
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.SolveSecond:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Second Polynomial Solved.\r");
-                    _historyTrie.insert(polynomial2, '=', roots);
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Second Polynomial Solved.");
+                    Program._historyTrie.insert(polynomial2, '=', roots);
                     hL = new HistoryLog(polynomial2, roots, DateTime.Now.TimeOfDay.ToString());
                     LogItem(hL);
                     break;
+                case OperationTypeEnum.DerivativeFirst:
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Diffrentiated.");
+                    Program._historyTrie.insert(polynomial1, '^',resultPolynomial);
+                    hL = new HistoryLog(polynomial1,new Polynomial(),'^', DateTime.Now.TimeOfDay.ToString(),resultPolynomial);
+                    LogItem(hL);
+                    break;
+                case OperationTypeEnum.DerivativeSecond:
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Second Polynomial Diffrentiated.");
+                    Program._historyTrie.insert(polynomial2, '^',resultPolynomial);
+                    hL = new HistoryLog(new Polynomial(), polynomial2, '^', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
+                    break;
+                case OperationTypeEnum.SubstitutionFirst:
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Substituted in First Polynomial.");
+                    Program._historyTrie.insert(polynomial1, X, subResult);
+                    hL = new HistoryLog(polynomial1, new Polynomial(), 's', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
+                    break;
+                case OperationTypeEnum.SubstitutionSecond:
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Substituted in Second Polynomial.");
+                    Program._historyTrie.insert(polynomial2, X, subResult);
+                    hL = new HistoryLog(new Polynomial(), polynomial2, 's', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
+                    break;
                 case OperationTypeEnum.OldDivision:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Division retrieved.\r");
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Division retrieved.");
                     break;
                 case OperationTypeEnum.OldModulus:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Reminder Polynomials.\r");
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Reminder Polynomials.");
                     break;
                 case OperationTypeEnum.OldMultiplication:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Multiplication retrieved.\r");
+                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Multiplication retrieved.");
                     break;
                 case OperationTypeEnum.OldSubtration:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Subtraction retrieved.\r");
+                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Subtraction retrieved.");
                     break;
                 case OperationTypeEnum.OldAddition:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Addition retrieved.\r");
+                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Addition retrieved.");
+                    break;
+                case OperationTypeEnum.OldDerivative:
+                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Derivative retrieved.");
+                    break;
+                case OperationTypeEnum.OldSubstitution:
+                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Substitution retrieved.");
                     break;
                 case OperationTypeEnum.OldSolve:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Polynomial root retrieved\r");
+                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Polynomial root retrieved.");
                     break;
                 case OperationTypeEnum.PolynomialAccepted:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Polynomial entered\r");
+                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Polynomial entered.");
                     break;
                 default:
                     return;
@@ -232,6 +259,12 @@ namespace CalculatorUI
                 case 'g':
                     _log.DisplayName += " GCD";
                     break;
+                case '^':
+                    _log.DisplayName += " Derivative";
+                    break;
+                case 's':
+                    _log.DisplayName += " Substitution";
+                    break;
             }
             historyListBox.Items.Add(_log);
         }
@@ -243,13 +276,14 @@ namespace CalculatorUI
         private void PerformOperation(object sender, EventArgs e)
         {
             Polynomial searchResult;
-            object RootResult;
+            object dynamicResult;
             try
             {
+                rootsTextBox.Clear();
                 switch ((sender as Glass.GlassButton).Tag as string)
                 {
                     case "Add":
-                        if (_historyTrie.try_search(polynomial1, '+', polynomial2, out searchResult))
+                        if (Program._historyTrie.try_search(polynomial1, '+', polynomial2, out searchResult))
                         {
                             PolynomialParse(searchResult, resPolyText, true);
                             LogOperation(OperationTypeEnum.OldAddition);
@@ -262,7 +296,7 @@ namespace CalculatorUI
                         }
                         break;
                     case "Subtract":
-                        if (_historyTrie.try_search(polynomial1, '-', polynomial2, out searchResult))
+                        if (Program._historyTrie.try_search(polynomial1, '-', polynomial2, out searchResult))
                         {
                             PolynomialParse(searchResult, resPolyText, true);
 
@@ -276,7 +310,7 @@ namespace CalculatorUI
                         }
                         break;
                     case "Multiply":
-                        if (_historyTrie.try_search(polynomial1, '*', polynomial2, out searchResult))
+                        if (Program._historyTrie.try_search(polynomial1, '*', polynomial2, out searchResult))
                         {
                             PolynomialParse(searchResult, resPolyText, true);
                             LogOperation(OperationTypeEnum.OldMultiplication);
@@ -289,7 +323,7 @@ namespace CalculatorUI
                         }
                         break;
                     case "Division":
-                        if (_historyTrie.try_search(polynomial1, '/', polynomial2, out searchResult))
+                        if (Program._historyTrie.try_search(polynomial1, '/', polynomial2, out searchResult))
                         {
                             PolynomialParse(searchResult, resPolyText, true);
                             LogOperation(OperationTypeEnum.OldDivision);
@@ -302,7 +336,7 @@ namespace CalculatorUI
                         }
                         break;
                     case "Modulus":
-                        if (_historyTrie.try_search(polynomial1, '%', polynomial2, out searchResult))
+                        if (Program._historyTrie.try_search(polynomial1, '%', polynomial2, out searchResult))
                         {
                             PolynomialParse(searchResult, resPolyText, true);
                             LogOperation(OperationTypeEnum.OldModulus);
@@ -315,7 +349,7 @@ namespace CalculatorUI
                         }
                         break;
                     case "GCD":
-                        if (_historyTrie.try_search(polynomial1, 'g', polynomial2, out searchResult))
+                        if (Program._historyTrie.try_search(polynomial1, 'g', polynomial2, out searchResult))
                         {
                             PolynomialParse(searchResult, resPolyText, true);
                             LogOperation(OperationTypeEnum.OldGcd);
@@ -328,9 +362,9 @@ namespace CalculatorUI
                         }
                         break;
                     case "Find X1":
-                        if (_historyTrie.try_search(polynomial1, '=', out RootResult))
+                        if (Program._historyTrie.try_search(polynomial1, '=', out dynamicResult))
                         {
-                            roots = (List<Complex>)RootResult;
+                            roots = (List<Complex>)dynamicResult;
                             LogOperation(OperationTypeEnum.OldSolve);
                         }
                         else
@@ -341,9 +375,9 @@ namespace CalculatorUI
                         ShowRoots();
                         break;
                     case "Find X2":
-                        if (_historyTrie.try_search(polynomial2, '=', out RootResult))
+                        if (Program._historyTrie.try_search(polynomial2, '=', out dynamicResult))
                         {
-                            roots = (List<Complex>)RootResult;
+                            roots = (List<Complex>)dynamicResult;
                             LogOperation(OperationTypeEnum.OldSolve);
                         }
                         else
@@ -353,6 +387,78 @@ namespace CalculatorUI
 
                         }
                         ShowRoots();
+                        break;
+                    case "derivative1":
+                        if (Program._historyTrie.try_search(polynomial1, '^', out dynamicResult))
+                        {
+                            searchResult = (Polynomial)dynamicResult;
+                            PolynomialParse(searchResult, resPolyText, true);
+                            LogOperation(OperationTypeEnum.OldDerivative);
+                        }
+                        else
+                        {
+                            resultPolynomial = Polynomial.derivative(polynomial1);
+                            PolynomialParse(resultPolynomial, resPolyText, true);
+                            LogOperation(OperationTypeEnum.DerivativeFirst);
+                        }
+                        break;
+                    case "derivative2":
+                        if (Program._historyTrie.try_search(polynomial2, '^', out dynamicResult))
+                        {
+                            searchResult = (Polynomial)dynamicResult;
+                            PolynomialParse(searchResult, resPolyText, true);
+                            LogOperation(OperationTypeEnum.OldDerivative);
+                        }
+                        else
+                        {
+                            resultPolynomial = Polynomial.derivative(polynomial2);
+                            PolynomialParse(resultPolynomial, resPolyText, true);
+                            LogOperation(OperationTypeEnum.DerivativeSecond);
+                        }
+                        break;
+                    case "Sub1":
+                        if (!TryParseComplex(textBox1.Text, out X))
+                        {
+                            MessageBox.Show("Wrong complex format");
+                            return;
+                        }
+                        if (Program._historyTrie.try_search(polynomial1, X, out subResult))
+                        {
+                            searchResult = new Polynomial();
+                            searchResult.Add(new Term(0,subResult));
+                            PolynomialParse(searchResult, resPolyText, true);
+                            LogOperation(OperationTypeEnum.OldSubstitution);
+                        }
+                        else
+                        {
+                            subResult = polynomial1.substitute(X);
+                            resultPolynomial = new Polynomial();
+                            resultPolynomial.Add(new Term(0, subResult));
+                            PolynomialParse(resultPolynomial, resPolyText, true);
+                            LogOperation(OperationTypeEnum.SubstitutionFirst);
+                        }
+                        break;
+                    case "Sub2":
+                        if (!TryParseComplex(textBox2.Text, out X))
+                        {
+                            MessageBox.Show("Wrong complex format");
+                            return;
+                        }
+                        if (Program._historyTrie.try_search(polynomial2, X, out subResult))
+                        {
+                            searchResult = new Polynomial();
+                            searchResult.Add(new Term(0,subResult));
+                            PolynomialParse(searchResult, resPolyText, true);
+                            LogOperation(OperationTypeEnum.OldSubstitution);
+                        }
+                        else
+                        {
+                            subResult = polynomial2.substitute(X);
+                            resultPolynomial = new Polynomial();
+                            resultPolynomial.Add(new Term(0, subResult));
+                            PolynomialParse(resultPolynomial, resPolyText, true);
+                            LogOperation(OperationTypeEnum.SubstitutionSecond);
+                        }
                         break;
                 }
             }
@@ -365,13 +471,60 @@ namespace CalculatorUI
     
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (!loadThread.IsAlive)
+            if (saveThread.IsAlive)
             {
-                toolStripStatusLabel2.Text = "Loaded history";
+                polynomial1Text.Enabled = false;
+                polynomial2Text.Enabled = false;
+                tipLabel.Text = "Please wait saving...";
             }
+            else
+            {
+                polynomial1Text.Enabled = true;
+                polynomial2Text.Enabled = true;
+                tipLabel.Text = "TIP";
+            }
+
             toolStripStatusLabel1.Text = DateTime.Now.ToShortDateString() + ' ' + DateTime.Now.ToShortTimeString();
         }
-
+        /// <summary>
+        /// Tries to parse a string into a Complex Number
+        /// </summary>
+        /// <param name="_number">String format of number</param>
+        /// <param name="_ref">Complex number to store parsed,null if failed</param>
+        /// <returns>True if succeded</returns>
+        internal bool TryParseComplex(string _number,out Complex _ref)
+        {
+            _number = _number.ToLower();
+            _ref = new Complex();
+            if (String.IsNullOrWhiteSpace(_number))
+            {
+                return false;
+            }
+            _number = _number.Replace(" ","");
+            double _real,_img;
+            if(!_number.Contains('+'))
+            {
+                if (!double.TryParse(_number, out _real))
+                    return false;
+                _ref = new Complex(_real,0.0);
+                return true;
+            }
+            string real = _number.Split(new char[]{'+'},StringSplitOptions.RemoveEmptyEntries)[0];
+            if (real == "")
+                return false;
+            if (!double.TryParse(real, out _real))
+                return false;
+            string complex = _number.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries)[1];
+            if (complex == "")
+                return false;
+            if (complex[complex.Length - 1] != 'i') 
+                return false;
+            complex = complex.Substring(0, complex.Length - 1);
+            if (!double.TryParse(complex, out _img))
+                return false;
+            _ref = new Complex(_real, _img);
+            return true;
+        }
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -409,8 +562,8 @@ namespace CalculatorUI
         }
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _historyTrie.save(filePath);
-            MessageBox.Show("Log saved");
+            saveThread = new Thread(SaveThread);
+            saveThread.Start();
         }
         // Load history logs
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -425,7 +578,7 @@ namespace CalculatorUI
             {
                 if (MessageBox.Show("Are you sure you want to exit?", " Exit ?", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    _historyTrie.save(filePath);
+                    exitThread.Start();
                 }
                 else
                 {
@@ -434,7 +587,7 @@ namespace CalculatorUI
             }
             else
             {
-                _historyTrie.save(filePath);
+                exitThread.Start();
                 
             }
         }
@@ -451,7 +604,7 @@ namespace CalculatorUI
             if (MessageBox.Show("Are you sure you want to clear all past operations ?\n this action cannot be reverse", "Alert", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
             {
                 System.IO.File.Delete(filePath);
-                _historyTrie.Dispose();
+                Program._historyTrie.Dispose();
                 historyListBox.Items.Clear();
                 LogPanel.Text = "Log started " + DateTime.Now.ToShortTimeString();
                 polynomial1Text.Text = "First Polynomial";
@@ -474,6 +627,11 @@ namespace CalculatorUI
        {
            showForm(new CustomizeForm(), this, setClose);
        }
+       private void licenseToolStripMenuItem_Click(object sender, EventArgs e)
+       {
+           showForm(new LicenseForm(), this, setClose);
+       }
+
        #region RTF Handling
 
        #region Parsing Algorithms
@@ -645,11 +803,16 @@ namespace CalculatorUI
        }
 
        #endregion
-
-       private void licenseToolStripMenuItem_Click(object sender, EventArgs e)
+        /// <summary>
+        /// A thread to handle save operation
+        /// </summary>
+       internal void SaveThread()
        {
-           showForm(new LicenseForm(), this, setClose);
+           Program._historyTrie.save(filePath);
        }
+
+
+       
 
     }
     /// <summary>
