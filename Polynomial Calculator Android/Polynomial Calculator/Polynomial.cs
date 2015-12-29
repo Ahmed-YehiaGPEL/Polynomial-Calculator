@@ -5,12 +5,15 @@ using System.Text;
 using System.IO;
 using System.Numerics;
 using System.Collections;
+using Android;
+using Android.App;
+using Android.Widget;
 
 namespace CMath.PolynomialEquation
 {
     #region NegativeRankException
     [Serializable]
-    class NegativeRankException : Exception
+    public class NegativeRankException : ArgumentException
     {
         public NegativeRankException() { }
         public NegativeRankException(string message) : base(message) { }
@@ -18,10 +21,11 @@ namespace CMath.PolynomialEquation
         protected NegativeRankException(
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context)
-            : base(info, context) { }
+            : base(info, context)
+        { }
     }
     #endregion
-    #region term
+    #region Term
     public class Term
     {
         private int _degree;
@@ -40,7 +44,7 @@ namespace CMath.PolynomialEquation
                 _degree = value;
             }
         }
-        public Complex Coefficient {get; set;}
+        public Complex Coefficient { get; set; }
         public Term(KeyValuePair<int, Complex> _t)
         {
             Degree = _t.Key;
@@ -61,13 +65,15 @@ namespace CMath.PolynomialEquation
         }
         public override string ToString()
         {
-            return "(" + this.Coefficient.Real.ToString() + "," 
+            return "(" + this.Coefficient.Real.ToString() + ","
                 + this.Coefficient.Imaginary.ToString() + ")(" + this.Degree.ToString() + ")";
         }
     }
     #endregion
     public class Polynomial
     {
+        const int Precision = 2;
+
         #region Enumertator
         public class PolynomialEnumerator
         {
@@ -111,11 +117,11 @@ namespace CMath.PolynomialEquation
         /// Returns a SortedList of degree,coefficient set for polynomial terms
         /// </summary>
         public SortedList<int, Complex> _data { get; private set; }
-       /// <summary>
-       /// Gets the specified term at the provided index
-       /// </summary>
-       /// <param name="index">index to get term at</param>
-       /// <returns>Term</returns>
+        /// <summary>
+        /// Gets the specified term at the provided index
+        /// </summary>
+        /// <param name="index">index to get term at</param>
+        /// <returns>Term</returns>
         public Term this[int index]
         {
             get { return new Term(_data.ElementAt(index)); }
@@ -127,11 +133,13 @@ namespace CMath.PolynomialEquation
         {
             get { return _data.Count; }
         }
-        public int Degree { 
+        public int Degree
+        {
             get { return this[this.Count - 1].Degree; }
         }
-        public Term Back { 
-            get { return this[this.Count - 1]; } 
+        public Term Back
+        {
+            get { return this[this.Count - 1]; }
         }
         public Complex CoefficientOf(int degree)
         {
@@ -143,6 +151,14 @@ namespace CMath.PolynomialEquation
         }
         public void Add(Term newTerm)
         {
+
+            newTerm.Coefficient = new Complex(Convert.ToDouble(Math.Round(newTerm.Coefficient.Real * Math.Pow(10.0, Precision))/ Math.Pow(10.0, Precision))
+                ,Convert.ToDouble(Math.Round(newTerm.Coefficient.Imaginary * Math.Pow(10.0, Precision)) / Math.Pow(10.0, Precision)));
+                //(double)Math.Round(newTerm.Coefficient.Real * Math.Pow(10.0, (double)Precision)
+                // Math.Pow(10.0, (double)Precision),
+                //(double)Math.Round(newTerm.Coefficient.Imaginary * Math.Pow(10.0, (double)Precision)
+                // Math.Pow(10.0, (double)Precision)
+                //);
             if (_data.ContainsKey(newTerm.Degree))
             {
                 _data[newTerm.Degree] = newTerm.Coefficient;
@@ -151,9 +167,13 @@ namespace CMath.PolynomialEquation
             {
                 _data.Add(newTerm.Degree, newTerm.Coefficient);
             }
-            if (this.Contains(new Term(0, 0)) && newTerm.Degree != 0)
+            if (newTerm.Coefficient == 0 && newTerm.Degree != 0)
             {
-                this.Remove(0);
+                Remove(newTerm.Degree);
+            }
+            if (Contains(new Term(0, 0)) && Count > 1)
+            {
+                Remove(0);
             }
         }
         public bool Contains(Term _term)
@@ -171,7 +191,7 @@ namespace CMath.PolynomialEquation
         }
         #endregion
         #region construtors
-        public Polynomial(SortedList<int,Complex> _list)
+        public Polynomial(SortedList<int, Complex> _list)
         {
             if (_list.Count == 0)
             {
@@ -200,19 +220,32 @@ namespace CMath.PolynomialEquation
             double real, imaginary;
             while (PolynomialStringReader.Peek() != -1)
             {
-                string[] current = PolynomialStringReader.ReadLine().Split('(',')',',');
-                real = double.Parse(current[1]);
-                imaginary = double.Parse(current[2]);
-                degree = int.Parse(current[4]);
+                string[] current = PolynomialStringReader.ReadLine().Split('(', ')', ',');
+                if (current.Length != 6) throw new FormatException("bad polynomial format");
+                if (!double.TryParse(current[1], out real)) throw new FormatException("bad polynomial format");
+                if (!double.TryParse(current[2], out imaginary)) throw new FormatException("bad polynomial format");
+                if (!int.TryParse(current[4], out degree)) throw new FormatException("bad polynomial format");
                 if (degree < 0)
                 {
                     throw new NegativeRankException("Negative rank isn't allowed");
                 }
-                _data.Add(degree,new Complex(real,imaginary));
+                _data.Add(degree, new Complex(real, imaginary));
             }
         }
         #endregion
         #region operators
+
+        public string ToHtmlString()
+        {
+            string htmlString = this.ToString();
+
+            htmlString = htmlString.Replace("^", "<sup><small>");
+            htmlString = htmlString.Replace("+", "</small></sup>+");
+            htmlString = htmlString.Replace("-", "</small></sup>-");
+
+            return htmlString;
+        }
+
         public override string ToString()
         {
             var PolynomialStringWriter = new StringWriter();
@@ -272,8 +305,8 @@ namespace CMath.PolynomialEquation
             if (expr.StartsWith("X", true, System.Globalization.CultureInfo.CurrentCulture))
                 expr = "1" + expr;
 
-            string[] terms = expr.Replace("-", "+-").Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
-
+            string[] terms = expr.Replace("-", "+-").Replace("^+-", "^-").Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
+        
             foreach (string s in terms)
             {
                 if (s.Contains('x') || s.Contains('X'))
@@ -297,6 +330,7 @@ namespace CMath.PolynomialEquation
             }
             return new Polynomial(sList);
         }
+
 
         public bool Equals(Polynomial second)
         {
@@ -405,18 +439,20 @@ namespace CMath.PolynomialEquation
             return ret;
         }
 
-        public static Polynomial operator +(Polynomial first,Polynomial second)
+        public static Polynomial operator +(Polynomial first, Polynomial second)
         {
             Polynomial result = new Polynomial();
             foreach (var firstTerm in first)
             {
                 if (second.Contains(firstTerm.Degree))
                 {
-                    if(second.CoefficientOf(firstTerm.Degree) + firstTerm.Coefficient != 0)
+                    if (second.CoefficientOf(firstTerm.Degree) + firstTerm.Coefficient != 0)
                         result.Add(new Term(firstTerm.Degree, second.CoefficientOf(firstTerm.Degree) + firstTerm.Coefficient));
-                }else{
-                    if(firstTerm.Coefficient != 0)
-                       result.Add(firstTerm);
+                }
+                else
+                {
+                    if (firstTerm.Coefficient != 0)
+                        result.Add(firstTerm);
                 }
             }
             foreach (var secondTerm in second)
@@ -461,12 +497,12 @@ namespace CMath.PolynomialEquation
         /// Returns the level-th derivative of the equation
         /// </summary>
         /// <returns></returns>
-        public static Polynomial operator^(Polynomial equation, int level)
+        public static Polynomial operator ^(Polynomial equation, int level)
         {
             Polynomial result = new Polynomial();
             foreach (var item in equation)
             {
-                if (item.Degree < level) 
+                if (item.Degree < level)
                     continue;
                 item.Degree -= level;
                 result.Add(item);
@@ -497,7 +533,7 @@ namespace CMath.PolynomialEquation
             while (size <= first.Degree + second.Degree)
             {
                 size *= 2;
-                lg_size ++;
+                lg_size++;
             }
 
             List<Complex> fourierFirst = new List<Complex>(Enumerable.Repeat(new Complex(0.0, 0.0), size)),
@@ -526,7 +562,7 @@ namespace CMath.PolynomialEquation
             Polynomial Result = new Polynomial();
             for (int i = 0; i < size; i++)
                 if (fourierResult[i] != 0)
-                    Result.Add(new Term(i,fourierResult[i]));
+                    Result.Add(new Term(i, fourierResult[i]));
 
             return Result;
         }
@@ -539,8 +575,8 @@ namespace CMath.PolynomialEquation
             int highest_bit = 0;
             for (int i = 1; i < input.Count; i++)
             {
-                if (i >= (1<<(highest_bit+1))) highest_bit ++;
-                reverse.Add(reverse[i - (1<<highest_bit)] | (1 << (lg_size - 1 - highest_bit)));
+                if (i >= (1 << (highest_bit + 1))) highest_bit++;
+                reverse.Add(reverse[i - (1 << highest_bit)] | (1 << (lg_size - 1 - highest_bit)));
                 if (i < reverse[i])
                 {
                     Complex temp = input[i];
@@ -551,7 +587,7 @@ namespace CMath.PolynomialEquation
             for (int length = 2; length <= input.Count; length *= 2)
             {
                 double angle = 2 * Math.PI / length * (invert ? -1.0 : 1.0);
-                Complex wangle = new Complex(Math.Cos(angle),Math.Sin(angle));
+                Complex wangle = new Complex(Math.Cos(angle), Math.Sin(angle));
                 for (int i = 0; i < input.Count; i += length)
                 {
                     Complex current = new Complex(1.0, 0.0);
@@ -586,14 +622,13 @@ namespace CMath.PolynomialEquation
                             + result.CoefficientOf(termFirst.Degree + termSecond.Degree)));
                     else
                         result.Add(new Term(termFirst.Degree + termSecond.Degree, termFirst.Coefficient * termSecond.Coefficient));
-                    if (result.CoefficientOf(termFirst.Degree + termSecond.Degree) == 0) 
+                    if (result.CoefficientOf(termFirst.Degree + termSecond.Degree) == 0)
                         result.Remove(termFirst.Degree + termSecond.Degree);
                 }
             }
             return result;
         }
         #endregion
-
         #region DivisionUtilies
         private static Complex[] longDiv(Complex[] N, Complex[] D, bool modulus)
         {
@@ -610,7 +645,6 @@ namespace CMath.PolynomialEquation
             }
 
             dq = dN - dD;
-            dr = dN - dD;
 
             Complex[] d = new Complex[dN + 1];
             for (i = dD + 1; i < dN + 1; i++)
@@ -619,10 +653,6 @@ namespace CMath.PolynomialEquation
             Complex[] q = new Complex[dq + 1];
             for (i = 0; i < dq + 1; i++)
                 q[i] = 0;
-
-            Complex[] r = new Complex[dr + 1];
-            for (i = 0; i < dr + 1; i++)
-                r[i] = 0;
 
             if (dN >= dD)
             {
@@ -635,9 +665,9 @@ namespace CMath.PolynomialEquation
                         d[i + dN - dD] = D[i];
 
                     dd = dN;
-                    
+
                     q[dN - dD] = N[dN] / d[dd];
-                    
+
                     for (i = 0; i < dq + 1; i++)
                         d[i] = d[i] * q[dN - dD];
 
@@ -649,10 +679,13 @@ namespace CMath.PolynomialEquation
             }
 
             while (dN > 0 && N[dN] == 0) dN--;
+            
+            dr = dN;
+            Complex[] r = new Complex[dr + 1];
+            for (i = 0; i < dr + 1; i++)
+                r[i] = 0;
             for (i = 0; i < dN + 1; i++)
                 r[i] = N[i];
-
-            dr = dN;
             if (!modulus)
                 return q;
             else

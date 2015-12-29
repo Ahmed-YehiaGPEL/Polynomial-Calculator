@@ -3,4 +3,5 @@
     <string name="Hello">Hello World, Click Me!</string>
     <string name="ApplicationName">Polynomial Calculator</string>
     <string name="powerBtn">x&lt;sup&gt;y&lt;/sup&gt;</string>
+    <string name="Precision">2</string>
 </resources>
