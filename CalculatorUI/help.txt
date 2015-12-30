@@ -1,5 +1,5 @@
 You can change program settings from File->Customize
-You can change program the font and\or color of the polynomials settings
+You can change the font and\or color of the polynomials settings
 You can clear the log and history from File->Clear Log
 The log is always saved before closing
 You can prevent showing closing message from File->Customize
