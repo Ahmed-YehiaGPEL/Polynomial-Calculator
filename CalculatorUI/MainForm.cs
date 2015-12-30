@@ -12,7 +12,7 @@ using CMath.PolynomialSolver;
 using CMath.Trie;
 using System.Numerics;
 using System.Threading;
-using System.Windows.Forms.DataVisualization.Charting;
+using System.Windows.Forms.DataVisualization.Charting; // For plotting graphs
 
 namespace CalculatorUI
 {
@@ -544,6 +544,10 @@ namespace CalculatorUI
                 n = rand.Next(0, lines.Length - 1);
             }
             tip = "Tip : " + lines[n];
+            Polynomial1Chart.Series["Polynomial1"].Color = Properties.Settings.Default.Polynomial1Color;
+            Polynomial1Chart.Series["Polynomial2"].Color = Properties.Settings.Default.Polynomial2Color;
+            Polynomial1Chart.Series["Result Polynomial"].Color = Properties.Settings.Default.ResultPolyColor;
+
         }
 
         /// <summary>
@@ -555,6 +559,11 @@ namespace CalculatorUI
             LoadColorFont(polynomial1Text);
             LoadColorFont(polynomial2Text);
             LoadColorFont(resPolyText);
+
+            Polynomial1Chart.Series["Polynomial1"].Color = Properties.Settings.Default.Polynomial1Color;
+            Polynomial1Chart.Series["Polynomial2"].Color = Properties.Settings.Default.Polynomial2Color;
+            Polynomial1Chart.Series["Result Polynomial"].Color = Properties.Settings.Default.ResultPolyColor;
+
 
         }
         /// <summary>
@@ -823,19 +832,19 @@ namespace CalculatorUI
 
        private void DrawOnGraph(Polynomial equation, Chart graph,string name)
        {
+           int minValue = Properties.Settings.Default.MinValue;
+           int maxValue = Properties.Settings.Default.MaxValue;
            this.SuspendLayout();
            graph.Series[name].Points.Clear();
-           for (int i = -50; i < 50; i++)
+           for (int i = minValue; i < maxValue; i++)
            {
                graph.Series[name].Points.AddXY
                                (i, equation.substitute(i).Real);
                graph.Series[name].Points.AddXY
                                (i,equation.substitute(i).Real);
            }
-
-           graph.Series[name].ChartType =
-                               SeriesChartType.FastLine;
-           // graph.Series[name].Color = 
+           graph.Series[name].ChartType = SeriesChartType.FastLine;
+           
            this.ResumeLayout();
            graph.Refresh();
        }
@@ -851,15 +860,16 @@ namespace CalculatorUI
 
        private void removePlaceHolder(object sender, EventArgs e)
        {
-           var current = sender as RichTextBox;
-           if (current == polynomial1Text && current.Text == "Polynomial1")
-           {
-               current.Text = "";
-           }
-           else if (current == polynomial2Text && current.Text == "Polynomial2")
-           {
-               current.Text = "";
-           }
+           //var current = sender as RichTextBox;
+           //if (current == polynomial1Text && current.Text == "Polynomial1")
+           //{
+           //    current.Text = "";
+
+           //}
+           //else if (current == polynomial2Text && current.Text == "Polynomial2")
+           //{
+           //    current.Text = "";
+           //}
        }
 
        private void restorePlaceHolder(object sender, EventArgs e)
@@ -868,10 +878,12 @@ namespace CalculatorUI
            if (current == polynomial1Text && current.Text == "")
            {
                current.Text = "Polynomial1";
+               LoadColorFont(current);
            }
            else if (current == polynomial2Text && current.Text == "")
            {
                current.Text = "Polynomial2";
+               LoadColorFont(current);
            }
        }
     }

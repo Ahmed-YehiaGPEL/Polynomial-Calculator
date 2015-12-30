@@ -58,5 +58,65 @@ namespace CalculatorUI.Properties {
                 this["AskOnExit"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Orange")]
+        public global::System.Drawing.Color Polynomial1Color {
+            get {
+                return ((global::System.Drawing.Color)(this["Polynomial1Color"]));
+            }
+            set {
+                this["Polynomial1Color"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Red")]
+        public global::System.Drawing.Color Polynomial2Color {
+            get {
+                return ((global::System.Drawing.Color)(this["Polynomial2Color"]));
+            }
+            set {
+                this["Polynomial2Color"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Blue")]
+        public global::System.Drawing.Color ResultPolyColor {
+            get {
+                return ((global::System.Drawing.Color)(this["ResultPolyColor"]));
+            }
+            set {
+                this["ResultPolyColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-20")]
+        public int MinValue {
+            get {
+                return ((int)(this["MinValue"]));
+            }
+            set {
+                this["MinValue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public int MaxValue {
+            get {
+                return ((int)(this["MaxValue"]));
+            }
+            set {
+                this["MaxValue"] = value;
+            }
+        }
     }
 }

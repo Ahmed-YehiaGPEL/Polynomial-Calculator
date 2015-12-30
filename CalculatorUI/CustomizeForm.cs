@@ -18,15 +18,23 @@ namespace CalculatorUI
     public partial class CustomizeForm : Form
     {
         internal string deg = "", coeff = "";
-        internal Color clr;
+        internal Color clr, poly1Clr, poly2Clr, resPolyClr;
         internal Font fnt;
+        internal int minVal, maxVal;
         public CustomizeForm()
         {
             //Initialize old stored settings
 
             clr = Properties.Settings.Default.Color;
             fnt = Properties.Settings.Default.Font;
-   
+
+            poly1Clr = Properties.Settings.Default.Polynomial1Color;
+            poly2Clr = Properties.Settings.Default.Polynomial2Color;
+            resPolyClr = Properties.Settings.Default.ResultPolyColor;
+
+            minVal = Properties.Settings.Default.MinValue;
+            maxVal = Properties.Settings.Default.MaxValue;
+
             InitializeComponent();
             //Load color,font into richtextbox
             for (int i = 0; i < sampleTextBox.TextLength; i++)
@@ -37,6 +45,14 @@ namespace CalculatorUI
                 sampleTextBox.SelectionColor = clr;
             }
             checkBox1.Checked = Properties.Settings.Default.AskOnExit;
+
+            lblPoly1.ForeColor = poly1Clr;
+            lblPoly2.ForeColor = poly2Clr;
+            lblPoly3.ForeColor = resPolyClr;
+
+            minNumeric.Value = minVal;
+            maxNumeric.Value = maxVal;
+
         }
 
 
@@ -63,11 +79,11 @@ namespace CalculatorUI
             {
                 clr = colorDialog1.Color;
                 for (int i = 0; i < sampleTextBox.TextLength; i++)
-            {
+              {
                 sampleTextBox.SelectionStart = i;
                 sampleTextBox.SelectionLength = 1;
                 sampleTextBox.SelectionColor = colorDialog1.Color;
-            }
+              }
 
             }
             
@@ -78,6 +94,15 @@ namespace CalculatorUI
            
             Properties.Settings.Default.Color = clr;
             Properties.Settings.Default.Font = fnt;
+            
+            Properties.Settings.Default.Polynomial1Color = poly1Clr;
+            Properties.Settings.Default.Polynomial2Color = poly2Clr;
+            Properties.Settings.Default.ResultPolyColor = resPolyClr;
+
+            Properties.Settings.Default.MinValue = minVal;
+            Properties.Settings.Default.MaxValue = maxVal;
+
+            
             Properties.Settings.Default.Save();
 
         }
@@ -91,6 +116,12 @@ namespace CalculatorUI
                 sampleTextBox.SelectionFont = Properties.Settings.Default.Font;
                 sampleTextBox.SelectionColor = Properties.Settings.Default.Color;
             }
+            lblPoly1.ForeColor = Properties.Settings.Default.Polynomial1Color;
+            lblPoly2.ForeColor = Properties.Settings.Default.Polynomial2Color;
+            lblPoly3.ForeColor = Properties.Settings.Default.ResultPolyColor;
+
+            minNumeric.Value = Properties.Settings.Default.MinValue;
+            maxNumeric.Value = Properties.Settings.Default.MaxValue;
         }
       
 
@@ -118,6 +149,64 @@ namespace CalculatorUI
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.AskOnExit = checkBox1.Checked;
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            DialogResult dResult = colorDialog1.ShowDialog();
+            if (dResult == System.Windows.Forms.DialogResult.OK)
+            {
+                poly1Clr = colorDialog1.Color;
+                lblPoly1.ForeColor = poly1Clr;
+
+            }
+        }
+
+        private void btnColorChng2_Click(object sender, EventArgs e)
+        {
+            DialogResult dResult = colorDialog1.ShowDialog();
+            if (dResult == System.Windows.Forms.DialogResult.OK)
+            {
+                poly2Clr = colorDialog1.Color;
+                lblPoly2.ForeColor = poly2Clr;
+
+            }
+        }
+
+        private void btnColorChng3_Click(object sender, EventArgs e)
+        {
+            DialogResult dResult = colorDialog1.ShowDialog();
+            if (dResult == System.Windows.Forms.DialogResult.OK)
+            {
+                resPolyClr = colorDialog1.Color;
+                lblPoly3.ForeColor = resPolyClr;
+
+            }
+        }
+
+        private void minNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            if (minNumeric.Value > (maxNumeric.Value - 20))
+            {
+                minNumeric.Value = maxNumeric.Value - (decimal)20.0;
+            }
+            else
+            {
+                minVal = (int)minNumeric.Value;
+            }
+
+        }
+
+        private void maxNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            if (maxNumeric.Value < (minNumeric.Value + 20))
+            {
+                maxNumeric.Value = minNumeric.Value + (decimal)20.0;
+            }
+            else
+            {
+                maxVal = (int)maxNumeric.Value;
+            }
         }
 
       
