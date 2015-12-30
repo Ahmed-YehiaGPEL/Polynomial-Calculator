@@ -29,6 +29,11 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.statusBar = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tipLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -74,8 +79,7 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rootsTextBox = new System.Windows.Forms.TextBox();
             this.historyListBox = new System.Windows.Forms.ListBox();
-            this.display2 = new GraphLib.PlotterDisplayEx();
-            this.display1 = new GraphLib.PlotterDisplayEx();
+            this.Polynomial1Chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.statusBar.SuspendLayout();
             this.menuBar.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -87,6 +91,7 @@
             this.groupBox5.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Polynomial1Chart)).BeginInit();
             this.SuspendLayout();
             // 
             // statusBar
@@ -217,15 +222,14 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32.32877F));
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.display1, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.display2, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.Polynomial1Chart, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 24);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 173F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 66.66666F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(621, 480);
             this.tableLayoutPanel1.TabIndex = 5;
             // 
@@ -246,7 +250,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 58F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 69F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(416, 303);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(416, 316);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // LogPanel
@@ -259,7 +263,7 @@
             this.LogPanel.Name = "LogPanel";
             this.LogPanel.ReadOnly = true;
             this.LogPanel.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.LogPanel.Size = new System.Drawing.Size(412, 114);
+            this.LogPanel.Size = new System.Drawing.Size(412, 127);
             this.LogPanel.TabIndex = 5;
             // 
             // groupBox1
@@ -359,14 +363,14 @@
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 52.7027F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 47.2973F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 171F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(197, 303);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(197, 316);
             this.tableLayoutPanel3.TabIndex = 1;
             // 
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.panel1);
             this.groupBox5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox5.Location = new System.Drawing.Point(2, 133);
+            this.groupBox5.Location = new System.Drawing.Point(2, 146);
             this.groupBox5.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Padding = new System.Windows.Forms.Padding(2);
@@ -567,7 +571,7 @@
             this.groupBox4.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox4.Size = new System.Drawing.Size(193, 65);
+            this.groupBox4.Size = new System.Drawing.Size(193, 72);
             this.groupBox4.TabIndex = 5;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Root finding";
@@ -582,7 +586,7 @@
             this.rootsTextBox.Name = "rootsTextBox";
             this.rootsTextBox.ReadOnly = true;
             this.rootsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.rootsTextBox.Size = new System.Drawing.Size(189, 48);
+            this.rootsTextBox.Size = new System.Drawing.Size(189, 55);
             this.rootsTextBox.TabIndex = 3;
             // 
             // historyListBox
@@ -591,41 +595,37 @@
             this.historyListBox.Font = new System.Drawing.Font("Consolas", 10.8F, System.Drawing.FontStyle.Bold);
             this.historyListBox.FormattingEnabled = true;
             this.historyListBox.ItemHeight = 17;
-            this.historyListBox.Location = new System.Drawing.Point(2, 71);
+            this.historyListBox.Location = new System.Drawing.Point(2, 78);
             this.historyListBox.Margin = new System.Windows.Forms.Padding(2);
             this.historyListBox.Name = "historyListBox";
             this.historyListBox.ScrollAlwaysVisible = true;
-            this.historyListBox.Size = new System.Drawing.Size(193, 58);
+            this.historyListBox.Size = new System.Drawing.Size(193, 64);
             this.historyListBox.TabIndex = 1;
             this.historyListBox.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
-            // display2
+            // Polynomial1Chart
             // 
-            this.display2.BackColor = System.Drawing.Color.Transparent;
-            this.display2.BackgroundColorBot = System.Drawing.Color.White;
-            this.display2.BackgroundColorTop = System.Drawing.Color.White;
-            this.display2.DashedGridColor = System.Drawing.Color.DarkGray;
-            this.display2.DoubleBuffering = false;
-            this.display2.Location = new System.Drawing.Point(423, 310);
-            this.display2.Name = "display2";
-            this.display2.PlaySpeed = 0.5F;
-            this.display2.Size = new System.Drawing.Size(195, 167);
-            this.display2.SolidGridColor = System.Drawing.Color.DarkGray;
-            this.display2.TabIndex = 3;
-            // 
-            // display1
-            // 
-            this.display1.BackColor = System.Drawing.Color.Transparent;
-            this.display1.BackgroundColorBot = System.Drawing.Color.White;
-            this.display1.BackgroundColorTop = System.Drawing.Color.White;
-            this.display1.DashedGridColor = System.Drawing.Color.DarkGray;
-            this.display1.DoubleBuffering = false;
-            this.display1.Location = new System.Drawing.Point(3, 310);
-            this.display1.Name = "display1";
-            this.display1.PlaySpeed = 0.5F;
-            this.display1.Size = new System.Drawing.Size(414, 167);
-            this.display1.SolidGridColor = System.Drawing.Color.DarkGray;
-            this.display1.TabIndex = 2;
+            chartArea1.Name = "ChartArea1";
+            this.Polynomial1Chart.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.Polynomial1Chart.Legends.Add(legend1);
+            this.Polynomial1Chart.Location = new System.Drawing.Point(3, 323);
+            this.Polynomial1Chart.Name = "Polynomial1Chart";
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Polynomial1";
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Polynomial2";
+            series3.ChartArea = "ChartArea1";
+            series3.Legend = "Legend1";
+            series3.Name = "Result Polynomial";
+            this.Polynomial1Chart.Series.Add(series1);
+            this.Polynomial1Chart.Series.Add(series2);
+            this.Polynomial1Chart.Series.Add(series3);
+            this.Polynomial1Chart.Size = new System.Drawing.Size(413, 154);
+            this.Polynomial1Chart.TabIndex = 2;
+            this.Polynomial1Chart.Text = "Polynomial1Chart";
             // 
             // MainForm
             // 
@@ -659,6 +659,7 @@
             this.panel1.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Polynomial1Chart)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -711,8 +712,7 @@
         private Glass.GlassButton btnMultiply;
         private Glass.GlassButton btnSubtract;
         private Glass.GlassButton btnAdd;
-        private GraphLib.PlotterDisplayEx display1;
-        private GraphLib.PlotterDisplayEx display2;
+        private System.Windows.Forms.DataVisualization.Charting.Chart Polynomial1Chart;
     }
 }
 

@@ -12,6 +12,7 @@ using CMath.PolynomialSolver;
 using CMath.Trie;
 using System.Numerics;
 using System.Threading;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace CalculatorUI
 {
@@ -68,8 +69,6 @@ namespace CalculatorUI
             //Initialize display,value members for later history viewing
             historyListBox.DisplayMember = "DisplayName";
             historyListBox.ValueMember = "returnType";
-            display1.Smoothing = System.Drawing.Drawing2D.SmoothingMode.None;
-            display2.Smoothing = System.Drawing.Drawing2D.SmoothingMode.None;
             //Load colerd font properties
             LoadColorFont(polynomial1Text);
             LoadColorFont(polynomial2Text);
@@ -539,7 +538,11 @@ namespace CalculatorUI
             string[] lines = System.IO.File.ReadAllLines("help.txt");
             DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             Random rand = new Random((int)(DateTime.Now - start).TotalSeconds);
-            int n = rand.Next(0, lines.Length-1);
+            int n = lines.Length - 1;
+            while (n < 0 || n > lines.Length - 1 || String.IsNullOrWhiteSpace(lines[n]))
+            {
+                n = rand.Next(0, lines.Length - 1);
+            }
             tip = "Tip : " + lines[n];
         }
 
@@ -742,6 +745,7 @@ namespace CalculatorUI
             if (isResult)
             {
                 LoadColorFont(_rtBox);
+                DrawOnGraph(_polynomial, Polynomial1Chart, "Result Polynomial");
             }
         }
 
@@ -798,12 +802,12 @@ namespace CalculatorUI
                        if ((rtBox.Tag as string) == "Poly1")
                        {
                            polynomial1 = PolynomialParse(rtBox);
-                           DrawOnGraph(polynomial1, display1,"Graphing Polynomial 1");
+                           DrawOnGraph(polynomial1, Polynomial1Chart, "Polynomial1");
                        }
                        else if ((rtBox.Tag as string) == "Poly2")
                        {
                            polynomial2 = PolynomialParse(rtBox);
-                           DrawOnGraph(polynomial2, display2, "Graphing Polynomial 2");
+                           DrawOnGraph(polynomial2, Polynomial1Chart, "Polynomial2");
                        }
 
                        LogOperation(OperationTypeEnum.PolynomialAccepted);
@@ -817,55 +821,23 @@ namespace CalculatorUI
            }
        }
 
-       private void DrawOnGraph(Polynomial equation, GraphLib.PlotterDisplayEx graph,string name)
+       private void DrawOnGraph(Polynomial equation, Chart graph,string name)
        {
            this.SuspendLayout();
-           graph.DataSources.Clear();
-           graph.SetDisplayRangeX(0, 400);
-           graph.DataSources.Add(new GraphLib.DataSource());
-           graph.DataSources[0].Name = name;
-           graph.DataSources[0].OnRenderXAxisLabel += RenderXLabel;
-           graph.DataSources[0].Length = 800;
-           graph.PanelLayout = GraphLib.PlotterGraphPaneEx.LayoutMode.NORMAL;
-           graph.DataSources[0].AutoScaleY = true;
-           graph.DataSources[0].SetDisplayRangeY(-300, 300);
-           graph.DataSources[0].SetGridDistanceY(10);
-           graph.DataSources[0].OnRenderYAxisLabel = RenderYLabel;
-           for (int i = 0; i < 800; i++)
+           graph.Series[name].Points.Clear();
+           for (int i = -50; i < 50; i++)
            {
-               graph.DataSources[0].Samples[i].x = i;
-               graph.DataSources[0].Samples[i].y = (float)equation.substitute(i).Real;
+               graph.Series[name].Points.AddXY
+                               (i, equation.substitute(i).Real);
+               graph.Series[name].Points.AddXY
+                               (i,equation.substitute(i).Real);
            }
-           graph.DataSources[0].GraphColor = Color.FromArgb(0, 255, 0);
-           graph.BackgroundColorTop = Color.FromArgb(0, 64, 0);
-           graph.BackgroundColorBot = Color.FromArgb(0, 64, 0);
-           graph.SolidGridColor = Color.FromArgb(0, 128, 0);
-           graph.DashedGridColor = Color.FromArgb(0, 128, 0);
+
+           graph.Series[name].ChartType =
+                               SeriesChartType.FastLine;
+           // graph.Series[name].Color = 
            this.ResumeLayout();
            graph.Refresh();
-       }
-       private String RenderXLabel(GraphLib.DataSource s, int idx)
-       {
-           if (s.AutoScaleX)
-           {
-               //if (idx % 2 == 0)
-               {
-                   int Value = (int)(s.Samples[idx].x);
-                   return "" + Value;
-               }
-               return "";
-           }
-           else
-           {
-               int Value = (int)(s.Samples[idx].x / 200);
-               String Label = "" + Value + "\"";
-               return Label;
-           }
-       }
-
-       private String RenderYLabel(GraphLib.DataSource s, float value)
-       {
-           return String.Format("{0:0.0}", value);
        }
 
        #endregion
