@@ -247,6 +247,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.Name = "CustomizeForm";
+            this.Tag = "cstForm";
             this.Text = "CustomizeForm";
             ((System.ComponentModel.ISupportInitialize)(this.minNumeric)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.maxNumeric)).EndInit();

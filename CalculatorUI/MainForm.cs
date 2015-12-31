@@ -16,6 +16,9 @@ using System.Windows.Forms.DataVisualization.Charting; // For plotting graphs
 
 namespace CalculatorUI
 {
+    /*
+     * Search for TODOs using the `TODO` keyword for the upcoming work.
+     */
 
     /// <summary>
     /// Enum that holds the operation to be stored / processed
@@ -36,7 +39,11 @@ namespace CalculatorUI
         SubstitutionSecond,
         SolveFirst,
         SolveSecond,
+        DefiniteIntegralFirst,
+        DefiniteIntegralSecond,
+        
         PolynomialAccepted,
+
         OldMultiplication,
         OldModulus,
         OldDivision,
@@ -45,7 +52,8 @@ namespace CalculatorUI
         OldGcd,
         OldDerivative,
         OldSubstitution,
-        OldSolve
+        OldSolve,
+        OldDefiniteIntegral
     }
     public partial class MainForm : Form
     {
@@ -58,6 +66,9 @@ namespace CalculatorUI
         //If not found wil be created
         internal string filePath = Application.StartupPath + "\\appdata.xml";
         internal string tip = "tip : ";
+        //Definite integral
+        internal int poly1DefIntegralA = 0, poly1DefIntegralB = 0;
+        internal int poly2DefIntegralA = 0, poly2DefIntegralB = 0;
         #endregion
 
         public MainForm()
@@ -74,16 +85,43 @@ namespace CalculatorUI
             LoadColorFont(polynomial2Text);
             LoadColorFont(resPolyText);
         }
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            LogPanel.AppendText("Log started " + DateTime.Now.ToShortTimeString());
+            string[] lines = System.IO.File.ReadAllLines("help.txt");
+            DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            Random rand = new Random((int)(DateTime.Now - start).TotalSeconds);
+            int n = lines.Length - 1;
+            while (n < 0 || n > lines.Length - 1 || String.IsNullOrWhiteSpace(lines[n]))
+            {
+                n = rand.Next(0, lines.Length - 1);
+            }
+            tip = "Tip : " + lines[n];
+            Polynomial1Chart.Series["Polynomial1"].Color = Properties.Settings.Default.Polynomial1Color;
+            Polynomial1Chart.Series["Polynomial2"].Color = Properties.Settings.Default.Polynomial2Color;
+            Polynomial1Chart.Series["Result Polynomial"].Color = Properties.Settings.Default.ResultPolyColor;
 
+        }
+
+        #region Multithreading
         /// <summary>
         /// A thread to handle exit process
         /// </summary>
-       internal void ExitThread()
+        internal void ExitThread()
         {
           Program._historyTrie.save(filePath);
           Application.Exit();
             
         }
+        /// <summary>
+        /// A thread to handle save operation
+        /// </summary>
+        internal void SaveThread()
+        {
+            Program._historyTrie.save(filePath);
+        }
+        #endregion
+        #region Solve
         /// <summary>
         /// Show roots of polynomial in the roots log panel
         /// </summary>
@@ -110,8 +148,11 @@ namespace CalculatorUI
                 }
             }
         }
-
-        #region Solve
+        /// <summary>
+        /// Instantiate solver with a polynomial, and returns the reults in complex numbers list.
+        /// </summary>
+        /// <param name="_poly"></param>
+        /// <param name="result"></param>
         void SolvePolynomial(Polynomial _poly, ref List<Complex> result)
         {
             _solverInstance = new Solver(_poly);
@@ -201,6 +242,11 @@ namespace CalculatorUI
                     hL = new HistoryLog(new Polynomial(), polynomial2, 's', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
+                    //TODO Implement definite Integral
+                case OperationTypeEnum.DefiniteIntegralFirst:
+                    break;
+                case OperationTypeEnum.DefiniteIntegralSecond:
+                    break;
                 case OperationTypeEnum.OldDivision:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Division retrieved.");
                     break;
@@ -227,6 +273,9 @@ namespace CalculatorUI
                     break;
                 case OperationTypeEnum.PolynomialAccepted:
                     LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Polynomial entered.");
+                    break;
+                case OperationTypeEnum.OldDefiniteIntegral:
+                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Polynomial definite integral retrieved.");
                     break;
                 default:
                     return;
@@ -267,10 +316,18 @@ namespace CalculatorUI
                 case 's':
                     _log.DisplayName += " Substitution";
                     break;
+                    //TODO Implement Definite Integral
             }
             historyListBox.Items.Add(_log);
         }
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            HistoryLogViewForm hForm = new HistoryLogViewForm(historyListBox.SelectedItem as HistoryLog);
+            showForm(hForm, this, setClose);
+        }
+
         #endregion
+       
         /// <summary>
         /// Performs the requested operation from the pressed button
         /// </summary>
@@ -462,6 +519,11 @@ namespace CalculatorUI
                             LogOperation(OperationTypeEnum.SubstitutionSecond);
                         }
                         break;
+                        //TODO Implement Definite Integral HERE
+                    case "DefInt1":
+                        break;
+                    case "DefInt2":
+                        break;
                 }
             }
             catch (Exception ex)
@@ -471,6 +533,7 @@ namespace CalculatorUI
             }
         }
     
+        
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (saveThread.IsAlive)
@@ -488,6 +551,8 @@ namespace CalculatorUI
 
             toolStripStatusLabel1.Text = DateTime.Now.ToShortDateString() + ' ' + DateTime.Now.ToShortTimeString();
         }
+
+        //TODO Fix number entry : i : returns false.
         /// <summary>
         /// Tries to parse a string into a Complex Number
         /// </summary>
@@ -532,65 +597,13 @@ namespace CalculatorUI
             this.Close();
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            LogPanel.AppendText("Log started " + DateTime.Now.ToShortTimeString());
-            string[] lines = System.IO.File.ReadAllLines("help.txt");
-            DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            Random rand = new Random((int)(DateTime.Now - start).TotalSeconds);
-            int n = lines.Length - 1;
-            while (n < 0 || n > lines.Length - 1 || String.IsNullOrWhiteSpace(lines[n]))
-            {
-                n = rand.Next(0, lines.Length - 1);
-            }
-            tip = "Tip : " + lines[n];
-            Polynomial1Chart.Series["Polynomial1"].Color = Properties.Settings.Default.Polynomial1Color;
-            Polynomial1Chart.Series["Polynomial2"].Color = Properties.Settings.Default.Polynomial2Color;
-            Polynomial1Chart.Series["Result Polynomial"].Color = Properties.Settings.Default.ResultPolyColor;
 
-        }
-
-        /// <summary>
-        /// Close handler of the form, applies settings on close and renables the owner form
-        /// </summary>
-        public void setClose(object sender, FormClosedEventArgs e)
-        {
-            this.Enabled = true;
-            LoadColorFont(polynomial1Text);
-            LoadColorFont(polynomial2Text);
-            LoadColorFont(resPolyText);
-
-            Polynomial1Chart.Series["Polynomial1"].Color = Properties.Settings.Default.Polynomial1Color;
-            Polynomial1Chart.Series["Polynomial2"].Color = Properties.Settings.Default.Polynomial2Color;
-            Polynomial1Chart.Series["Result Polynomial"].Color = Properties.Settings.Default.ResultPolyColor;
-
-
-        }
-        /// <summary>
-        /// Shows a form and disable the owner form till user closes the on top form
-        /// </summary>
-        /// <param name="frm">Form to show</param>
-        /// <param name="owner">Form to be disabled</param>
-        /// <param name="closeHandle">Handler of enable/disable</param>
-        private void showForm(Form frm, Form owner, FormClosedEventHandler closeHandle)
-        {
-            frm.Owner = owner;
-            frm.Show();
-            frm.Activate();
-            owner.Enabled = false;
-            frm.FormClosed += new FormClosedEventHandler(closeHandle);
-        }
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveThread = new Thread(SaveThread);
             saveThread.Start();
         }
         // Load history logs
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            HistoryLogViewForm hForm = new HistoryLogViewForm(historyListBox.SelectedItem as HistoryLog);
-            showForm(hForm, this, setClose);
-        }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -638,11 +651,42 @@ namespace CalculatorUI
 
         }
 
-        private void aboutUsToolStripMenuItem_Click(object sender, EventArgs e)
+       #region Form Switch Handlers
+        /// <summary>
+        /// Close handler of the form, applies settings on close and renables the owner form
+        /// </summary>
+       public void setClose(object sender, FormClosedEventArgs e)
+        {
+            this.Enabled = true;
+            //If customization form
+            if (((sender as Form).Tag) == "cstForm")
+            {
+                LoadColorFont(polynomial1Text);
+                LoadColorFont(polynomial2Text);
+                LoadColorFont(resPolyText);
+                Polynomial1Chart.Series["Polynomial1"].Color = Properties.Settings.Default.Polynomial1Color;
+                Polynomial1Chart.Series["Polynomial2"].Color = Properties.Settings.Default.Polynomial2Color;
+                Polynomial1Chart.Series["Result Polynomial"].Color = Properties.Settings.Default.ResultPolyColor;
+            }
+        }
+       /// <summary>
+       /// Shows a form and disable the owner form till user closes the on top form
+       /// </summary>
+       /// <param name="frm">Form to show</param>
+       /// <param name="owner">Form to be disabled</param>
+       /// <param name="closeHandle">Handler of enable/disable</param>
+       private void showForm(Form frm, Form owner, FormClosedEventHandler closeHandle)
+        {
+            frm.Owner = owner;
+            frm.Show();
+            frm.Activate();
+            owner.Enabled = false;
+            frm.FormClosed += new FormClosedEventHandler(closeHandle);
+        }
+       private void aboutUsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             showForm(new Credits(), this, setClose);
         }
-
        private void customizeToolStripMenuItem_Click(object sender, EventArgs e)
        {
            showForm(new CustomizeForm(), this, setClose);
@@ -651,7 +695,7 @@ namespace CalculatorUI
        {
            showForm(new LicenseForm(), this, setClose);
        }
-
+       #endregion
        #region RTF Handling
 
        #region Parsing Algorithms
@@ -850,30 +894,71 @@ namespace CalculatorUI
        }
 
        #endregion
+       
         /// <summary>
-        /// A thread to handle save operation
+        /// Handler of placeholder for text box
         /// </summary>
-       internal void SaveThread()
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PlaceHolder(object sender,EventArgs e)
        {
-           Program._historyTrie.save(filePath);
+           var txtBox = (sender as TextBox);
+           Complex tester;
+           if (txtBox.Text != "" && TryParseComplex(txtBox.Text,out tester))
+           {
+               switch (txtBox.Tag as string)
+               {
+                   case "Def1A":
+                       poly1DefIntegralA = int.Parse(txtBox.Text);
+                       break;
+                   case "Def1B":
+                       poly1DefIntegralB = int.Parse(txtBox.Text);
+                       break;
+                   case "Def2A":
+                       poly2DefIntegralA = int.Parse(txtBox.Text);
+                       break;
+                   case "Def2B":
+                       poly2DefIntegralB = int.Parse(txtBox.Text);
+                       break;
+               }
+          }
+           else
+           {
+               switch (txtBox.Tag as string)
+               {
+                   case "Def1A":
+                       txtBox.Text = "Poly1. a";
+                       break;
+                   case "Def1B":
+                       txtBox.Text = "Poly1. b";
+                       break;
+                   case "Def2A":
+                       txtBox.Text = "Poly2. a";
+                       break;
+                   case "Def2B":
+                       txtBox.Text = "Poly2. b";
+                       break;
+                   case "Poly.1x":
+                       txtBox.Text = "Poly.1 X";
+                       break;
+                   case "Poly.2x":
+                       txtBox.Text = "Poly.2 X";
+                       break;
+               }
+               txtBox.ForeColor = SystemColors.WindowFrame;
+           }
        }
 
-       private void removePlaceHolder(object sender, EventArgs e)
-       {
-           //var current = sender as RichTextBox;
-           //if (current == polynomial1Text && current.Text == "Polynomial1")
-           //{
-           //    current.Text = "";
-
-           //}
-           //else if (current == polynomial2Text && current.Text == "Polynomial2")
-           //{
-           //    current.Text = "";
-           //}
-       }
-
-       private void restorePlaceHolder(object sender, EventArgs e)
-       {
+        private void PlaceHolderRemove(object sender,EventArgs e)
+        {
+            var txtBox = sender as TextBox;
+            txtBox.ForeColor = Color.Black;
+            txtBox.Text = "";
+        }
+        //TODO Merge function with the original place holder
+       
+        private void restorePlaceHolder(object sender, EventArgs e)
+        {
            var current = (RichTextBox)sender;
            if (current == polynomial1Text && current.Text == "")
            {
@@ -885,7 +970,7 @@ namespace CalculatorUI
                current.Text = "Polynomial2";
                LoadColorFont(current);
            }
-       }
+        }
     }
     /// <summary>
     /// Class that holds the history item, each instance holds one record of operation and two polynomials
