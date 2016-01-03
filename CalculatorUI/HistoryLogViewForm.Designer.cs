@@ -53,6 +53,7 @@
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -63,9 +64,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(817, 258);
-            this.splitContainer1.SplitterDistance = 76;
-            this.splitContainer1.SplitterWidth = 5;
+            this.splitContainer1.Size = new System.Drawing.Size(613, 210);
+            this.splitContainer1.SplitterDistance = 61;
             this.splitContainer1.TabIndex = 0;
             // 
             // groupBox1
@@ -73,8 +73,10 @@
             this.groupBox1.Controls.Add(this.polynomial1TextBox);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(817, 76);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Size = new System.Drawing.Size(613, 61);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Polynomial";
@@ -82,9 +84,11 @@
             // polynomial1TextBox
             // 
             this.polynomial1TextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.polynomial1TextBox.Location = new System.Drawing.Point(3, 18);
+            this.polynomial1TextBox.Location = new System.Drawing.Point(2, 15);
+            this.polynomial1TextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.polynomial1TextBox.Name = "polynomial1TextBox";
-            this.polynomial1TextBox.Size = new System.Drawing.Size(811, 55);
+            this.polynomial1TextBox.ReadOnly = true;
+            this.polynomial1TextBox.Size = new System.Drawing.Size(609, 44);
             this.polynomial1TextBox.TabIndex = 1;
             this.polynomial1TextBox.Text = "";
             // 
@@ -92,6 +96,7 @@
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.splitContainer2.Name = "splitContainer2";
             this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -102,9 +107,8 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.groupBox3);
-            this.splitContainer2.Size = new System.Drawing.Size(817, 177);
-            this.splitContainer2.SplitterDistance = 70;
-            this.splitContainer2.SplitterWidth = 5;
+            this.splitContainer2.Size = new System.Drawing.Size(613, 145);
+            this.splitContainer2.SplitterDistance = 57;
             this.splitContainer2.TabIndex = 0;
             // 
             // groupBox2
@@ -112,8 +116,10 @@
             this.groupBox2.Controls.Add(this.polynomial2TextBox);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(0, 0);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(817, 70);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox2.Size = new System.Drawing.Size(613, 57);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Polynomial 2";
@@ -121,9 +127,11 @@
             // polynomial2TextBox
             // 
             this.polynomial2TextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.polynomial2TextBox.Location = new System.Drawing.Point(3, 18);
+            this.polynomial2TextBox.Location = new System.Drawing.Point(2, 15);
+            this.polynomial2TextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.polynomial2TextBox.Name = "polynomial2TextBox";
-            this.polynomial2TextBox.Size = new System.Drawing.Size(811, 49);
+            this.polynomial2TextBox.ReadOnly = true;
+            this.polynomial2TextBox.Size = new System.Drawing.Size(609, 40);
             this.polynomial2TextBox.TabIndex = 2;
             this.polynomial2TextBox.Text = "";
             // 
@@ -132,8 +140,10 @@
             this.groupBox3.Controls.Add(this.resultPolynomialTextBox);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(817, 102);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox3.Size = new System.Drawing.Size(613, 84);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Result";
@@ -141,19 +151,22 @@
             // resultPolynomialTextBox
             // 
             this.resultPolynomialTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.resultPolynomialTextBox.Location = new System.Drawing.Point(3, 18);
+            this.resultPolynomialTextBox.Location = new System.Drawing.Point(2, 15);
+            this.resultPolynomialTextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.resultPolynomialTextBox.Name = "resultPolynomialTextBox";
-            this.resultPolynomialTextBox.Size = new System.Drawing.Size(811, 81);
+            this.resultPolynomialTextBox.ReadOnly = true;
+            this.resultPolynomialTextBox.Size = new System.Drawing.Size(609, 67);
             this.resultPolynomialTextBox.TabIndex = 2;
             this.resultPolynomialTextBox.Text = "";
             // 
             // HistoryLogViewForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(817, 258);
+            this.ClientSize = new System.Drawing.Size(613, 210);
             this.Controls.Add(this.splitContainer1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "HistoryLogViewForm";
