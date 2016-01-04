@@ -61,14 +61,14 @@ namespace CalculatorUI
         internal Polynomial polynomial1, polynomial2, resultPolynomial;
         internal Solver _solverInstance;
         internal List<Complex> roots;
-        internal Complex subResult,X;
+        internal Complex subResult,X1,X2;
         internal Thread exitThread, saveThread;
         //If not found wil be created
         internal string filePath = Application.StartupPath + "\\appdata.xml";
         internal string tip = "tip : ";
         //Definite integral
-        internal int poly1DefIntegralA = 0, poly1DefIntegralB = 0;
-        internal int poly2DefIntegralA = 0, poly2DefIntegralB = 0;
+        internal Complex poly1DefIntegralA = 0, poly1DefIntegralB = 0;
+        internal Complex poly2DefIntegralA = 0, poly2DefIntegralB = 0;
         #endregion
 
         public MainForm()
@@ -209,43 +209,58 @@ namespace CalculatorUI
                 case OperationTypeEnum.SolveFirst:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Solved.");
                     Program._historyTrie.insert(polynomial1, '=', roots);
-                    hL = new HistoryLog(polynomial1, roots, DateTime.Now.TimeOfDay.ToString());
+                    hL = new HistoryLog(polynomial1, roots, '=', DateTime.Now.TimeOfDay.ToString());
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.SolveSecond:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Second Polynomial Solved.");
                     Program._historyTrie.insert(polynomial2, '=', roots);
-                    hL = new HistoryLog(polynomial2, roots, DateTime.Now.TimeOfDay.ToString());
+                    hL = new HistoryLog(polynomial2, roots, '=', DateTime.Now.TimeOfDay.ToString());
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.DerivativeFirst:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Diffrentiated.");
                     Program._historyTrie.insert(polynomial1, '^',resultPolynomial);
-                    hL = new HistoryLog(polynomial1,new Polynomial(),'^', DateTime.Now.TimeOfDay.ToString(),resultPolynomial);
+                    hL = new HistoryLog(polynomial1,'^', DateTime.Now.TimeOfDay.ToString(),resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.DerivativeSecond:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Second Polynomial Diffrentiated.");
                     Program._historyTrie.insert(polynomial2, '^',resultPolynomial);
-                    hL = new HistoryLog(new Polynomial(), polynomial2, '^', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    hL = new HistoryLog(polynomial2, '^', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.SubstitutionFirst:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Substituted in First Polynomial.");
-                    Program._historyTrie.insert(polynomial1, X, subResult);
-                    hL = new HistoryLog(polynomial1, new Polynomial(), 's', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    Program._historyTrie.insert(polynomial1, 's', new List<Complex> { X1 }, subResult);
+                    hL = new HistoryLog(polynomial1, new List<KeyValuePair<Char,Complex> > { new KeyValuePair<Char,Complex>('X',X1) }, 's', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.SubstitutionSecond:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Substituted in Second Polynomial.");
-                    Program._historyTrie.insert(polynomial2, X, subResult);
-                    hL = new HistoryLog(new Polynomial(), polynomial2, 's', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    Program._historyTrie.insert(polynomial2, 's', new List<Complex> { X2 }, subResult);
+                    hL = new HistoryLog(polynomial2, new List<KeyValuePair<Char,Complex> > {
+                        new KeyValuePair<Char,Complex>('X',X2) }
+                        , 's', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
-                    //TODO Implement definite Integral
                 case OperationTypeEnum.DefiniteIntegralFirst:
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Definite Integral Calculated.");
+                    Program._historyTrie.insert(polynomial1, 'd', new List<Complex> { poly1DefIntegralA, poly1DefIntegralB }, subResult);
+                    hL = new HistoryLog(polynomial1, new List<KeyValuePair<Char, Complex>> {
+                        new KeyValuePair<Char, Complex>('A', poly1DefIntegralA),
+                        new KeyValuePair<Char, Complex>('B', poly1DefIntegralB)}
+                        , 'd', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
                     break;
                 case OperationTypeEnum.DefiniteIntegralSecond:
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Second Polynomial Definite Integral Calculated.");
+                    Program._historyTrie.insert(polynomial2, 'd', new List<Complex> { poly2DefIntegralA, poly2DefIntegralB }, subResult);
+                    hL = new HistoryLog(polynomial2, new List<KeyValuePair<Char, Complex>> {
+                        new KeyValuePair<Char, Complex>('A', poly2DefIntegralA),
+                        new KeyValuePair<Char, Complex>('B', poly2DefIntegralB)}
+                         , 'd', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
                     break;
                 case OperationTypeEnum.OldDivision:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Division retrieved.");
@@ -278,6 +293,7 @@ namespace CalculatorUI
                     LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Polynomial definite integral retrieved.");
                     break;
                 default:
+                    throw new ArgumentException("Unsupported operation");
                     return;
             }
         }
@@ -316,7 +332,9 @@ namespace CalculatorUI
                 case 's':
                     _log.DisplayName += " Substitution";
                     break;
-                    //TODO Implement Definite Integral
+                case 'd':
+                    _log.DisplayName += " Definite Integral";
+                    break;
             }
             historyListBox.Items.Add(_log);
         }
@@ -335,7 +353,7 @@ namespace CalculatorUI
         private void PerformOperation(object sender, EventArgs e)
         {
             Polynomial searchResult;
-            object dynamicResult;
+            Object dynamicResult;
             try
             {
                 rootsTextBox.Clear();
@@ -476,12 +494,12 @@ namespace CalculatorUI
                         }
                         break;
                     case "Sub1":
-                        if (!TryParseComplex(textBox1.Text, out X))
+                        if (!TryParseComplex(textBox1.Text, out X1))
                         {
                             MessageBox.Show("Wrong complex format");
                             return;
                         }
-                        if (Program._historyTrie.try_search(polynomial1, X, out subResult))
+                        if (Program._historyTrie.try_search(polynomial1, 's', new List<Complex> {X1}, out subResult))
                         {
                             searchResult = new Polynomial();
                             searchResult.Add(new Term(0,subResult));
@@ -490,7 +508,7 @@ namespace CalculatorUI
                         }
                         else
                         {
-                            subResult = polynomial1.substitute(X);
+                            subResult = polynomial1.substitute(X1);
                             resultPolynomial = new Polynomial();
                             resultPolynomial.Add(new Term(0, subResult));
                             PolynomialParse(resultPolynomial, resPolyText, true);
@@ -498,12 +516,12 @@ namespace CalculatorUI
                         }
                         break;
                     case "Sub2":
-                        if (!TryParseComplex(textBox2.Text, out X))
+                        if (!TryParseComplex(textBox2.Text, out X2))
                         {
                             MessageBox.Show("Wrong complex format");
                             return;
                         }
-                        if (Program._historyTrie.try_search(polynomial2, X, out subResult))
+                        if (Program._historyTrie.try_search(polynomial2, 's', new List<Complex> { X2 }, out subResult))
                         {
                             searchResult = new Polynomial();
                             searchResult.Add(new Term(0,subResult));
@@ -512,17 +530,56 @@ namespace CalculatorUI
                         }
                         else
                         {
-                            subResult = polynomial2.substitute(X);
+                            subResult = polynomial2.substitute(X2);
                             resultPolynomial = new Polynomial();
                             resultPolynomial.Add(new Term(0, subResult));
                             PolynomialParse(resultPolynomial, resPolyText, true);
                             LogOperation(OperationTypeEnum.SubstitutionSecond);
                         }
                         break;
-                        //TODO Implement Definite Integral HERE
                     case "DefInt1":
+                        if (!TryParseComplex(textBox3.Text, out poly1DefIntegralA) || !TryParseComplex(textBox4.Text, out poly1DefIntegralB))
+                        {
+                            MessageBox.Show("Wrong complex format");
+                            return;
+                        }
+                        if (Program._historyTrie.try_search(polynomial1, 'd', new List<Complex> { poly1DefIntegralA, poly1DefIntegralB }, out subResult))
+                        {
+                            searchResult = new Polynomial();
+                            searchResult.Add(new Term(0, subResult));
+                            PolynomialParse(searchResult, resPolyText, true);
+                            LogOperation(OperationTypeEnum.OldDefiniteIntegral);
+                        }
+                        else
+                        {
+                            subResult = polynomial1.definite_integral(poly1DefIntegralA,poly1DefIntegralB);
+                            resultPolynomial = new Polynomial();
+                            resultPolynomial.Add(new Term(0, subResult));
+                            PolynomialParse(resultPolynomial, resPolyText, true);
+                            LogOperation(OperationTypeEnum.DefiniteIntegralFirst);
+                        }
                         break;
                     case "DefInt2":
+                        if (!TryParseComplex(textBox6.Text, out poly2DefIntegralA) || !TryParseComplex(textBox5.Text, out poly2DefIntegralB))
+                        {
+                            MessageBox.Show("Wrong complex format");
+                            return;
+                        }
+                        if (Program._historyTrie.try_search(polynomial2, 'd', new List<Complex> { poly2DefIntegralA, poly2DefIntegralB }, out subResult))
+                        {
+                            searchResult = new Polynomial();
+                            searchResult.Add(new Term(0, subResult));
+                            PolynomialParse(searchResult, resPolyText, true);
+                            LogOperation(OperationTypeEnum.OldDefiniteIntegral);
+                        }
+                        else
+                        {
+                            subResult = polynomial2.definite_integral(poly2DefIntegralA,poly2DefIntegralB);
+                            resultPolynomial = new Polynomial();
+                            resultPolynomial.Add(new Term(0, subResult));
+                            PolynomialParse(resultPolynomial, resPolyText, true);
+                            LogOperation(OperationTypeEnum.DefiniteIntegralSecond);
+                        }
                         break;
                 }
             }
@@ -552,7 +609,6 @@ namespace CalculatorUI
             toolStripStatusLabel1.Text = DateTime.Now.ToShortDateString() + ' ' + DateTime.Now.ToShortTimeString();
         }
 
-        //TODO Fix number entry : i : returns false.
         /// <summary>
         /// Tries to parse a string into a Complex Number
         /// </summary>
@@ -571,6 +627,21 @@ namespace CalculatorUI
             double _real,_img;
             if(!_number.Contains('+'))
             {
+                if (_number.Contains("i"))
+                {
+                    if (_number[_number.Length - 1] != 'i')
+                        return false;
+                    _number = _number.Substring(0, _number.Length - 1);
+                    if (_number == "")
+                    {
+                        _ref = 0;
+                        return true;
+                    }
+                    if (!double.TryParse(_number, out _img))
+                        return false;
+                    _ref = new Complex(0.0, _img);
+                    return true;
+                }
                 if (!double.TryParse(_number, out _real))
                     return false;
                 _ref = new Complex(_real,0.0);
@@ -903,26 +974,7 @@ namespace CalculatorUI
         private void PlaceHolder(object sender,EventArgs e)
        {
            var txtBox = (sender as TextBox);
-           Complex tester;
-           if (txtBox.Text != "" && TryParseComplex(txtBox.Text,out tester))
-           {
-               switch (txtBox.Tag as string)
-               {
-                   case "Def1A":
-                       poly1DefIntegralA = int.Parse(txtBox.Text);
-                       break;
-                   case "Def1B":
-                       poly1DefIntegralB = int.Parse(txtBox.Text);
-                       break;
-                   case "Def2A":
-                       poly2DefIntegralA = int.Parse(txtBox.Text);
-                       break;
-                   case "Def2B":
-                       poly2DefIntegralB = int.Parse(txtBox.Text);
-                       break;
-               }
-          }
-           else
+           if (txtBox.Text == "")
            {
                switch (txtBox.Tag as string)
                {
@@ -944,6 +996,12 @@ namespace CalculatorUI
                    case "Poly.2x":
                        txtBox.Text = "Poly.2 X";
                        break;
+                   case "Poly1":
+                       txtBox.Text = "Polynomial1";
+                       break;
+                   case "Poly2":
+                       txtBox.Text = "Polynomial2";
+                       break;
                }
                txtBox.ForeColor = SystemColors.WindowFrame;
            }
@@ -955,19 +1013,21 @@ namespace CalculatorUI
             txtBox.ForeColor = Color.Black;
             txtBox.Text = "";
         }
-        //TODO Merge function with the original place holder
        
         private void restorePlaceHolder(object sender, EventArgs e)
         {
-           var current = (RichTextBox)sender;
-           if (current == polynomial1Text && current.Text == "")
+           var current = sender as RichTextBox;
+           if (current.Text == "")
            {
-               current.Text = "Polynomial1";
-               LoadColorFont(current);
-           }
-           else if (current == polynomial2Text && current.Text == "")
-           {
-               current.Text = "Polynomial2";
+               switch (current.Tag as String)
+               {
+                   case "Poly1":
+                       current.Text = "Polynomial1";
+                       break;
+                   case "Poly2":
+                       current.Text = "Polynomial2";
+                       break;
+               }
                LoadColorFont(current);
            }
         }
@@ -984,6 +1044,7 @@ namespace CalculatorUI
         public string _timeStamp { get; private set; }
         public string DisplayName { get; set; }
         public HistoryLog returnType { get { return this; } }
+        public List<KeyValuePair<Char, Complex>> parameters { get; private set; }
         public HistoryLog(Polynomial polynomial1, Polynomial polynomial2, char operation, string timeStamp, Polynomial res)
         {
             this.firstPolynomial = polynomial1;
@@ -993,11 +1054,28 @@ namespace CalculatorUI
             this._timeStamp = timeStamp;
             DisplayName = DateTime.Parse(_timeStamp).ToShortTimeString();
         }
-        public HistoryLog(Polynomial polynomial1, List<Complex> roots, string timeStamp)
+        public HistoryLog(Polynomial polynomial1, char operation, string timeStamp, Polynomial res)
         {
             this.firstPolynomial = polynomial1;
-            this.Operation = '=';
+            this.resultPolynomial = res;
+            this.Operation = operation;
+            this._timeStamp = timeStamp;
+            DisplayName = DateTime.Parse(_timeStamp).ToShortTimeString();
+        }
+        public HistoryLog(Polynomial polynomial1, List<Complex> roots, char operation, string timeStamp)
+        {
+            this.firstPolynomial = polynomial1;
+            this.Operation = operation;
             this.roots = roots;
+            this._timeStamp = timeStamp;
+            DisplayName = DateTime.Parse(_timeStamp).ToShortTimeString();
+        }
+        public HistoryLog(Polynomial polynomial, List<KeyValuePair<Char, Complex>> _parameters, char operation, string timeStamp, Polynomial res)
+        {
+            this.firstPolynomial = polynomial;
+            this.resultPolynomial = res;
+            this.parameters = _parameters;
+            this.Operation = operation;
             this._timeStamp = timeStamp;
             DisplayName = DateTime.Parse(_timeStamp).ToShortTimeString();
         }

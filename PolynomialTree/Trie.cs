@@ -6,7 +6,6 @@ using System.Xml.Linq;
 using CMath.PolynomialEquation;
 using System.Numerics;
 
-
 namespace CMath.Trie
 {
     #region TypeDefinitions
@@ -14,11 +13,30 @@ namespace CMath.Trie
     using Trie = Trie<KeyValuePair<int, Complex>>;
     #endregion
 
+    #region utils
+    class ListComparer<T> : IEqualityComparer<List<T>>
+    {
+        public bool Equals(List<T> x, List<T> y)
+        {
+            return x.SequenceEqual(y);
+        }
+
+        public int GetHashCode(List<T> obj)
+        {
+            int hashcode = 0;
+            foreach (T t in obj)
+            {
+                hashcode ^= t.GetHashCode();
+            }
+            return hashcode;
+        }
+    }
+    #endregion
     public class TreeNode<T>
     {
         #region Properties
         public Dictionary<T, TreeNode<T>> _children;
-        public Dictionary<Char, dynamic> _special;
+        public Dictionary<Char, Object> _special;
         public bool isEnd;
         #endregion
         #region constructor
@@ -240,30 +258,31 @@ namespace CMath.Trie
             xDoc.Add(dfs(main.root));
             xDoc.Save(FileName);
         }
-        public void insert(Polynomial equation, Complex X, Complex result)
-        {
-            try
-            {
-                var lastFirst = main.insert(equation._data.ToList());
-                if (!lastFirst._special.ContainsKey('s'))
-                {
-                    lastFirst._special.Add('s', new Dictionary<Complex,Complex>());
-                }
-                lastFirst._special['s'].Add(X, result);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-        public void insert(Polynomial equation,Char operation, dynamic storage)
+        public void insert(Polynomial equation, char operation, List<Complex> X, Complex result)
         {
             try
             {
                 var lastFirst = main.insert(equation._data.ToList());
                 if (!lastFirst._special.ContainsKey(operation))
                 {
-                    lastFirst._special.Add(operation, storage);
+                    lastFirst._special.Add(operation, new Dictionary<List<Complex>, Complex>(new ListComparer<Complex>()));
+                }
+                var toInsertIn = lastFirst._special[operation] as Dictionary<List<Complex>, Complex>;
+                toInsertIn.Add(X, result);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        public void insert(Polynomial equation,Char operation, Object toBeStored)
+        {
+            try
+            {
+                var lastFirst = main.insert(equation._data.ToList());
+                if (!lastFirst._special.ContainsKey(operation))
+                {
+                    lastFirst._special.Add(operation, toBeStored);
                 }
             }
             catch (Exception e)
@@ -280,7 +299,8 @@ namespace CMath.Trie
                 {
                     lastFirst._special.Add(operation, new Trie());
                 }
-                var lastSecond = lastFirst._special[operation].insert(second._data.ToList());
+                var secondTrie = lastFirst._special[operation] as Trie;
+                var lastSecond = secondTrie.insert(second._data.ToList());
                 if (lastSecond._special.ContainsKey('='))
                 {
                     throw new ArgumentException("Operation is already stored");
@@ -292,7 +312,7 @@ namespace CMath.Trie
                 throw e;
             }
         }
-        dynamic search(Polynomial equation, Char operation)
+        Object search(Polynomial equation, Char operation)
         {
             Node last;
             if (!main.try_get_node(equation._data.ToList(), out last))
@@ -305,22 +325,23 @@ namespace CMath.Trie
             }
             return last._special[operation];
         }
-        Complex search(Polynomial equation, Complex X)
+        Complex search(Polynomial equation, Char operation, List<Complex> X)
         {
             Node last;
             if (!main.try_get_node(equation._data.ToList(), out last))
             {
                 throw new KeyNotFoundException("There is no such polynomial in the trie;");
             }
-            if (!last._special.ContainsKey('s'))
+            if (!last._special.ContainsKey(operation))
             {
                 throw new KeyNotFoundException("There is no such operation in the trie;");
             }
-            if (!last._special['s'].ContainsKey(X))
+            var specialDict = last._special[operation] as Dictionary<List<Complex>, Complex>;
+            if (!specialDict.ContainsKey(X))
             {
                 throw new KeyNotFoundException("There is no such operation in the trie;");
             }
-            return last._special['s'][X];
+            return specialDict[X];
         }
         Polynomial search(Polynomial first, char operation, Polynomial second)
         {
@@ -334,7 +355,7 @@ namespace CMath.Trie
                 throw new KeyNotFoundException("There is no such operation in the trie;");
             }
             Node lastSecond;
-            if (!lastFirst._special[operation].try_get_node(second._data.ToList(), out lastSecond))
+            if (!(lastFirst._special[operation] as Trie).try_get_node(second._data.ToList(), out lastSecond))
             {
                 throw new KeyNotFoundException("There is no such polynomial in the trie;");
             }
@@ -342,7 +363,7 @@ namespace CMath.Trie
             {
                 throw new KeyNotFoundException("There is no such operation in the trie;");
             }
-            return lastSecond._special['='];
+            return (lastSecond._special['='] as Polynomial);
         }
         public bool try_search(Polynomial first, char operation, Polynomial second, out Polynomial result)
         {
@@ -357,7 +378,7 @@ namespace CMath.Trie
                 return false;
             }
         }
-        public bool try_search(Polynomial equation,char operation, out object result)
+        public bool try_search(Polynomial equation,char operation, out Object result)
         {
             try
             {
@@ -370,11 +391,11 @@ namespace CMath.Trie
                 return false;
             }
         }
-        public bool try_search(Polynomial equation, Complex X, out Complex result)
+        public bool try_search(Polynomial equation, Char Operation, List<Complex> X, out Complex result)
         {
             try
             {
-                result = search(equation, X);
+                result = search(equation, Operation, X);
                 return true;
             }
             catch
@@ -425,11 +446,12 @@ namespace CMath.Trie
             {
                 throw new KeyNotFoundException("There is no such operation in the trie;");
             }
-            if (!lastFirst._special[operation].try_remove(second._data.ToList()))
+            var secondTrie = lastFirst._special[operation] as Trie;
+            if (!secondTrie.try_remove(second._data.ToList()))
             {
                 throw new KeyNotFoundException("There is no such operation in the trie;");
             }
-            if (lastFirst._special[operation].isEmpty())
+            if ((lastFirst._special[operation] as Trie).isEmpty())
             {
                 lastFirst._special.Remove(operation);
                 if (lastFirst._special.Count == 0)
@@ -452,146 +474,262 @@ namespace CMath.Trie
         }
         #endregion
         #region dfs
-        Node dfs(XElement current)
+        Node dfs(XElement Xroot)
         {
-            Node result = new Node();
-            result.isEnd = current.Element("isEnd").Value == "True";
-            foreach (var edge in current.Elements("Node"))
+            Node root = new Node();
+            Stack<List<Object>> dfsStack = new Stack<List<Object>>();
+            dfsStack.Push(new List<Object>());
+            dfsStack.Peek().Add(root);
+            dfsStack.Peek().Add(null);
+            dfsStack.Peek().Add(null);
+            dfsStack.Peek().Add(Xroot);
+            while (dfsStack.Count != 0)
             {
-                int degree = int.Parse(edge.Element("Edge").Element("Degree").Value);
-                double real = double.Parse(edge.Element("Edge").Element("Coefficient").Element("Real").Value);
-                double imaginary = double.Parse(edge.Element("Edge").Element("Coefficient").Element("Imaginary").Value);
-                result._children.Add(new KeyValuePair<int, Complex>(degree, new Complex(real, imaginary)), dfs(edge));
-            }
-            if (result.isEnd)
-            {
-                foreach (var edge in current.Elements("Tree"))
+                var temporaryList = dfsStack.Pop();
+                Node currentNode = temporaryList[0] as Node;
+                Node parentNode = temporaryList[1] as Node;
+                XElement currentXNode = temporaryList[3] as XElement;
+                currentNode.isEnd = currentXNode.Element("isEnd").Value == "True";
+                if (parentNode != null)
                 {
-                    char Edge = edge.Element("Edge").Value[0];
-                    result._special.Add(Edge, new Trie(dfsSecond(edge)));
+                    KeyValuePair<int, Complex> Edge = (KeyValuePair<int, Complex>)temporaryList[2];
+                    parentNode._children.Add(Edge, currentNode);
                 }
-                foreach (var edge in current.Elements("SolutionSet"))
+                foreach (var edge in currentXNode.Elements("Node"))
                 {
-                    char Edge = edge.Element("Edge").Value[0];
-                    List<Complex> solutions = new List<Complex>();
-                    foreach (var solution in edge.Elements("Solution"))
+                    int degree = int.Parse(edge.Element("Edge").Element("Degree").Value);
+                    double real = double.Parse(edge.Element("Edge").Element("Coefficient").Element("Real").Value);
+                    double imaginary = double.Parse(edge.Element("Edge").Element("Coefficient").Element("Imaginary").Value);
+                    Node newNode = new Node();
+                    dfsStack.Push(new List<Object>());
+                    dfsStack.Peek().Add(newNode);
+                    dfsStack.Peek().Add(currentNode);
+                    dfsStack.Peek().Add(new KeyValuePair<int, Complex>(degree, new Complex(real, imaginary)));
+                    dfsStack.Peek().Add(edge);
+                }
+                if (currentNode.isEnd)
+                {
+                    foreach (var edge in currentXNode.Elements("Tree"))
                     {
-                        solutions.Add(new Complex(double.Parse(solution.Element("Real").Value),
-                            double.Parse(solution.Element("Imaginary").Value)));
+                        char edgeChar = edge.Element("Edge").Value[0];
+                        currentNode._special.Add(edgeChar, new Trie(dfsSecond(edge)));
                     }
-                    result._special.Add(Edge, solutions);
-                }
-                foreach (var edge in current.Elements("substitutions"))
-                {
-                    char Edge = edge.Element("Edge").Value[0];
-                    var substitutions = new Dictionary<Complex, Complex>();
-                    foreach (var substitution in edge.Elements("substitution"))
+                    foreach (var edge in currentXNode.Elements("SolutionSet"))
                     {
-                        string[] temp = substitution.Element("X").Value.Split('(', ',', ')');
-                        string[] temp1 = substitution.Element("Result").Value.Split('(', ',', ')');
-                        substitutions.Add(
-                            new Complex(double.Parse(temp[1]), double.Parse(temp[2])),
-                             new Complex(double.Parse(temp1[1]), double.Parse(temp1[2])));
-                    }
-                    result._special.Add(Edge, substitutions);
-                }
-                foreach (var edge in current.Elements("derivative"))
-                {
-                    char Edge = edge.Element("Edge").Value[0];
-                    var derivative = new Polynomial(edge.Element("Result").Value);
-                    result._special.Add(Edge, derivative);
-                }
-            }
-            return result;
-        }
-        Node dfsSecond(XElement current)
-        {
-            Node result = new Node();
-            result.isEnd = current.Element("isEnd").Value == "True";
-            foreach (var edge in current.Elements("Node"))
-            {
-                int degree = int.Parse(edge.Element("Edge").Element("Degree").Value);
-                double real = double.Parse(edge.Element("Edge").Element("Coefficient").Element("Real").Value);
-                double imaginary = double.Parse(edge.Element("Edge").Element("Coefficient").Element("Imaginary").Value);
-                result._children.Add(new KeyValuePair<int, Complex>(degree, new Complex(real, imaginary)), dfsSecond(edge));
-            }
-            if (result.isEnd)
-            {
-                result._special.Add('=', new Polynomial(current.Element("Result").Value));
-            }
-            return result;
-        }
-        XElement dfs(Node node)
-        {
-            XElement result = new XElement("Node");
-            result.Add(new XElement("isEnd", node.isEnd.ToString()));
-            foreach (var edge in node._children)
-            {
-                var newChild = dfs(edge.Value);
-                newChild.Add(new XElement("Edge",
-                    new XElement("Degree", edge.Key.Key.ToString()),
-                    new XElement("Coefficient",
-                        new XElement("Real", edge.Key.Value.Real),
-                        new XElement("Imaginary", edge.Key.Value.Imaginary))));
-                result.Add(newChild);
-            }
-            if (node.isEnd)
-            {
-                foreach (var special in node._special)
-                {
-                    XElement newChild;
-                    if (special.Key == '=')
-                    {
-                        newChild = new XElement("SolutionSet");
-                        foreach (var solution in special.Value)
+                        char edgeChar = edge.Element("Edge").Value[0];
+                        List<Complex> solutions = new List<Complex>();
+                        foreach (var solution in edge.Elements("Solution"))
                         {
-                            newChild.Add(new XElement("Solution",
-                                new XElement("Real", solution.Real),
-                                new XElement("Imaginary", solution.Imaginary)));
+                            solutions.Add(new Complex(double.Parse(solution.Element("Real").Value),
+                                double.Parse(solution.Element("Imaginary").Value)));
                         }
+                        currentNode._special.Add(edgeChar, solutions);
                     }
-                    else if (special.Key == 's')
+                    foreach (var edge in currentXNode.Elements("substitutions"))
                     {
-                        newChild = new XElement("substitutions");
-                        foreach (var substitution in special.Value)
+                        char edgeChar = edge.Element("Edge").Value[0];
+                        var substitutions = new Dictionary<List<Complex>, Complex>(new ListComparer<Complex>());
+                        foreach (var substitution in edge.Elements("substitution"))
                         {
-                            newChild.Add(new XElement("substitution",
-                                new XElement("X", substitution.Key.ToString()),
-                                new XElement("Result", substitution.Value.ToString())));
+                            string[] tempX = substitution.Element("X").Value.Split('(', ',', ')');
+                            string[] tempR = substitution.Element("Result").Value.Split('(', ',', ')');
+                            List<Complex> key = new List<Complex>();
+                            key.Add(new Complex(double.Parse(tempX[1]), double.Parse(tempX[2])));
+                            substitutions.Add(key,
+                                 new Complex(double.Parse(tempR[1]), double.Parse(tempR[2])));
                         }
+                        currentNode._special.Add(edgeChar, substitutions);
                     }
-                    else if (special.Key == '^')
+                    foreach (var edge in currentXNode.Elements("definiteInts"))
                     {
-                        newChild = new XElement("derivative");
-                        newChild.Add(new XElement("Result", special.Value.ToString()));
+                        char edgeChar = edge.Element("Edge").Value[0];
+                        var substitutions = new Dictionary<List<Complex>, Complex>(new ListComparer<Complex>());
+                        foreach (var substitution in edge.Elements("definiteInt"))
+                        {
+                            string[] tempA = substitution.Element("A").Value.Split('(', ',', ')');
+                            string[] tempB = substitution.Element("B").Value.Split('(', ',', ')');
+                            string[] tempR = substitution.Element("Result").Value.Split('(', ',', ')');
+                            List<Complex> key = new List<Complex>();
+                            key.Add(new Complex(double.Parse(tempA[1]), double.Parse(tempA[2])));
+                            key.Add(new Complex(double.Parse(tempB[1]), double.Parse(tempB[2])));
+                            substitutions.Add(key,
+                                 new Complex(double.Parse(tempR[1]), double.Parse(tempR[2])));
+                        }
+                        currentNode._special.Add(edgeChar, substitutions);
                     }
-                    else
+                    foreach (var edge in currentXNode.Elements("derivative"))
                     {
-                        newChild = dfsSecond(special.Value.root);
-                        newChild.Name = "Tree";
+                        char edgeChar = edge.Element("Edge").Value[0];
+                        var derivative = new Polynomial(edge.Element("Result").Value);
+                        currentNode._special.Add(edgeChar, derivative);
                     }
-                    newChild.Add(new XElement("Edge", special.Key.ToString()));
-                    result.Add(newChild);
                 }
             }
-            return result;
+            return root;
         }
-        XElement dfsSecond(Node node)
+        Node dfsSecond(XElement Xroot)
         {
-            XElement result = new XElement("Node");
-            result.Add(new XElement("isEnd", node.isEnd.ToString()));
-            foreach (var edge in node._children)
+            Node root = new Node();
+            Stack<List<Object>> dfsStack = new Stack<List<Object>>();
+            dfsStack.Push(new List<Object>());
+            dfsStack.Peek().Add(root);
+            dfsStack.Peek().Add(null);
+            dfsStack.Peek().Add(null);
+            dfsStack.Peek().Add(Xroot);
+            while (dfsStack.Count != 0)
             {
-                var newChild = dfsSecond(edge.Value);
-                newChild.Add(new XElement("Edge",
-                    new XElement("Degree", edge.Key.Key.ToString()),
-                    new XElement("Coefficient",
-                        new XElement("Real", edge.Key.Value.Real),
-                        new XElement("Imaginary", edge.Key.Value.Imaginary))));
-                result.Add(newChild);
+                var temporaryList = dfsStack.Pop();
+                Node currentNode = temporaryList[0] as Node;
+                Node parentNode = temporaryList[1] as Node;
+                XElement currentXNode = temporaryList[3] as XElement;
+                currentNode.isEnd = currentXNode.Element("isEnd").Value == "True";
+                if (parentNode != null)
+                {
+                    KeyValuePair<int, Complex> Edge = (KeyValuePair<int, Complex>)temporaryList[2];
+                    parentNode._children.Add(Edge, currentNode);
+                }
+                foreach (var edge in currentXNode.Elements("Node"))
+                {
+                    int degree = int.Parse(edge.Element("Edge").Element("Degree").Value);
+                    double real = double.Parse(edge.Element("Edge").Element("Coefficient").Element("Real").Value);
+                    double imaginary = double.Parse(edge.Element("Edge").Element("Coefficient").Element("Imaginary").Value);
+                    Node newNode = new Node();
+                    dfsStack.Push(new List<Object>());
+                    dfsStack.Peek().Add(newNode);
+                    dfsStack.Peek().Add(currentNode);
+                    dfsStack.Peek().Add(new KeyValuePair<int, Complex>(degree, new Complex(real, imaginary)));
+                    dfsStack.Peek().Add(edge);
+                }
+                if (currentNode.isEnd)
+                {
+                    currentNode._special.Add('=', new Polynomial(currentXNode.Element("Result").Value));
+                }
             }
-            if (node.isEnd) result.Add(new XElement("Result", node._special['='].ToString()));
-            return result;
+            return root;
+        }
+        XElement dfs(Node root)
+        {
+            XElement Xroot = new XElement("Node");
+            Stack<List<Object>> dfsStack = new Stack<List<Object>>();
+            dfsStack.Push(new List<Object>());
+            dfsStack.Peek().Add(Xroot);
+            dfsStack.Peek().Add(null);
+            dfsStack.Peek().Add(root);
+            while (dfsStack.Count != 0)
+            {
+                var temporaryList = dfsStack.Pop();
+                XElement Xcurrent = temporaryList[0] as XElement;
+                XElement Xparent = temporaryList[1] as XElement;
+                Node currentNode = temporaryList[2] as Node;
+                Xcurrent.Add(new XElement("isEnd", currentNode.isEnd.ToString()));
+                if (Xparent != null)
+                {
+                    Xparent.Add(Xcurrent);
+                }
+                foreach (var edge in currentNode._children)
+                {
+                    var newChild = new XElement("Node");
+                    newChild.Add(new XElement("Edge",
+                        new XElement("Degree", edge.Key.Key.ToString()),
+                        new XElement("Coefficient",
+                            new XElement("Real", edge.Key.Value.Real),
+                            new XElement("Imaginary", edge.Key.Value.Imaginary))));
+                    dfsStack.Push(new List<Object>());
+                    dfsStack.Peek().Add(newChild);
+                    dfsStack.Peek().Add(Xcurrent);
+                    dfsStack.Peek().Add(edge.Value);
+                }
+                if (currentNode.isEnd)
+                {
+                    foreach (var special in currentNode._special)
+                    {
+                        XElement newChild;
+                        if (special.Key == '=')
+                        {
+                            newChild = new XElement("SolutionSet");
+                            foreach (var solution in (special.Value as List<Complex>))
+                            {
+                                newChild.Add(new XElement("Solution",
+                                    new XElement("Real", solution.Real),
+                                    new XElement("Imaginary", solution.Imaginary)));
+                            }
+                        }
+                        else if (special.Key == 's')
+                        {
+                            newChild = new XElement("substitutions");
+                            foreach (var substitution in (special.Value as Dictionary<List<Complex>,Complex>))
+                            {
+                                newChild.Add(new XElement("substitution",
+                                    new XElement("X", substitution.Key[0].ToString()),
+                                    new XElement("Result", substitution.Value.ToString())));
+                            }
+                        }
+                        else if (special.Key == 'd')
+                        {
+                            newChild = new XElement("definiteInts");
+                            foreach (var substitution in (special.Value as Dictionary<List<Complex>, Complex>))
+                            {
+                                newChild.Add(new XElement("definiteInt",
+                                    new XElement("A", substitution.Key[0].ToString()),
+                                    new XElement("B", substitution.Key[1].ToString()),
+                                    new XElement("Result", substitution.Value.ToString())));
+                            }
+                        }
+                        else if (special.Key == '^')
+                        {
+                            newChild = new XElement("derivative");
+                            newChild.Add(new XElement("Result", special.Value.ToString()));
+                        }
+                        else
+                        {
+                            newChild = dfsSecond((special.Value as Trie).root);
+                            newChild.Name = "Tree";
+                        }
+                        newChild.Add(new XElement("Edge", special.Key.ToString()));
+                        Xcurrent.Add(newChild);
+                    }
+                }
+            }
+            return Xroot;
+        }
+        XElement dfsSecond(Node root)
+        {
+            XElement Xroot = new XElement("Node");
+            Stack<List<Object>> dfsStack = new Stack<List<Object>>();
+            dfsStack.Push(new List<Object>());
+            dfsStack.Peek().Add(Xroot);
+            dfsStack.Peek().Add(null);
+            dfsStack.Peek().Add(root);
+            while (dfsStack.Count != 0)
+            {
+                var temporaryList = dfsStack.Pop();
+                XElement Xcurrent = temporaryList[0] as XElement;
+                XElement Xparent = temporaryList[1] as XElement;
+                Node currentNode = temporaryList[2] as Node;
+                Xcurrent.Add(new XElement("isEnd", currentNode.isEnd.ToString()));
+                if (Xparent != null)
+                {
+                    Xparent.Add(Xcurrent);
+                }
+                foreach (var edge in currentNode._children)
+                {
+                    var newChild = new XElement("Node");
+                    newChild.Add(new XElement("Edge",
+                        new XElement("Degree", edge.Key.Key.ToString()),
+                        new XElement("Coefficient",
+                            new XElement("Real", edge.Key.Value.Real),
+                            new XElement("Imaginary", edge.Key.Value.Imaginary))));
+                    dfsStack.Push(new List<Object>());
+                    dfsStack.Peek().Add(newChild);
+                    dfsStack.Peek().Add(Xcurrent);
+                    dfsStack.Peek().Add(edge.Value);
+                }
+                if (currentNode.isEnd)
+                {
+                    Xcurrent.Add(new XElement("Result", currentNode._special['='].ToString()));
+                }
+            }
+            return Xroot;
         }
         #endregion
     }

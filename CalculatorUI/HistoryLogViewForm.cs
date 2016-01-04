@@ -15,6 +15,11 @@ namespace CalculatorUI
 
     public partial class HistoryLogViewForm : Form
     {
+        #region OperationsClassification
+        List<Char> twoPolynomials = new List<Char>{ '*', '+', '-', '/', '%', 'g' };
+        List<Char> oneWithParameters = new List<Char> { 's', 'd' };
+        List<Char> onePolynomial = new List<Char> { '^', '=' };
+        #endregion
         private TextBox rootsLog = new TextBox();
         public HistoryLogViewForm()
         {
@@ -23,15 +28,33 @@ namespace CalculatorUI
         public HistoryLogViewForm(HistoryLog _log)
         {
             InitializeComponent();
-            if (_log.Operation != '=')
+            ParsePolynomial(_log.firstPolynomial, polynomial1TextBox);
+            if (twoPolynomials.Contains(_log.Operation))
             {
-                ParsePolynomial(_log.firstPolynomial, polynomial1TextBox);
                 ParsePolynomial(_log.secondPolynomial, polynomial2TextBox);
+                ParsePolynomial(_log.resultPolynomial, resultPolynomialTextBox);
+            }
+            else if (onePolynomial.Contains(_log.Operation))
+            {
+                splitContainer2.Panel1Collapsed = true;
+                if (_log.Operation == '=')
+                {
+                    showRoots(_log.firstPolynomial, _log.roots);
+                }
+                else
+                {
+                    ParsePolynomial(_log.resultPolynomial, resultPolynomialTextBox);
+                }
+            }
+            else if (oneWithParameters.Contains(_log.Operation))
+            {
+                groupBox2.Text = "Parameters";
+                showParameter(_log.parameters, polynomial2TextBox);
                 ParsePolynomial(_log.resultPolynomial, resultPolynomialTextBox);
             }
             else
             {
-                showRoots(_log.firstPolynomial, _log.roots);
+                throw new ArgumentException("Operation is not supported");
             }
                 
             this.Text = DateTime.Parse(_log._timeStamp).ToShortTimeString() + " ";
@@ -49,15 +72,28 @@ namespace CalculatorUI
                 case '=':
                     this.Text += " Finding Roots";
                     break;
+                case '/':
+                    this.Text += " Division";
+                    break;
+                case '%':
+                    this.Text += " Modulus";
+                    break;
                 case 'g':
                     this.Text += " GCD";
+                    break;
+                case 's':
+                    this.Text += " Substitution";
+                    break;
+                case 'd':
+                    this.Text += " Definite Integral";
+                    break;
+                case '^':
+                    this.Text = " Derivative";
                     break;
             }
         }
         public void showRoots(Polynomial equation, List<Complex> roots)
         {
-            ParsePolynomial(equation, polynomial1TextBox);
-            splitContainer2.Panel1Collapsed = true;
             foreach (var item in roots)
             {
                 if(item.Imaginary == 0)
@@ -75,6 +111,18 @@ namespace CalculatorUI
                         resultPolynomialTextBox.AppendText("i\r\n");
                     }
                 }
+            }
+        }
+        public void showParameter(List<KeyValuePair<Char, Complex>> parameters, RichTextBox _rtBox)
+        {
+            _rtBox.Text = "";
+            foreach (var item in parameters)
+            {
+                _rtBox.Text += item.Key.ToString() + " = " + item.Value.ToString() + "\r\n";
+            }
+            if (_rtBox.Text.Length >= 2 && _rtBox.Text.Substring(_rtBox.Text.Length - 2) == "\r\n")
+            {
+                _rtBox.Text = _rtBox.Text.Substring(0, _rtBox.Text.Length - 2);
             }
         }
         private void ParsePolynomial(Polynomial _polynomial, RichTextBox _rtBox)
