@@ -14,6 +14,7 @@ Data Structure 2015 Course Project - Faculty of Computer and Information Science
 8. Solving the polynomial
 9. Substitute _x_ and finding _f(x)_
 10. Plotting the polynomial
+11. Finding the definite integeral from _a_ to _b_
 
 ## Developers
 - [Ahmed Yehia](https://github.com/Ahmed-YehiaGPEL)
