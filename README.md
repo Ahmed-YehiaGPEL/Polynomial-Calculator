@@ -2,7 +2,8 @@
 ## Description
 Data Structure 2015 Course Project - Faculty of Computer and Information Sciences - Ain Shams University.
 
-*The project aims to do the following operations on two polynomials:*
+**The project aims to do the following operations on two polynomials:**
+
 1. Adding
 2. Subtracting
 3. Multiplying
