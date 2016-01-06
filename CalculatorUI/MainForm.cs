@@ -62,9 +62,8 @@ namespace CalculatorUI
         internal Solver _solverInstance;
         internal List<Complex> roots;
         internal Complex subResult,X1,X2;
-        internal Thread exitThread, saveThread;
+        internal Thread exitThread, saveThread, loadThread;
         //If not found wil be created
-        internal string filePath = Application.StartupPath + "\\appdata.xml";
         internal string tip = "tip : ";
         //Definite integral
         internal Complex poly1DefIntegralA = 0, poly1DefIntegralB = 0;
@@ -76,7 +75,8 @@ namespace CalculatorUI
             
             InitializeComponent();
             exitThread = new Thread(ExitThread);
-            saveThread = new Thread(SaveThread);
+            saveThread = new Thread(() => SaveThread(Program.filePath));
+            loadThread = new Thread(() => LoadThread(Program.filePath));
             //Initialize display,value members for later history viewing
             historyListBox.DisplayMember = "DisplayName";
             historyListBox.ValueMember = "returnType";
@@ -109,16 +109,23 @@ namespace CalculatorUI
         /// </summary>
         internal void ExitThread()
         {
-          Program._historyTrie.save(filePath);
+          Program._saveMan.trySave(Program._historyTrie,Program.filePath);
           Application.Exit();
             
         }
         /// <summary>
         /// A thread to handle save operation
         /// </summary>
-        internal void SaveThread()
+        internal void SaveThread(string File)
         {
-            Program._historyTrie.save(filePath);
+            Program._saveMan.trySave(Program._historyTrie, File);
+        }
+        /// <summary>
+        /// A thread to handle load operation
+        /// </summary>
+        internal void LoadThread(string File)
+        {
+            Program._historyTrie = Program._saveMan.tryLoad(File);
         }
         #endregion
         #region Solve
@@ -294,7 +301,6 @@ namespace CalculatorUI
                     break;
                 default:
                     throw new ArgumentException("Unsupported operation");
-                    return;
             }
         }
         /// <summary>
@@ -593,19 +599,23 @@ namespace CalculatorUI
         
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (saveThread.IsAlive)
+            if (saveThread.IsAlive || loadThread.IsAlive)
             {
                 polynomial1Text.Enabled = false;
                 polynomial2Text.Enabled = false;
-                tipLabel.Text = "Please wait saving...";
+                groupBox5.Enabled = false;
             }
             else
             {
                 polynomial1Text.Enabled = true;
                 polynomial2Text.Enabled = true;
+                groupBox5.Enabled = true;
                 tipLabel.Text = tip;
             }
-
+            if (saveThread.IsAlive)
+                tipLabel.Text = "Please wait saving...";
+            else if(loadThread.IsAlive)
+                tipLabel.Text = "Please wait loading...";
             toolStripStatusLabel1.Text = DateTime.Now.ToShortDateString() + ' ' + DateTime.Now.ToShortTimeString();
         }
 
@@ -663,6 +673,8 @@ namespace CalculatorUI
             _ref = new Complex(_real, _img);
             return true;
         }
+
+        #region ToolStripMenuItems
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -671,9 +683,58 @@ namespace CalculatorUI
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveThread = new Thread(SaveThread);
+            saveThread = new Thread(() => SaveThread(Program.filePath));
             saveThread.Start();
         }
+
+        private void saveasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog newFile = new SaveFileDialog();
+            newFile.Filter = "History Files (*.plcl)|*.plcl";
+            if (newFile.ShowDialog() != DialogResult.OK) return;
+            if(!newFile.FileName.EndsWith(".plcl")) newFile.FileName += ".plcl";
+            saveThread = new Thread(() => SaveThread(newFile.FileName));
+            saveThread.Start();
+        }
+
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog newFile = new OpenFileDialog();
+            newFile.Filter = "History Files (*.plcl)|*.plcl";
+            newFile.FileName = "";
+            while (!newFile.FileName.EndsWith(".plcl"))
+            {
+                if (newFile.ShowDialog() != DialogResult.OK) return;
+            }
+            loadThread = new Thread(() => LoadThread(newFile.FileName));
+            clearLogToolStripMenuItem_Click(null, null);
+            loadThread.Start();
+        }
+
+        /// <summary>
+        /// Clears items stored in log, disposes history trie and deletes history log file
+        /// reinitiates the log panel, polynomials input text boxes,roots log and history log
+        /// reinitiate the colored font settings.
+        /// </summary>
+        private void clearLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to clear all past operations ?\n this action cannot be reverse", "Alert", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
+            {
+                System.IO.File.Delete(Program.filePath);
+                Program._historyTrie.Dispose();
+                historyListBox.Items.Clear();
+                LogPanel.Text = "Log started " + DateTime.Now.ToShortTimeString();
+                polynomial1Text.Text = "First Polynomial";
+                polynomial2Text.Text = "Second Polynomial";
+                resPolyText.Text = "Result";
+                rootsTextBox.Clear();
+                LoadColorFont(polynomial1Text);
+                LoadColorFont(polynomial2Text);
+                LoadColorFont(resPolyText);
+            }
+
+        }
+        #endregion
         // Load history logs
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -696,32 +757,6 @@ namespace CalculatorUI
             }
         }
 
-       /// <summary>
-       /// Clears items stored in log, disposes history trie and deletes history log file
-       /// reinitiates the log panel, polynomials input text boxes,roots log and history log
-       /// reinitiate the colored font settings.
-       /// </summary>
-       /// <param name="sender"></param>
-       /// <param name="e"></param>
-        private void clearLogToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Are you sure you want to clear all past operations ?\n this action cannot be reverse", "Alert", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
-            {
-                System.IO.File.Delete(filePath);
-                Program._historyTrie.Dispose();
-                historyListBox.Items.Clear();
-                LogPanel.Text = "Log started " + DateTime.Now.ToShortTimeString();
-                polynomial1Text.Text = "First Polynomial";
-                polynomial2Text.Text = "Second Polynomial";
-                resPolyText.Text = "Result";
-                rootsTextBox.Clear();
-                LoadColorFont(polynomial1Text);
-                LoadColorFont(polynomial2Text);
-                LoadColorFont(resPolyText);
-            }
-
-        }
-
        #region Form Switch Handlers
         /// <summary>
         /// Close handler of the form, applies settings on close and renables the owner form
@@ -730,7 +765,7 @@ namespace CalculatorUI
         {
             this.Enabled = true;
             //If customization form
-            if (((sender as Form).Tag) == "cstForm")
+            if (((sender as Form).Tag as String) == "cstForm")
             {
                 LoadColorFont(polynomial1Text);
                 LoadColorFont(polynomial2Text);

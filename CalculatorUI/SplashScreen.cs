@@ -15,7 +15,6 @@ namespace CalculatorUI
         double i;
         internal System.Threading.Thread loadThread;
         //If not found wil be created
-        internal string filePath = Application.StartupPath + "\\appdata.xml";
 
         public SplashScreen()
         {
@@ -33,8 +32,7 @@ namespace CalculatorUI
         {
             try
             {
-
-                Program._historyTrie = new CMath.Trie.PolynomialTrie(filePath);
+                Program._historyTrie = Program._saveMan.tryLoad(Program.filePath);
             }
             catch
             {
@@ -73,7 +71,6 @@ namespace CalculatorUI
 
         private void threadWatcher_Tick(object sender, EventArgs e)
         {
-
             if (!loadThread.IsAlive)
             {
                 timerFadeOut.Enabled = true;

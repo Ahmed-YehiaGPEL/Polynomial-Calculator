@@ -1,6 +1,32 @@
+# binary folders
 obj
-.vs
-/Polynomial Calculator.v12.suo
 bin
-/TestApp
+
+# Visual Studio Folders
+.vs
+
+# Object files
+*.o
+*.ko
+
+# Libraries
+*.lib
+*.a
+
+# Shared objects 
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Visual Studio solution files
+*.suo
+*.user
+
+# I don't know
 CalculatorUI/Resources/Splash.png
