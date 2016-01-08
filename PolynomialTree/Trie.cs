@@ -11,6 +11,7 @@ namespace CMath.Trie
     #region TypeDefinitions
     using Node = TreeNode<KeyValuePair<int, Complex>>;
     using Trie = Trie<KeyValuePair<int, Complex>>;
+    using paraStore = Dictionary<List<Complex>, Complex>;
     #endregion
     public class PolynomialTrie : IDisposable
     {
@@ -31,7 +32,7 @@ namespace CMath.Trie
             main = _main;
         }
         #endregion
-        #region insert&search&save
+        #region insert&search
         public void insert(Polynomial equation, char operation, List<Complex> X, Complex result)
         {
             try
@@ -39,9 +40,9 @@ namespace CMath.Trie
                 var lastFirst = main.insert(equation._data.ToList());
                 if (!lastFirst._special.ContainsKey(operation))
                 {
-                    lastFirst._special.Add(operation, new Dictionary<List<Complex>, Complex>(new ListComparer<Complex>()));
+                    lastFirst._special.Add(operation, new paraStore(new ListComparer<Complex>()));
                 }
-                var toInsertIn = lastFirst._special[operation] as Dictionary<List<Complex>, Complex>;
+                var toInsertIn = lastFirst._special[operation] as paraStore;
                 toInsertIn.Add(X, result);
             }
             catch (Exception e)
@@ -110,7 +111,7 @@ namespace CMath.Trie
             {
                 throw new KeyNotFoundException("There is no such operation in the trie;");
             }
-            var specialDict = last._special[operation] as Dictionary<List<Complex>, Complex>;
+            var specialDict = last._special[operation] as paraStore;
             if (!specialDict.ContainsKey(X))
             {
                 throw new KeyNotFoundException("There is no such operation in the trie;");

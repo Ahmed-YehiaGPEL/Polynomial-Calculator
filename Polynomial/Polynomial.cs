@@ -52,6 +52,20 @@ namespace CMath.PolynomialEquation
             Degree = _degree;
             Coefficient = _coefficient;
         }
+        public Term(string _input)
+        {
+            double real, imag;
+            string[] current = _input.Split('(', ')', ',');
+            if (current.Length != 6) throw new FormatException("bad polynomial format");
+            if (!double.TryParse(current[1], out real)) throw new FormatException("bad polynomial format");
+            if (!double.TryParse(current[2], out imag)) throw new FormatException("bad polynomial format");
+            if (!int.TryParse(current[4], out _degree)) throw new FormatException("bad polynomial format");
+            if (_degree < 0)
+            {
+                throw new NegativeRankException("Negative rank isn't allowed");
+            }
+            Coefficient = new Complex(real, imag);
+        }
         public override bool Equals(object obj)
         {
             return (this.Coefficient.Real == (obj as Term).Coefficient.Real && this.Coefficient.Imaginary == (obj as Term).Coefficient.Imaginary && this.Degree == (obj as Term).Degree);
@@ -207,20 +221,10 @@ namespace CMath.PolynomialEquation
             }
             _data = new SortedList<int, Complex>();
             var PolynomialStringReader = new StringReader(_input);
-            int degree;
-            double real, imaginary;
             while (PolynomialStringReader.Peek() != -1)
             {
-                string[] current = PolynomialStringReader.ReadLine().Split('(',')',',');
-                if (current.Length != 6) throw new FormatException("bad polynomial format");
-                if (!double.TryParse(current[1], out real)) throw new FormatException("bad polynomial format");
-                if (!double.TryParse(current[2], out imaginary)) throw new FormatException("bad polynomial format");
-                if (!int.TryParse(current[4], out degree)) throw new FormatException("bad polynomial format");
-                if (degree < 0)
-                {
-                    throw new NegativeRankException("Negative rank isn't allowed");
-                }
-                _data.Add(degree,new Complex(real,imaginary));
+                Term newTerm = new Term(PolynomialStringReader.ReadLine());
+                _data.Add(newTerm.Degree,newTerm.Coefficient);
             }
         }
         #endregion
