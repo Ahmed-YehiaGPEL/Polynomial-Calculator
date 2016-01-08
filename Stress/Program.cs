@@ -13,24 +13,6 @@ namespace Stress
     {
         static void Main(string[] args)
         {
-            PolynomialTrie tr = new PolynomialTrie("kk.xml");
-            for (int i = 0; i < 2; i++)
-            {
-                Polynomial a = new Polynomial();
-                int n = int.Parse(Console.ReadLine());
-                for (int j = 0; j < n; j++)
-                {
-                    int degree = int.Parse(Console.ReadLine());
-                    double coeff = double.Parse(Console.ReadLine());
-                    a.Add(new Term(degree, coeff));
-                }
-                double X = double.Parse(Console.ReadLine());
-                Console.WriteLine(a.substitute(X));
-                tr.insert(a, X, a.substitute(X));
-            }
-            tr.save("kk.xml");
-            Console.Read();
-            return;
             Random x = new Random(1256);
             
             PolynomialTrie _pl = new PolynomialTrie();
@@ -51,7 +33,6 @@ namespace Stress
                 Console.Write("Div " + j.ToString());
                 Console.WriteLine();
             }
-            _pl.save("appdataStress.xml");
             Console.Write("Done");
             
         }

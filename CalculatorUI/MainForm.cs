@@ -215,14 +215,14 @@ namespace CalculatorUI
                     break;
                 case OperationTypeEnum.SolveFirst:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Solved.");
-                    Program._historyTrie.insert(polynomial1, '=', roots);
-                    hL = new HistoryLog(polynomial1, roots, '=', DateTime.Now.TimeOfDay.ToString());
+                    Program._historyTrie.insert(polynomial1, 'r', roots);
+                    hL = new HistoryLog(polynomial1, roots, 'r', DateTime.Now.TimeOfDay.ToString());
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.SolveSecond:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Second Polynomial Solved.");
-                    Program._historyTrie.insert(polynomial2, '=', roots);
-                    hL = new HistoryLog(polynomial2, roots, '=', DateTime.Now.TimeOfDay.ToString());
+                    Program._historyTrie.insert(polynomial2, 'r', roots);
+                    hL = new HistoryLog(polynomial2, roots, 'r', DateTime.Now.TimeOfDay.ToString());
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.DerivativeFirst:
@@ -271,6 +271,9 @@ namespace CalculatorUI
                     break;
                 case OperationTypeEnum.OldDivision:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Division retrieved.");
+                    break;
+                case OperationTypeEnum.OldGcd:
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Greatest Common Divisor retrieved.");
                     break;
                 case OperationTypeEnum.OldModulus:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Reminder Polynomials.");
@@ -326,7 +329,7 @@ namespace CalculatorUI
                 case '%':
                     _log.DisplayName += " Modulus";
                     break;
-                case '=':
+                case 'r':
                     _log.DisplayName += " Root finding";
                     break;
                 case 'g':
@@ -445,7 +448,7 @@ namespace CalculatorUI
                         }
                         break;
                     case "Find X1":
-                        if (Program._historyTrie.try_search(polynomial1, '=', out dynamicResult))
+                        if (Program._historyTrie.try_search(polynomial1, 'r', out dynamicResult))
                         {
                             roots = (List<Complex>)dynamicResult;
                             LogOperation(OperationTypeEnum.OldSolve);
@@ -458,7 +461,7 @@ namespace CalculatorUI
                         ShowRoots();
                         break;
                     case "Find X2":
-                        if (Program._historyTrie.try_search(polynomial2, '=', out dynamicResult))
+                        if (Program._historyTrie.try_search(polynomial2, 'r', out dynamicResult))
                         {
                             roots = (List<Complex>)dynamicResult;
                             LogOperation(OperationTypeEnum.OldSolve);
