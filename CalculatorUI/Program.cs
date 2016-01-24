@@ -12,6 +12,7 @@ namespace CalculatorUI
          static public CMath.Trie.PolynomialTrie _historyTrie;
          static public CMath.Trie.TrieSaveMangaer _saveMan = new CMath.Trie.TrieSaveMangaer();
          static public string filePath = Application.StartupPath + "\\appdata.xml.plcl";
+         static public List<string> _logItems = new List<string>();
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

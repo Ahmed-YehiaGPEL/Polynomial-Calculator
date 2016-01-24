@@ -87,7 +87,7 @@ namespace CalculatorUI
         }
         private void MainForm_Load(object sender, EventArgs e)
         {
-            LogPanel.AppendText("Log started " + DateTime.Now.ToShortTimeString());
+            Program._logItems.Add("Log started " + DateTime.Now.ToShortTimeString()); 
             string[] lines = System.IO.File.ReadAllLines("help.txt");
             DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             Random rand = new Random((int)(DateTime.Now - start).TotalSeconds);
@@ -167,6 +167,8 @@ namespace CalculatorUI
         }
         #endregion
         #region History
+        //TODO: use temp file for logging information.
+
         /// <summary>
         /// Logs an operation into the Log Panel and History
         /// </summary>
@@ -178,73 +180,102 @@ namespace CalculatorUI
             switch (_operation)
             {
                 case OperationTypeEnum.Addition:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Added Polynomials.");
+                  
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Added Polynomials.");
+
                     Program._historyTrie.insert(polynomial1, '+', polynomial2, resultPolynomial);
                     hL = new HistoryLog(polynomial1, polynomial2, '+', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.Subtraction:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Subtracted Polynomials.");
+
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Subtracted Polynomials.");
+
                     Program._historyTrie.insert(polynomial1, '-', polynomial2, resultPolynomial);
                     hL = new HistoryLog(polynomial1, polynomial2, '-', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.Multiplication:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Multiplied Polynomials.");
+
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Multiplied Polynomials.");
+
+
                     Program._historyTrie.insert(polynomial1, '*', polynomial2, resultPolynomial);
                     hL = new HistoryLog(polynomial1, polynomial2, '*', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.Modulus:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Reminder Polynomial Calculated.");
+
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Reminder Polynomial Calculated.");
+
                     Program._historyTrie.insert(polynomial1, '%', polynomial2, resultPolynomial);
                     hL = new HistoryLog(polynomial1, polynomial2, '%', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.Division:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Divided Polynomials.");
+
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Divided Polynomials.");
+
+
                     Program._historyTrie.insert(polynomial1, '/', polynomial2, resultPolynomial);
                     hL = new HistoryLog(polynomial1, polynomial2, '/', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
 				case OperationTypeEnum.Gcd:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Greatest Common Divisor Polynomial computed.");
+
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Greatest Common Divisor Polynomial computed.");
+
                     Program._historyTrie.insert(polynomial1, 'g', polynomial2, resultPolynomial);
                     hL = new HistoryLog(polynomial1, polynomial2, 'g', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.SolveFirst:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Solved.");
+
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " First Polynomial Solved.");
+
                     Program._historyTrie.insert(polynomial1, 'r', roots);
                     hL = new HistoryLog(polynomial1, roots, 'r', DateTime.Now.TimeOfDay.ToString());
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.SolveSecond:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Second Polynomial Solved.");
+
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Second Polynomial Solved.");
+
+
                     Program._historyTrie.insert(polynomial2, 'r', roots);
                     hL = new HistoryLog(polynomial2, roots, 'r', DateTime.Now.TimeOfDay.ToString());
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.DerivativeFirst:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Diffrentiated.");
+
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " First Polynomial Diffrentiated.");
+
                     Program._historyTrie.insert(polynomial1, '^',resultPolynomial);
                     hL = new HistoryLog(polynomial1,'^', DateTime.Now.TimeOfDay.ToString(),resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.DerivativeSecond:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Second Polynomial Diffrentiated.");
+
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Second Polynomial Diffrentiated.");
+
                     Program._historyTrie.insert(polynomial2, '^',resultPolynomial);
                     hL = new HistoryLog(polynomial2, '^', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.SubstitutionFirst:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Substituted in First Polynomial.");
+
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Substituted in First Polynomial.");
+
                     Program._historyTrie.insert(polynomial1, 's', new List<Complex> { X1 }, subResult);
-                    hL = new HistoryLog(polynomial1, new List<KeyValuePair<Char,Complex> > { new KeyValuePair<Char,Complex>('X',X1) }, 's', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    hL = new HistoryLog(polynomial1, new List<KeyValuePair<Char,Complex> > 
+                    { new KeyValuePair<Char,Complex>('X',X1) }
+                    , 's', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.SubstitutionSecond:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Substituted in Second Polynomial.");
+
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Substituted in Second Polynomial.");
+
                     Program._historyTrie.insert(polynomial2, 's', new List<Complex> { X2 }, subResult);
                     hL = new HistoryLog(polynomial2, new List<KeyValuePair<Char,Complex> > {
                         new KeyValuePair<Char,Complex>('X',X2) }
@@ -252,7 +283,9 @@ namespace CalculatorUI
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.DefiniteIntegralFirst:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Definite Integral Calculated.");
+
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " First Polynomial Definite Integral Calculated.");
+
                     Program._historyTrie.insert(polynomial1, 'd', new List<Complex> { poly1DefIntegralA, poly1DefIntegralB }, subResult);
                     hL = new HistoryLog(polynomial1, new List<KeyValuePair<Char, Complex>> {
                         new KeyValuePair<Char, Complex>('A', poly1DefIntegralA),
@@ -261,7 +294,9 @@ namespace CalculatorUI
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.DefiniteIntegralSecond:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Second Polynomial Definite Integral Calculated.");
+
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Second Polynomial Definite Integral Calculated.");
+
                     Program._historyTrie.insert(polynomial2, 'd', new List<Complex> { poly2DefIntegralA, poly2DefIntegralB }, subResult);
                     hL = new HistoryLog(polynomial2, new List<KeyValuePair<Char, Complex>> {
                         new KeyValuePair<Char, Complex>('A', poly2DefIntegralA),
@@ -270,37 +305,41 @@ namespace CalculatorUI
                     LogItem(hL);
                     break;
                 case OperationTypeEnum.OldDivision:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Division retrieved.");
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Division retrieved.");
+
                     break;
                 case OperationTypeEnum.OldGcd:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Greatest Common Divisor retrieved.");
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Greatest Common Divisor retrieved.");
+
                     break;
                 case OperationTypeEnum.OldModulus:
-                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Reminder Polynomials.");
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Reminder Polynomial retrieved.");
                     break;
                 case OperationTypeEnum.OldMultiplication:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Multiplication retrieved.");
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Multiplication retrieved.");
                     break;
                 case OperationTypeEnum.OldSubtration:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Subtraction retrieved.");
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Subtraction retrieved.");
+
                     break;
                 case OperationTypeEnum.OldAddition:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Addition retrieved.");
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Addition retrieved.");
+
                     break;
                 case OperationTypeEnum.OldDerivative:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Derivative retrieved.");
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Derivative retrieved.");
                     break;
                 case OperationTypeEnum.OldSubstitution:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Substitution retrieved.");
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Substitution retrieved.");
                     break;
                 case OperationTypeEnum.OldSolve:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Polynomial root retrieved.");
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Polynomial root retrieved.");
                     break;
                 case OperationTypeEnum.PolynomialAccepted:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Polynomial entered.");
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + " Polynomial entered.");
                     break;
                 case OperationTypeEnum.OldDefiniteIntegral:
-                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Polynomial definite integral retrieved.");
+                    Program._logItems.Add(DateTime.Now.ToShortTimeString() + "  Polynomial definite integral retrieved.");
                     break;
                 default:
                     throw new ArgumentException("Unsupported operation");
@@ -613,7 +652,7 @@ namespace CalculatorUI
                 polynomial1Text.Enabled = true;
                 polynomial2Text.Enabled = true;
                 groupBox5.Enabled = true;
-                tipLabel.Text = tip;
+                tipLabel.Text = Program._logItems.Count == 0 ? tip : "Log:"+ Program._logItems.Last();
             }
             if (saveThread.IsAlive)
                 tipLabel.Text = "Please wait saving...";
@@ -726,9 +765,10 @@ namespace CalculatorUI
                 System.IO.File.Delete(Program.filePath);
                 Program._historyTrie.Dispose();
                 historyListBox.Items.Clear();
-                LogPanel.Text = "Log started " + DateTime.Now.ToShortTimeString();
-                polynomial1Text.Text = "First Polynomial";
-                polynomial2Text.Text = "Second Polynomial";
+                Program._logItems.Clear();
+                Program._logItems.Add("Log started " + DateTime.Now.ToShortTimeString());
+                polynomial1Text.Text = "Polynomial1";
+                polynomial2Text.Text = "Polynomial2";
                 resPolyText.Text = "Result";
                 rootsTextBox.Clear();
                 LoadColorFont(polynomial1Text);
@@ -776,7 +816,11 @@ namespace CalculatorUI
                 Polynomial1Chart.Series["Polynomial1"].Color = Properties.Settings.Default.Polynomial1Color;
                 Polynomial1Chart.Series["Polynomial2"].Color = Properties.Settings.Default.Polynomial2Color;
                 Polynomial1Chart.Series["Result Polynomial"].Color = Properties.Settings.Default.ResultPolyColor;
+
             }
+            tipLabel.BackColor = SystemColors.Control;
+
+           
         }
        /// <summary>
        /// Shows a form and disable the owner form till user closes the on top form
@@ -1068,6 +1112,21 @@ namespace CalculatorUI
                }
                LoadColorFont(current);
            }
+        }
+
+        private void tipLabel_DoubleClick(object sender, EventArgs e)
+        {
+            showForm(new LogPanel(Program._logItems), this, setClose);
+        }
+
+        private void tipLabel_MouseHover(object sender, EventArgs e)
+        {
+            tipLabel.BackColor = System.Drawing.SystemColors.ActiveCaption;
+        }
+
+        private void tipLabel_MouseLeave(object sender, EventArgs e)
+        {
+            tipLabel.BackColor = System.Drawing.SystemColors.Control;
         }
     }
     /// <summary>
