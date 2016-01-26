@@ -18,7 +18,7 @@ namespace CalculatorUI
         #region OperationsClassification
         List<Char> twoPolynomials = new List<Char>{ '*', '+', '-', '/', '%', 'g' };
         List<Char> oneWithParameters = new List<Char> { 's', 'd' };
-        List<Char> onePolynomial = new List<Char> { '^', 'r' };
+        List<Char> onePolynomial = new List<Char> { 'I', '^', 'r' };
         #endregion
         private TextBox rootsLog = new TextBox();
         public HistoryLogViewForm()

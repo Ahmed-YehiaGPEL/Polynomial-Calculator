@@ -6,6 +6,7 @@ using System.IO;
 using System.Numerics;
 using System.Collections;
 using PolynomialEquation.Properties;
+using CMath.Utils;
 
 namespace CMath.PolynomialEquation
 {
@@ -54,17 +55,9 @@ namespace CMath.PolynomialEquation
         }
         public Term(string _input)
         {
-            double real, imag;
-            string[] current = _input.Split('(', ')', ',');
-            if (current.Length != 6) throw new FormatException("bad polynomial format");
-            if (!double.TryParse(current[1], out real)) throw new FormatException("bad polynomial format");
-            if (!double.TryParse(current[2], out imag)) throw new FormatException("bad polynomial format");
-            if (!int.TryParse(current[4], out _degree)) throw new FormatException("bad polynomial format");
-            if (_degree < 0)
-            {
-                throw new NegativeRankException("Negative rank isn't allowed");
-            }
-            Coefficient = new Complex(real, imag);
+            string[] seperate = _input.Split('X');
+            Coefficient = ComplexUtils.ParseComplex(seperate[0]);
+            Degree = int.Parse(seperate[1]);
         }
         public override bool Equals(object obj)
         {
@@ -76,8 +69,7 @@ namespace CMath.PolynomialEquation
         }
         public override string ToString()
         {
-            return "(" + this.Coefficient.Real.ToString() + "," 
-                + this.Coefficient.Imaginary.ToString() + ")(" + this.Degree.ToString() + ")";
+            return ComplexUtils.ComplexToString(Coefficient) + "X" + Degree.ToString();
         }
     }
     #endregion
@@ -217,7 +209,7 @@ namespace CMath.PolynomialEquation
         {
             if (string.IsNullOrWhiteSpace(_input))
             {
-                _input += "(0,0)(0)";
+                _input += "0X0";
             }
             _data = new SortedList<int, Complex>();
             var PolynomialStringReader = new StringReader(_input);
@@ -398,18 +390,21 @@ namespace CMath.PolynomialEquation
             }
             return result;
         }
-        public static Polynomial derivative(Polynomial equation)
+        public Polynomial derivative
         {
-            Polynomial result = new Polynomial();
-            foreach (var item in equation)
+            get
             {
-                if (item.Degree < 1) 
-                    continue;
-                item.Degree --;
-                item.Coefficient *= (item.Degree + 1);
-                result.Add(item);
+                Polynomial result = new Polynomial();
+                foreach (var item in this)
+                {
+                    if (item.Degree < 1)
+                        continue;
+                    item.Degree--;
+                    item.Coefficient *= (item.Degree + 1);
+                    result.Add(item);
+                }
+                return result;
             }
-            return result;
         }
         public static Polynomial __gcd(Polynomial first, Polynomial second)
         {
@@ -446,6 +441,19 @@ namespace CMath.PolynomialEquation
                 integral.Add(new Term(term.Degree+1,term.Coefficient/(term.Degree+1)));
             }
             return integral.substitute(b) - integral.substitute(a);
+        }
+        public Polynomial Integral
+        {
+            get {
+                Polynomial result = new Polynomial();
+                foreach (var term in this)
+                {
+                    term.Coefficient /= (term.Degree + 1);
+                    term.Degree++;
+                    result.Add(term);
+                }
+                return result;
+            }
         }
         #endregion
         #region MuliplyUtilies
