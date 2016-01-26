@@ -33,10 +33,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ColorFont">
-      <HintPath>..\..\..\..\Programming\ColorFont\ColorFont\ColorFont\obj\Debug\ColorFont.dll</HintPath>
+      <HintPath>C:\Users\farouk\Downloads\Compressed\Polynomial-Calculator-master_2\Polynomial-Calculator-master\CalculatorUI\bin\Debug\ColorFont.dll</HintPath>
     </Reference>
     <Reference Include="GlassButton">
-      <HintPath>E:\Projects And Backups\DB Manager\DB Manager\bin\Debug\GlassButton.dll</HintPath>
+      <HintPath>..\..\Polynomial-Calculator_bak\CalculatorUI\bin\Debug\GlassButton.dll</HintPath>
     </Reference>
     <Reference Include="Polynomial">
       <HintPath>..\Polynomial\bin\Debug\Polynomial.dll</HintPath>
