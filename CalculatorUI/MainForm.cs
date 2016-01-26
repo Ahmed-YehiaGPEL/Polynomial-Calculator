@@ -7,12 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CMath.PolynomialEquation;
-using CMath.PolynomialSolver;
-using CMath.Trie;
 using System.Numerics;
 using System.Threading;
 using System.Windows.Forms.DataVisualization.Charting; // For plotting graphs
+using CMath.PolynomialEquation;
+using CMath.PolynomialSolver;
+using CMath.Trie;
+using CMath.Utils;
 
 namespace CalculatorUI
 {
@@ -39,6 +40,8 @@ namespace CalculatorUI
         SubstitutionSecond,
         SolveFirst,
         SolveSecond,
+        IntegralFirst,
+        IntegralSecond,
         DefiniteIntegralFirst,
         DefiniteIntegralSecond,
         
@@ -53,6 +56,7 @@ namespace CalculatorUI
         OldDerivative,
         OldSubstitution,
         OldSolve,
+        OldIntegral,
         OldDefiniteIntegral
     }
     public partial class MainForm : Form
@@ -116,9 +120,12 @@ namespace CalculatorUI
         /// <summary>
         /// A thread to handle save operation
         /// </summary>
-        internal void SaveThread(string File)
+        internal void SaveThread(String File)
         {
-            Program._saveMan.trySave(Program._historyTrie, File);
+            if(File.EndsWith(".plcl"))
+                Program._saveMan.trySave(Program._historyTrie, File);
+            else if(File.EndsWith(".xlsx"))
+                Program._saveMan.saveExcel(Program._historyTrie,File);
         }
         /// <summary>
         /// A thread to handle load operation
@@ -135,25 +142,13 @@ namespace CalculatorUI
         public void ShowRoots()
         {
             rootsTextBox.Clear();
-            rootsTextBox.Text += "Polynomial roots:\r\n";
+            StringBuilder result = new StringBuilder();
+            result.AppendLine("Polynomial roots:");
             foreach (var item in roots)
             {
-                if (item.Imaginary == 0)
-                    rootsTextBox.Text += item.Real.ToString() + "\r\n";
-                else
-                {
-                    rootsTextBox.Text += item.Real.ToString() + " ";
-                    if (item.Imaginary > 0)
-                    {
-                        rootsTextBox.Text += "+ " + item.Imaginary.ToString() + "i" + "\r\n";
-                    }
-                    else
-                    {
-                        rootsTextBox.Text += "- " + item.Imaginary.ToString().Substring(1);
-                        rootsTextBox.AppendText("i\r\n");
-                    }
-                }
+                result.AppendLine(ComplexUtils.ComplexToString(item));
             }
+            rootsTextBox.Text = result.ToString();
         }
         /// <summary>
         /// Instantiate solver with a polynomial, and returns the reults in complex numbers list.
@@ -237,6 +232,19 @@ namespace CalculatorUI
                     hL = new HistoryLog(polynomial2, '^', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
                     LogItem(hL);
                     break;
+
+                case OperationTypeEnum.IntegralFirst:
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " First Polynomial Integrated.");
+                    Program._historyTrie.insert(polynomial1, 'I', resultPolynomial);
+                    hL = new HistoryLog(polynomial1, 'I', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
+                    break;
+                case OperationTypeEnum.IntegralSecond:
+                    LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Second Polynomial Integrated.");
+                    Program._historyTrie.insert(polynomial2, 'I', resultPolynomial);
+                    hL = new HistoryLog(polynomial2, 'I', DateTime.Now.TimeOfDay.ToString(), resultPolynomial);
+                    LogItem(hL);
+                    break;
                 case OperationTypeEnum.SubstitutionFirst:
                     LogPanel.Text += ("\r\n" + DateTime.Now.ToShortTimeString() + " Substituted in First Polynomial.");
                     Program._historyTrie.insert(polynomial1, 's', new List<Complex> { X1 }, subResult);
@@ -290,6 +298,9 @@ namespace CalculatorUI
                 case OperationTypeEnum.OldDerivative:
                     LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Derivative retrieved.");
                     break;
+                case OperationTypeEnum.OldIntegral:
+                    LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Integration retrieved.");
+                    break;
                 case OperationTypeEnum.OldSubstitution:
                     LogPanel.AppendText("\r\n" + DateTime.Now.ToShortTimeString() + " Substitution retrieved.");
                     break;
@@ -337,6 +348,9 @@ namespace CalculatorUI
                     break;
                 case '^':
                     _log.DisplayName += " Derivative";
+                    break;
+                case 'I':
+                    _log.DisplayName += " Integral";
                     break;
                 case 's':
                     _log.DisplayName += " Substitution";
@@ -450,7 +464,7 @@ namespace CalculatorUI
                     case "Find X1":
                         if (Program._historyTrie.try_search(polynomial1, 'r', out dynamicResult))
                         {
-                            roots = (List<Complex>)dynamicResult;
+                            roots = dynamicResult as List<Complex>;
                             LogOperation(OperationTypeEnum.OldSolve);
                         }
                         else
@@ -463,7 +477,7 @@ namespace CalculatorUI
                     case "Find X2":
                         if (Program._historyTrie.try_search(polynomial2, 'r', out dynamicResult))
                         {
-                            roots = (List<Complex>)dynamicResult;
+                            roots = dynamicResult as List<Complex>;
                             LogOperation(OperationTypeEnum.OldSolve);
                         }
                         else
@@ -483,7 +497,7 @@ namespace CalculatorUI
                         }
                         else
                         {
-                            resultPolynomial = Polynomial.derivative(polynomial1);
+                            resultPolynomial = polynomial1.derivative;
                             PolynomialParse(resultPolynomial, resPolyText, true);
                             LogOperation(OperationTypeEnum.DerivativeFirst);
                         }
@@ -497,13 +511,41 @@ namespace CalculatorUI
                         }
                         else
                         {
-                            resultPolynomial = Polynomial.derivative(polynomial2);
+                            resultPolynomial = polynomial2.derivative;
                             PolynomialParse(resultPolynomial, resPolyText, true);
                             LogOperation(OperationTypeEnum.DerivativeSecond);
                         }
                         break;
+                    case "int1":
+                        if (Program._historyTrie.try_search(polynomial1, 'I', out dynamicResult))
+                        {
+                            searchResult = (Polynomial)dynamicResult;
+                            PolynomialParse(searchResult, resPolyText, true);
+                            LogOperation(OperationTypeEnum.OldIntegral);
+                        }
+                        else
+                        {
+                            resultPolynomial = polynomial1.Integral;
+                            PolynomialParse(resultPolynomial, resPolyText, true);
+                            LogOperation(OperationTypeEnum.IntegralFirst);
+                        }
+                        break;
+                    case "int2":
+                        if (Program._historyTrie.try_search(polynomial2, 'I', out dynamicResult))
+                        {
+                            searchResult = (Polynomial)dynamicResult;
+                            PolynomialParse(searchResult, resPolyText, true);
+                            LogOperation(OperationTypeEnum.OldIntegral);
+                        }
+                        else
+                        {
+                            resultPolynomial = polynomial2.Integral;
+                            PolynomialParse(resultPolynomial, resPolyText, true);
+                            LogOperation(OperationTypeEnum.IntegralSecond);
+                        }
+                        break;
                     case "Sub1":
-                        if (!TryParseComplex(textBox1.Text, out X1))
+                        if (!ComplexUtils.TryParseComplex(textBox1.Text, out X1))
                         {
                             MessageBox.Show("Wrong complex format");
                             return;
@@ -525,7 +567,7 @@ namespace CalculatorUI
                         }
                         break;
                     case "Sub2":
-                        if (!TryParseComplex(textBox2.Text, out X2))
+                        if (!ComplexUtils.TryParseComplex(textBox2.Text, out X2))
                         {
                             MessageBox.Show("Wrong complex format");
                             return;
@@ -547,7 +589,7 @@ namespace CalculatorUI
                         }
                         break;
                     case "DefInt1":
-                        if (!TryParseComplex(textBox3.Text, out poly1DefIntegralA) || !TryParseComplex(textBox4.Text, out poly1DefIntegralB))
+                        if (!ComplexUtils.TryParseComplex(textBox3.Text, out poly1DefIntegralA) || !ComplexUtils.TryParseComplex(textBox4.Text, out poly1DefIntegralB))
                         {
                             MessageBox.Show("Wrong complex format");
                             return;
@@ -569,7 +611,7 @@ namespace CalculatorUI
                         }
                         break;
                     case "DefInt2":
-                        if (!TryParseComplex(textBox6.Text, out poly2DefIntegralA) || !TryParseComplex(textBox5.Text, out poly2DefIntegralB))
+                        if (!ComplexUtils.TryParseComplex(textBox6.Text, out poly2DefIntegralA) || !ComplexUtils.TryParseComplex(textBox5.Text, out poly2DefIntegralB))
                         {
                             MessageBox.Show("Wrong complex format");
                             return;
@@ -622,60 +664,6 @@ namespace CalculatorUI
             toolStripStatusLabel1.Text = DateTime.Now.ToShortDateString() + ' ' + DateTime.Now.ToShortTimeString();
         }
 
-        /// <summary>
-        /// Tries to parse a string into a Complex Number
-        /// </summary>
-        /// <param name="_number">String format of number</param>
-        /// <param name="_ref">Complex number to store parsed,null if failed</param>
-        /// <returns>True if succeded</returns>
-        internal bool TryParseComplex(string _number,out Complex _ref)
-        {
-            _number = _number.ToLower();
-            _ref = new Complex();
-            if (String.IsNullOrWhiteSpace(_number))
-            {
-                return false;
-            }
-            _number = _number.Replace(" ","");
-            double _real,_img;
-            if(!_number.Contains('+'))
-            {
-                if (_number.Contains("i"))
-                {
-                    if (_number[_number.Length - 1] != 'i')
-                        return false;
-                    _number = _number.Substring(0, _number.Length - 1);
-                    if (_number == "")
-                    {
-                        _ref = 0;
-                        return true;
-                    }
-                    if (!double.TryParse(_number, out _img))
-                        return false;
-                    _ref = new Complex(0.0, _img);
-                    return true;
-                }
-                if (!double.TryParse(_number, out _real))
-                    return false;
-                _ref = new Complex(_real,0.0);
-                return true;
-            }
-            string real = _number.Split(new char[]{'+'},StringSplitOptions.RemoveEmptyEntries)[0];
-            if (real == "")
-                return false;
-            if (!double.TryParse(real, out _real))
-                return false;
-            string complex = _number.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries)[1];
-            if (complex == "")
-                return false;
-            if (complex[complex.Length - 1] != 'i') 
-                return false;
-            complex = complex.Substring(0, complex.Length - 1);
-            if (!double.TryParse(complex, out _img))
-                return false;
-            _ref = new Complex(_real, _img);
-            return true;
-        }
 
         #region ToolStripMenuItems
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -712,6 +700,16 @@ namespace CalculatorUI
             loadThread = new Thread(() => LoadThread(newFile.FileName));
             clearLogToolStripMenuItem_Click(null, null);
             loadThread.Start();
+        }
+
+        private void excelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog newFile = new SaveFileDialog();
+            newFile.Filter = "Excel file (*.xlsx)|*.xlsx";
+            if (newFile.ShowDialog() != DialogResult.OK) return;
+            if (!newFile.FileName.EndsWith(".xlsx")) newFile.FileName += ".xlsx";
+            saveThread = new Thread(() => SaveThread(newFile.FileName));
+            saveThread.Start();
         }
 
         /// <summary>
@@ -877,7 +875,7 @@ namespace CalculatorUI
             {
                 if (_polynomial[i].Degree == 0)
                 {
-                    _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
+                    _rtBox.AppendText(ComplexUtils.ComplexToString(_polynomial[i].Coefficient));
                     if (i != 0)
                     {
                         if (_polynomial[i - 1].Coefficient.Real > 0)
@@ -887,7 +885,7 @@ namespace CalculatorUI
                 else
                 {
                     if (_polynomial[i].Coefficient.Real != 1 || _polynomial[i].Coefficient.Imaginary != 0)
-                        _rtBox.AppendText(_polynomial[i].Coefficient.Imaginary == 0 ? _polynomial[i].Coefficient.Real.ToString() : _polynomial[i].Coefficient.ToString());
+                        _rtBox.AppendText(ComplexUtils.ComplexToString(_polynomial[i].Coefficient));
                     _rtBox.AppendText("X");
                     _rtBox.SelectionCharOffset = 7;
                     if (_polynomial[i].Degree > 1)
@@ -1069,6 +1067,7 @@ namespace CalculatorUI
                LoadColorFont(current);
            }
         }
+
     }
     /// <summary>
     /// Class that holds the history item, each instance holds one record of operation and two polynomials

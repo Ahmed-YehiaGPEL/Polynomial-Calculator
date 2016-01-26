@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using CMath.PolynomialEquation;
 using System.Numerics;
+using CMath.PolynomialEquation;
+using CMath.Utils;
 
 namespace CMath.Trie
 {
@@ -19,7 +20,6 @@ namespace CMath.Trie
         public Trie main;
         public void Dispose()
         {
-            main.clear();
             main.Dispose();
             GC.Collect();
         }
@@ -70,17 +70,17 @@ namespace CMath.Trie
             try
             {
                 var lastFirst = main.insert(first._data.ToList());
-                if (!lastFirst._special.ContainsKey(operation))
+                if (!lastFirst._special.ContainsKey(','))
                 {
-                    lastFirst._special.Add(operation, new Trie());
+                    lastFirst._special.Add(',', new Trie());
                 }
-                var secondTrie = lastFirst._special[operation] as Trie;
+                var secondTrie = lastFirst._special[','] as Trie;
                 var lastSecond = secondTrie.insert(second._data.ToList());
-                if (lastSecond._special.ContainsKey('='))
+                if (lastSecond._special.ContainsKey(operation))
                 {
                     throw new ArgumentException("Operation is already stored");
                 }
-                lastSecond._special.Add('=', result);
+                lastSecond._special.Add(operation, result);
             }
             catch (Exception e)
             {
@@ -125,20 +125,20 @@ namespace CMath.Trie
             {
                 throw new KeyNotFoundException("There is no such polynomial in the trie;");
             }
-            if (!lastFirst._special.ContainsKey(operation))
+            if (!lastFirst._special.ContainsKey(','))
             {
                 throw new KeyNotFoundException("There is no such operation in the trie;");
             }
             Node lastSecond;
-            if (!(lastFirst._special[operation] as Trie).try_get_node(second._data.ToList(), out lastSecond))
+            if (!(lastFirst._special[','] as Trie).try_get_node(second._data.ToList(), out lastSecond))
             {
                 throw new KeyNotFoundException("There is no such polynomial in the trie;");
             }
-            if (!lastSecond._special.ContainsKey('='))
+            if (!lastSecond._special.ContainsKey(operation))
             {
                 throw new KeyNotFoundException("There is no such operation in the trie;");
             }
-            return (lastSecond._special['='] as Polynomial);
+            return (lastSecond._special[operation] as Polynomial);
         }
         public bool try_search(Polynomial first, char operation, Polynomial second, out Polynomial result)
         {
@@ -176,74 +176,6 @@ namespace CMath.Trie
             catch
             {
                 result = 0;
-                return false;
-            }
-        }
-        #endregion
-        #region remove&clear
-        public bool try_remove(Polynomial first)
-        {
-            return main.try_remove(first._data.ToList());
-        }
-        public bool try_remove(Polynomial first, char operation)
-        {
-            try
-            {
-                remove(first, operation);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        void remove(Polynomial first, Char operation)
-        {
-            Node lastFirst;
-            if (main.try_get_node(first._data.ToList(), out lastFirst))
-            {
-                throw new KeyNotFoundException("There is no such operation in the trie;");
-            }
-            lastFirst._special.Remove(operation);
-            if (lastFirst._special.Count == 0)
-            {
-                try_remove(first);
-            }
-        }
-        void remove(Polynomial first, Char operation, Polynomial second)
-        {
-            Node lastFirst;
-            if (main.try_get_node(first._data.ToList(), out lastFirst))
-            {
-                throw new KeyNotFoundException("There is no such operation in the trie;");
-            }
-            if (!lastFirst._special.ContainsKey(operation))
-            {
-                throw new KeyNotFoundException("There is no such operation in the trie;");
-            }
-            var secondTrie = lastFirst._special[operation] as Trie;
-            if (!secondTrie.try_remove(second._data.ToList()))
-            {
-                throw new KeyNotFoundException("There is no such operation in the trie;");
-            }
-            if ((lastFirst._special[operation] as Trie).isEmpty())
-            {
-                lastFirst._special.Remove(operation);
-                if (lastFirst._special.Count == 0)
-                {
-                    try_remove(first);
-                }
-            }
-        }
-        public bool try_remove(Polynomial first, Char operation, Polynomial second)
-        {
-            try
-            {
-                remove(first, operation, second);
-                return true;
-            }
-            catch
-            {
                 return false;
             }
         }

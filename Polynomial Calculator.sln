@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stress", "Stress\Stress.csp
 		{8318A4DC-3C73-461D-8F03-98ED5AAF357A} = {8318A4DC-3C73-461D-8F03-98ED5AAF357A}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{96B541E5-158C-49EB-8757-0866BAB64AC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{56B81693-9058-4275-92C4-3B60CD5F95D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56B81693-9058-4275-92C4-3B60CD5F95D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56B81693-9058-4275-92C4-3B60CD5F95D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96B541E5-158C-49EB-8757-0866BAB64AC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96B541E5-158C-49EB-8757-0866BAB64AC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96B541E5-158C-49EB-8757-0866BAB64AC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96B541E5-158C-49EB-8757-0866BAB64AC8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
