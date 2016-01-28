@@ -5,9 +5,14 @@ using System.Xml.Linq;
 using System.Text;
 using System.Numerics;
 using System.IO;
+using System.Data;
 using System.Diagnostics;
 using CMath.PolynomialEquation;
 using CMath.Trie;
+using CMath.Utils;
+using ClosedXML;
+using ClosedXML.Excel;
+using ClosedXML.Utils;
 
 namespace CMath.Trie
 {
@@ -18,7 +23,7 @@ namespace CMath.Trie
     #endregion
     public class TrieSaveMangaer
     {
-        #region functions
+        #region XML
         public void save(PolynomialTrie toBeSaved, string FileName)
         {
             XDocument xDoc = new XDocument(new XDeclaration("1.0", "utf-8", "yes"));
@@ -123,7 +128,22 @@ namespace CMath.Trie
             return true;
         }
         #endregion
-        #region dfs
+        #region Excel
+        public void saveExcel(PolynomialTrie toBeSaved,string fileName)
+        {
+            DataTable sub, defint;
+            paraDT(toBeSaved, out sub, out defint);
+            using (XLWorkbook saver = new XLWorkbook(XLEventTracking.Disabled))
+            {
+                saver.Worksheets.Add(OneOperationDT(toBeSaved));
+                saver.Worksheets.Add(sub);
+                saver.Worksheets.Add(defint);
+                saver.Worksheets.Add(TwoPolynomialsDT(toBeSaved));
+                saver.SaveAs(fileName);
+            }
+        }
+        #endregion
+        #region XMLdfs
         Node dfs(XElement Xroot)
         {
             Node root = new Node();
@@ -167,7 +187,7 @@ namespace CMath.Trie
                     foreach (var edge in currentXNode.Elements("listComplex"))
                     {
                         char edgeChar = edge.Element("Edge").Value[0];
-                        currentNode._special.Add(edgeChar, Utils.complexListParse(edge.Elements("root")));
+                        currentNode._special.Add(edgeChar, ComplexUtils.complexListParse(edge.Elements("root")));
                     }
                     foreach (var edge in currentXNode.Elements("params"))
                     {
@@ -175,7 +195,7 @@ namespace CMath.Trie
                         var operations = new paraStore(new ListComparer<Complex>());
                         foreach (var op in edge.Elements("operation"))
                         {
-                            operations.Add(Utils.complexListParse(op.Elements("para")), Utils.complexParse(op.Element("Result").Value));
+                            operations.Add(ComplexUtils.complexListParse(op.Elements("para")), ComplexUtils.ParseComplex(op.Element("Result").Value));
                         }
                         currentNode._special.Add(edgeChar, operations);
                     }
@@ -225,13 +245,13 @@ namespace CMath.Trie
                 {
                     foreach (var special in currentNode._special)
                     {
-                        string Name = Utils.operationsName[special.Key];
+                        string Name = Constants.operationsName[special.Key];
                         XElement newChild = new XElement(Name);
                         if (Name == "listComplex")
                         {
                             foreach (var solution in (special.Value as List<Complex>))
                             {
-                                newChild.Add(new XElement("root",solution.ToString()));
+                                newChild.Add(new XElement("root",ComplexUtils.ComplexToString(solution)));
                             }
                         }
                         else if (Name == "Result")
@@ -262,6 +282,231 @@ namespace CMath.Trie
                 }
             }
             return Xroot;
+        }
+        #endregion
+        #region ExcelUtils
+        DataTable OneOperationDT(PolynomialTrie trie)
+        {
+            DataTable result = new DataTable("Operations on one polynomial");
+            foreach (var title in Constants.OnePolynomialColumnsName)
+            {
+                result.Columns.Add(title.Value, typeof(string));
+            }
+            Polynomial SoFar = new Polynomial();
+            Stack<Tuple<Node, Term, bool>> dfsStack = new Stack<Tuple<Node, Term, bool>>();
+            dfsStack.Push(new Tuple<Node,Term,bool>(trie.main.root,new Term(0,0),false));
+            while (dfsStack.Count != 0)
+            {
+                if (dfsStack.Peek().Item3)
+                {
+                    dfsStack.Pop();
+                    if(SoFar.Count != 0)
+                        SoFar.Remove(SoFar.Back.Degree);
+                    continue;
+                }
+                Node current = dfsStack.Peek().Item1;
+                Term edge = dfsStack.Peek().Item2;
+                if(edge.Coefficient != 0)
+                    SoFar.Add(edge);
+                dfsStack.Pop();
+                dfsStack.Push(new Tuple<Node, Term, bool>(current,edge, true));
+                foreach (var child in current._children)
+                {
+                    dfsStack.Push(new Tuple<Node, Term, bool>(child.Value,new Term(child.Key), false));
+                }
+                if (current.isEnd)
+                {
+                    result.Rows.Add(result.NewRow());
+                    int index = result.Rows.Count - 1;
+                    result.Rows[index]["Polynomial"] = SoFar.ToString();
+                    bool foundOperation = false;
+                    foreach (var special in current._special)
+                    {
+                        if (Constants.operationsName[special.Key] == "Result")
+                        {
+                            foundOperation = true;
+                            result.Rows[index][Constants.OnePolynomialColumnsName[special.Key]] = (special.Value as Polynomial).ToString();
+                        }
+                        else if (Constants.operationsName[special.Key] == "listComplex")
+                        {
+                            foundOperation = true;
+                            result.Rows[index][Constants.OnePolynomialColumnsName[special.Key]] = ComplexUtils.ComplexListToString(special.Value as List<Complex>);
+                        }
+                    }
+                    if (!foundOperation)
+                    {
+                        result.Rows.RemoveAt(result.Rows.Count - 1);
+                    }
+                }
+            }
+            return result;
+        }
+        void paraDT(PolynomialTrie trie,out DataTable substitutaions,out DataTable definiteIntegral)
+        {
+            substitutaions = new DataTable("subtitutions in polynomial");
+            definiteIntegral = new DataTable("Definite integral on polynomial");
+            foreach (var title in Constants.SubstitutionColumnsName)
+            {
+                substitutaions.Columns.Add(title, typeof(string));
+            }
+            foreach (var title in Constants.DefiniteIntColumnsName)
+            {
+                definiteIntegral.Columns.Add(title, typeof(string));
+            }
+            Polynomial SoFar = new Polynomial();
+            Stack<Tuple<Node, Term, bool>> dfsStack = new Stack<Tuple<Node, Term, bool>>();
+            dfsStack.Push(new Tuple<Node,Term,bool>(trie.main.root,new Term(0,0),false));
+            while (dfsStack.Count != 0)
+            {
+                if (dfsStack.Peek().Item3)
+                {
+                    dfsStack.Pop();
+                    if(SoFar.Count != 0)
+                        SoFar.Remove(SoFar.Back.Degree);
+                    continue;
+                }
+                Node current = dfsStack.Peek().Item1;
+                Term edge = dfsStack.Peek().Item2;
+                if(edge.Coefficient != 0)
+                    SoFar.Add(edge);
+                dfsStack.Pop();
+                dfsStack.Push(new Tuple<Node, Term, bool>(current,edge, true));
+                foreach (var child in current._children)
+                {
+                    dfsStack.Push(new Tuple<Node, Term, bool>(child.Value,new Term(child.Key), false));
+                }
+                if (current.isEnd)
+                {
+                    substitutaions.Rows.Add(substitutaions.NewRow());
+                    definiteIntegral.Rows.Add(definiteIntegral.NewRow());
+                    int indexSub = substitutaions.Rows.Count - 1;
+                    int indexDefint = definiteIntegral.Rows.Count - 1;
+                    substitutaions.Rows[indexSub]["Polynomial"] = SoFar.ToString();
+                    definiteIntegral.Rows[indexDefint]["Polynomial"] = SoFar.ToString();
+                    bool foundSubstitution = false;
+                    bool foundDefint = false;
+                    foreach (var special in current._special)
+                    {
+                        if (special.Key == 's')
+                        {
+                            foundSubstitution = true;
+                            foreach(var substitutaion in special.Value as paraStore)
+                            {
+                                substitutaions.Rows[indexSub]["X"] = ComplexUtils.ComplexToString(substitutaion.Key[0]);
+                                substitutaions.Rows[indexSub]["Result"] = ComplexUtils.ComplexToString(substitutaion.Value);
+
+                            }
+                        }
+                        else if (special.Key == 'd')
+                        {
+                            foundDefint = true;
+                            foreach (var defint in special.Value as paraStore)
+                            {
+                                definiteIntegral.Rows[indexSub]["A"] = ComplexUtils.ComplexToString(defint.Key[0]);
+                                definiteIntegral.Rows[indexSub]["B"] = ComplexUtils.ComplexToString(defint.Key[1]);
+                                definiteIntegral.Rows[indexSub]["Result"] = ComplexUtils.ComplexToString(defint.Value);
+
+                            }
+                        }
+                    }
+                    if (!foundSubstitution)
+                    {
+                        substitutaions.Rows.RemoveAt(substitutaions.Rows.Count - 1);
+                    }
+                    if (!foundDefint)
+                    {
+                        definiteIntegral.Rows.RemoveAt(definiteIntegral.Rows.Count - 1);
+                    }
+                }
+            }
+        }
+        DataTable TwoPolynomialsDT(PolynomialTrie trie)
+        {
+            DataTable result = new DataTable("Operations on two polynomials");
+            foreach (var title in Constants.TwoPolynomialsColumnsName)
+            {
+                result.Columns.Add(title.Value, typeof(string));
+            }
+            Polynomial SoFar = new Polynomial();
+            Stack<Tuple<Node, Term, bool>> dfsStack = new Stack<Tuple<Node, Term, bool>>();
+            dfsStack.Push(new Tuple<Node, Term, bool>(trie.main.root, new Term(0, 0), false));
+            while (dfsStack.Count != 0)
+            {
+                if (dfsStack.Peek().Item3)
+                {
+                    dfsStack.Pop();
+                    if (SoFar.Count != 0)
+                        SoFar.Remove(SoFar.Back.Degree);
+                    continue;
+                }
+                Node current = dfsStack.Peek().Item1;
+                Term edge = dfsStack.Peek().Item2;
+                if (edge.Coefficient != 0)
+                    SoFar.Add(edge);
+                dfsStack.Pop();
+                dfsStack.Push(new Tuple<Node, Term, bool>(current, edge, true));
+                foreach (var child in current._children)
+                {
+                    dfsStack.Push(new Tuple<Node, Term, bool>(child.Value, new Term(child.Key), false));
+                }
+                if (current.isEnd)
+                {
+                    foreach (var special in current._special)
+                    {
+                        if (Constants.operationsName[special.Key] == "Tree")
+                        {
+                            SecondTreeExtraction(special.Value as Trie, SoFar, ref result);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        void SecondTreeExtraction(Trie trie, Polynomial firstPolynomial, ref DataTable result)
+        {
+            Polynomial SoFar = new Polynomial();
+            Stack<Tuple<Node, Term, bool>> dfsStack = new Stack<Tuple<Node, Term, bool>>();
+            dfsStack.Push(new Tuple<Node, Term, bool>(trie.root, new Term(0, 0), false));
+            while (dfsStack.Count != 0)
+            {
+                if (dfsStack.Peek().Item3)
+                {
+                    dfsStack.Pop();
+                    if (SoFar.Count != 0)
+                        SoFar.Remove(SoFar.Back.Degree);
+                    continue;
+                }
+                Node current = dfsStack.Peek().Item1;
+                Term edge = dfsStack.Peek().Item2;
+                if (edge.Coefficient != 0)
+                    SoFar.Add(edge);
+                dfsStack.Pop();
+                dfsStack.Push(new Tuple<Node, Term, bool>(current, edge, true));
+                foreach (var child in current._children)
+                {
+                    dfsStack.Push(new Tuple<Node, Term, bool>(child.Value, new Term(child.Key), false));
+                }
+                if (current.isEnd)
+                {
+                    result.Rows.Add(result.NewRow());
+                    int index = result.Rows.Count - 1;
+                    result.Rows[index]["Polynomial1"] = firstPolynomial.ToString();
+                    result.Rows[index]["Polynomial2"] = SoFar.ToString();
+                    bool foundOperation = false;
+                    foreach (var special in current._special)
+                    {
+                        if (Constants.operationsName[special.Key] == "Result")
+                        {
+                            foundOperation = true;
+                            result.Rows[index][Constants.TwoPolynomialsColumnsName[special.Key]] = (special.Value as Polynomial).ToString();
+                        }
+                    }
+                    if (!foundOperation)
+                    {
+                        result.Rows.RemoveAt(result.Rows.Count - 1);
+                    }
+                }
+            }
         }
         #endregion
     }

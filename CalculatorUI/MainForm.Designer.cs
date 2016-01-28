@@ -65,6 +65,8 @@
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.glassButton8 = new Glass.GlassButton();
+            this.glassButton9 = new Glass.GlassButton();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.glassButton7 = new Glass.GlassButton();
@@ -87,6 +89,8 @@
             this.btnAdd = new Glass.GlassButton();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rootsTextBox = new System.Windows.Forms.TextBox();
+            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.excelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusBar.SuspendLayout();
             this.menuBar.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -154,6 +158,7 @@
             this.saveToolStripMenuItem,
             this.saveasToolStripMenuItem,
             this.loadToolStripMenuItem,
+            this.exportToolStripMenuItem,
             this.clearLogToolStripMenuItem,
             this.toolStripMenuItem2,
             this.customizeToolStripMenuItem,
@@ -328,20 +333,6 @@
             this.tableLayoutPanel3.Size = new System.Drawing.Size(550, 358);
             this.tableLayoutPanel3.TabIndex = 0;
             // 
-            // historyListBox
-            // 
-            this.historyListBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.historyListBox.Font = new System.Drawing.Font("Consolas", 10.8F, System.Drawing.FontStyle.Bold);
-            this.historyListBox.FormattingEnabled = true;
-            this.historyListBox.ItemHeight = 22;
-            this.historyListBox.Location = new System.Drawing.Point(3, 229);
-            this.historyListBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.historyListBox.Name = "historyListBox";
-            this.historyListBox.ScrollAlwaysVisible = true;
-            this.historyListBox.Size = new System.Drawing.Size(544, 127);
-            this.historyListBox.TabIndex = 3;
-            this.historyListBox.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
-            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.polynomial1Text);
@@ -454,6 +445,8 @@
             // panel1
             // 
             this.panel1.AutoScroll = true;
+            this.panel1.Controls.Add(this.glassButton8);
+            this.panel1.Controls.Add(this.glassButton9);
             this.panel1.Controls.Add(this.textBox5);
             this.panel1.Controls.Add(this.textBox6);
             this.panel1.Controls.Add(this.glassButton7);
@@ -481,12 +474,36 @@
             this.panel1.Size = new System.Drawing.Size(248, 187);
             this.panel1.TabIndex = 0;
             // 
+            // glassButton8
+            // 
+            this.glassButton8.GlowColor = System.Drawing.Color.Purple;
+            this.glassButton8.Location = new System.Drawing.Point(86, 150);
+            this.glassButton8.Margin = new System.Windows.Forms.Padding(2);
+            this.glassButton8.Name = "glassButton8";
+            this.glassButton8.Size = new System.Drawing.Size(79, 25);
+            this.glassButton8.TabIndex = 37;
+            this.glassButton8.Tag = "int2";
+            this.glassButton8.Text = "Poly.2 Int.";
+            this.glassButton8.Click += new System.EventHandler(this.PerformOperation);
+            // 
+            // glassButton9
+            // 
+            this.glassButton9.GlowColor = System.Drawing.Color.Purple;
+            this.glassButton9.Location = new System.Drawing.Point(2, 150);
+            this.glassButton9.Margin = new System.Windows.Forms.Padding(2);
+            this.glassButton9.Name = "glassButton9";
+            this.glassButton9.Size = new System.Drawing.Size(79, 25);
+            this.glassButton9.TabIndex = 36;
+            this.glassButton9.Tag = "int1";
+            this.glassButton9.Text = "Poly.1 Int.";
+            this.glassButton9.Click += new System.EventHandler(this.PerformOperation);
+            // 
             // textBox5
             // 
             this.textBox5.Font = new System.Drawing.Font("Consolas", 7.8F, System.Drawing.FontStyle.Bold);
             this.textBox5.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.textBox5.Location = new System.Drawing.Point(115, 315);
-            this.textBox5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox5.Location = new System.Drawing.Point(86, 283);
+            this.textBox5.Margin = new System.Windows.Forms.Padding(2);
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(105, 23);
             this.textBox5.TabIndex = 34;
@@ -500,8 +517,8 @@
             // 
             this.textBox6.Font = new System.Drawing.Font("Consolas", 7.8F, System.Drawing.FontStyle.Bold);
             this.textBox6.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.textBox6.Location = new System.Drawing.Point(3, 315);
-            this.textBox6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox6.Location = new System.Drawing.Point(2, 283);
+            this.textBox6.Margin = new System.Windows.Forms.Padding(2);
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(105, 23);
             this.textBox6.TabIndex = 33;
@@ -514,8 +531,8 @@
             // glassButton7
             // 
             this.glassButton7.GlowColor = System.Drawing.Color.Purple;
-            this.glassButton7.Location = new System.Drawing.Point(0, 341);
-            this.glassButton7.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.glassButton7.Location = new System.Drawing.Point(0, 304);
+            this.glassButton7.Margin = new System.Windows.Forms.Padding(2);
             this.glassButton7.Name = "glassButton7";
             this.glassButton7.Size = new System.Drawing.Size(220, 31);
             this.glassButton7.TabIndex = 35;
@@ -527,8 +544,8 @@
             // 
             this.textBox4.Font = new System.Drawing.Font("Consolas", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox4.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.textBox4.Location = new System.Drawing.Point(115, 254);
-            this.textBox4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox4.Location = new System.Drawing.Point(86, 233);
+            this.textBox4.Margin = new System.Windows.Forms.Padding(2);
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(105, 23);
             this.textBox4.TabIndex = 31;
@@ -542,8 +559,8 @@
             // 
             this.textBox3.Font = new System.Drawing.Font("Consolas", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox3.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.textBox3.Location = new System.Drawing.Point(3, 254);
-            this.textBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox3.Location = new System.Drawing.Point(2, 233);
+            this.textBox3.Margin = new System.Windows.Forms.Padding(2);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(105, 23);
             this.textBox3.TabIndex = 30;
@@ -556,8 +573,8 @@
             // glassButton6
             // 
             this.glassButton6.GlowColor = System.Drawing.Color.Purple;
-            this.glassButton6.Location = new System.Drawing.Point(0, 281);
-            this.glassButton6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.glassButton6.Location = new System.Drawing.Point(0, 255);
+            this.glassButton6.Margin = new System.Windows.Forms.Padding(2);
             this.glassButton6.Name = "glassButton6";
             this.glassButton6.Size = new System.Drawing.Size(220, 31);
             this.glassButton6.TabIndex = 32;
@@ -569,8 +586,8 @@
             // 
             this.textBox2.Font = new System.Drawing.Font("Consolas", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox2.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.textBox2.Location = new System.Drawing.Point(115, 219);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox2.Location = new System.Drawing.Point(86, 205);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(2);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(105, 23);
             this.textBox2.TabIndex = 29;
@@ -583,8 +600,8 @@
             // glassButton5
             // 
             this.glassButton5.GlowColor = System.Drawing.Color.Purple;
-            this.glassButton5.Location = new System.Drawing.Point(3, 219);
-            this.glassButton5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.glassButton5.Location = new System.Drawing.Point(2, 205);
+            this.glassButton5.Margin = new System.Windows.Forms.Padding(2);
             this.glassButton5.Name = "glassButton5";
             this.glassButton5.Size = new System.Drawing.Size(105, 31);
             this.glassButton5.TabIndex = 28;
@@ -596,8 +613,8 @@
             // 
             this.textBox1.Font = new System.Drawing.Font("Consolas", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox1.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.textBox1.Location = new System.Drawing.Point(115, 190);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox1.Location = new System.Drawing.Point(86, 181);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(2);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(105, 23);
             this.textBox1.TabIndex = 27;
@@ -610,8 +627,8 @@
             // glassButton4
             // 
             this.glassButton4.GlowColor = System.Drawing.Color.Purple;
-            this.glassButton4.Location = new System.Drawing.Point(3, 185);
-            this.glassButton4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.glassButton4.Location = new System.Drawing.Point(2, 177);
+            this.glassButton4.Margin = new System.Windows.Forms.Padding(2);
             this.glassButton4.Name = "glassButton4";
             this.glassButton4.Size = new System.Drawing.Size(105, 31);
             this.glassButton4.TabIndex = 26;
@@ -765,6 +782,35 @@
             this.rootsTextBox.Size = new System.Drawing.Size(248, 125);
             this.rootsTextBox.TabIndex = 3;
             // 
+            // historyListBox
+            // 
+            this.historyListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.historyListBox.Font = new System.Drawing.Font("Consolas", 10.8F, System.Drawing.FontStyle.Bold);
+            this.historyListBox.FormattingEnabled = true;
+            this.historyListBox.ItemHeight = 17;
+            this.historyListBox.Location = new System.Drawing.Point(2, 97);
+            this.historyListBox.Margin = new System.Windows.Forms.Padding(2);
+            this.historyListBox.Name = "historyListBox";
+            this.historyListBox.ScrollAlwaysVisible = true;
+            this.historyListBox.Size = new System.Drawing.Size(192, 81);
+            this.historyListBox.TabIndex = 1;
+            this.historyListBox.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            // 
+            // exportToolStripMenuItem
+            // 
+            this.exportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.excelToolStripMenuItem});
+            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.exportToolStripMenuItem.Text = "Export";
+            // 
+            // excelToolStripMenuItem
+            // 
+            this.excelToolStripMenuItem.Name = "excelToolStripMenuItem";
+            this.excelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.excelToolStripMenuItem.Text = "Excel";
+            this.excelToolStripMenuItem.Click += new System.EventHandler(this.excelToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -858,6 +904,10 @@
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel tipLabel;
         private System.Windows.Forms.ListBox historyListBox;
+        private Glass.GlassButton glassButton8;
+        private Glass.GlassButton glassButton9;
+        private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem excelToolStripMenuItem;
     }
 }
 
